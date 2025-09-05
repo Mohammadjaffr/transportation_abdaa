@@ -9,26 +9,37 @@ class Bus extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'BusNo';
-    public $incrementing = false;
-    protected $keyType = 'integer';
-
     protected $fillable = [
-        'BusNo', 'BusType', 'Model', 'SeatsNo', 'CustomsNo', 'StudentsNo', 'LocNo'
+        'BusType', 'Model', 'SeatsNo', 'CustomsNo', 'StudentsNo', 'location_id'
     ];
 
     public function location()
     {
-        return $this->belongsTo(Location::class, 'LocNo', 'LocNo');
+        return $this->belongsTo(Location::class);
     }
 
     public function driver()
     {
-        return $this->hasOne(Driver::class, 'BusNo', 'BusNo');
+        return $this->hasOne(Driver::class);
     }
 
     public function students()
     {
-        return $this->hasMany(Student::class, 'BusNo', 'BusNo');
+        return $this->hasMany(Student::class);
+    }
+
+    public function presentations()
+    {
+        return $this->hasMany(Presentation::class);
+    }
+
+    public function retreats()
+    {
+        return $this->hasMany(Retreat::class);
+    }
+
+    public function wages()
+    {
+        return $this->hasMany(Wage::class);
     }
 }

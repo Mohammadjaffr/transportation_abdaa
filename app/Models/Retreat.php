@@ -10,10 +10,11 @@ class Retreat extends Model
     use HasFactory;
 
     protected $fillable = [
-        'Name', 'Grade', 'BusNo'
+        'Name', 'Grade', 'bus_id'
     ];
+
     public function bus()
     {
-        return $this->belongsTo(Bus::class, 'BusNo', 'BusNo');
+        return $this->belongsTo(Bus::class);
     }
 }

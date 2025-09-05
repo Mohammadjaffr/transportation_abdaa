@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('presentations', function (Blueprint $table) {
             $table->id();
-            $table->integer('BusNo');
+            $table->foreignId('bus_id')->constrained('buses')->onDelete('cascade');
             $table->string('atendTime', 50);
             $table->integer('atendStudents');
-            $table->string('leaveTime', 30);
+            $table->string('leaveTime', 50);
             $table->integer('leaveStudents');
-            $table->string('note', 60);
-            $table->string('date', 20);
+            $table->text('note')->nullable();
+            $table->date('date');
             $table->timestamps();
         });
     }

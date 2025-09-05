@@ -9,16 +9,16 @@ class Student extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'stuId';
-    public $incrementing = false;
-    protected $keyType = 'integer';
-
     protected $fillable = [
-        'stuId', 'Name', 'Grade', 'BusNo'
+        'Name', 'Grade', 'bus_id'
     ];
 
     public function bus()
     {
-        return $this->belongsTo(Bus::class, 'BusNo', 'BusNo');
+        return $this->belongsTo(Bus::class);
+    }
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class);
     }
 }

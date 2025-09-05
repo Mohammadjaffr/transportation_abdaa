@@ -9,18 +9,13 @@ class Driver extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'CardNo';
-    public $incrementing = false;
-    protected $keyType = 'string';
-
     protected $fillable = [
-        'CardNo', 'Name', 'Phone', 'LicenseNo', 'Ownership', 'Wing',
-        'CheckUp', 'Behavior', 'Form', 'Fitnes', 'BusNo'
+         'Name', 'Phone', 'LicenseNo', 'Ownership', 'Wing',
+        'CheckUp', 'Behavior', 'Form', 'Fitnes', 'bus_id'
     ];
 
     public function bus()
     {
-        return $this->belongsTo(Bus::class, 'BusNo', 'BusNo');
+        return $this->belongsTo(Bus::class);
     }
-
 }

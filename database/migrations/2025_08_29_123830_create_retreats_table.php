@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('retreats', function (Blueprint $table) {
             $table->id();
-            $table->string('Name', 200);
-            $table->string('Grade', 30)->nullable();
-            $table->integer('BusNo');
+            $table->string('Name', 100);
+            $table->string('Grade', 20);
+            $table->foreignId('bus_id')->constrained('buses')->onDelete('cascade');
             $table->timestamps();
         });
     }

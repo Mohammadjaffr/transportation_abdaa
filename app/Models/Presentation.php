@@ -10,10 +10,11 @@ class Presentation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'BusNo', 'atendTime', 'atendStudents', 'leaveTime', 'leaveStudents', 'note', 'date'
+        'bus_id', 'atendTime', 'atendStudents', 'leaveTime', 'leaveStudents', 'note', 'date'
     ];
+
     public function bus()
     {
-        return $this->belongsTo(Bus::class, 'BusNo', 'BusNo');
+        return $this->belongsTo(Bus::class);
     }
 }

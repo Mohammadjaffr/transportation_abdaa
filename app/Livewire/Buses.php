@@ -1,0 +1,201 @@
+<?php
+
+namespace App\Livewire;
+
+use Livewire\Component;
+use App\Models\Bus;
+use App\Models\Location;
+
+class Buses extends Component
+{
+    public $buses;
+    public $locations;
+
+    public $StudentsNo, $BusType, $Model, $SeatsNo, $CustomsNo, $location_id;
+
+    public $editMode = false;
+    public $selectedBus;
+    public $deleteId = null;
+    public $deleteBusName = null;
+
+    public $search = '';
+    public $showForm = false;
+    public $editId = null;
+    protected $queryString = ['search'];
+
+    public function mount()
+    {
+        $this->loadBuses();
+        $this->locations = Location::all();
+    }
+
+    public function updatedSearch()
+    {
+        $this->loadBuses();
+    }
+
+    public function loadBuses()
+    {
+        $this->buses = Bus::with('location')
+            ->when($this->search, function ($query) {
+                $query->where('BusType', 'like', "%{$this->search}%")->orWhere('id', 'like', "%{$this->search}%");
+            })
+            ->orderBy('id', 'desc')
+            ->get();
+    }
+
+
+    protected function rules()
+    {
+        return $this->editMode
+            ? [
+                'BusType' => 'required|string|max:50',
+                'Model' => 'required|string|max:30',
+                'SeatsNo' => 'required|integer|min:1',
+                'CustomsNo' => 'nullable|string|max:30',
+                'StudentsNo' => 'required|integer|min:0',
+
+                'location_id' => 'required|exists:locations,id',
+            ]
+            : [
+                'BusType' => 'required|string|max:50',
+                'Model' => 'required|string|max:30',
+                'SeatsNo' => 'required|integer|min:1',
+                'CustomsNo' => 'nullable|string|max:30',
+                'location_id' => 'required|exists:locations,id',
+            ];
+    }
+
+    protected $messages = [
+
+        'BusType.required' => 'نوع الحافلة مطلوب',
+        'BusType.string'   => 'نوع الحافلة يجب أن يكون نصًا',
+        'BusType.max'      => 'نوع الحافلة لا يجب أن يتجاوز 50 حرفًا',
+        'StudentsNo.required' => 'عدد الطلاب مطلوب',
+        'StudentsNo.integer'  => 'عدد الطلاب يجب أن يكون رقمًا',
+        'StudentsNo.min'      => 'عدد الطلاب لا يمكن أن يقل عن 0',
+
+        'Model.required' => 'الموديل مطلوب',
+        'Model.string'   => 'الموديل يجب أن يكون نصًا',
+        'Model.max'      => 'الموديل لا يجب أن يتجاوز 30 حرفًا',
+
+        'SeatsNo.required' => 'عدد المقاعد مطلوب',
+        'SeatsNo.integer'  => 'عدد المقاعد يجب أن يكون رقمًا',
+        'SeatsNo.min'      => 'عدد المقاعد لا يمكن أن يقل عن 1',
+
+        'CustomsNo.string' => 'رقم الجمارك يجب أن يكون نصًا',
+        'CustomsNo.max'    => 'رقم الجمارك لا يجب أن يتجاوز 30 حرفًا',
+
+        'location_id.required' => 'الموقع مطلوب',
+        'location_id.exists'   => 'الموقع غير صحيح',
+    ];
+
+
+    public function createBus()
+    {
+        $this->validate();
+
+        Bus::create([
+            'BusType' => $this->BusType,
+            'Model' => $this->Model,
+            'SeatsNo' => $this->SeatsNo,
+            'CustomsNo' => $this->CustomsNo,
+            'StudentsNo' => $this->StudentsNo,
+            'location_id' => $this->location_id
+        ]);
+
+        $this->resetForm();
+        $this->loadBuses();
+
+        $this->dispatch('show-toast', [
+            'type' => 'success',
+            'message' => 'تم إضافة الحافلة بنجاح'
+        ]);
+    }
+
+    public function edit($id)
+    {
+        $bus = Bus::findOrFail($id);
+        $this->editId = $bus->id;
+        $this->selectedBus = $bus;
+        $this->editMode = true;
+        $this->showForm = true;
+
+        $this->BusType = $bus->BusType;
+        $this->Model = $bus->Model;
+        $this->SeatsNo = $bus->SeatsNo;
+        $this->CustomsNo = $bus->CustomsNo;
+        $this->StudentsNo = $bus->StudentsNo;
+        $this->location_id = $bus->location_id;
+    }
+
+    public function updateBus()
+    {
+        $this->validate();
+
+        $bus = Bus::findOrFail($this->editId);
+        $bus->update([
+            'BusType' => $this->BusType,
+            'Model' => $this->Model,
+            'SeatsNo' => $this->SeatsNo,
+            'CustomsNo' => $this->CustomsNo,
+            'StudentsNo' => $this->StudentsNo,
+            'location_id' => $this->location_id
+        ]);
+
+        $this->resetForm();
+        $this->loadBuses();
+
+        $this->dispatch('show-toast', [
+            'type' => 'success',
+            'message' => 'تم تحديث الحافلة بنجاح'
+        ]);
+    }
+
+    public function confirmDelete($id)
+    {
+        $bus = Bus::findOrFail($id);
+        $this->deleteId = $bus->id;
+        $this->deleteBusName = $bus->BusType . ' (' . $bus->id . ')';
+    }
+
+    public function deleteBus()
+    {
+        $bus = Bus::findOrFail($this->deleteId);
+        $bus->delete();
+
+        $this->deleteId = null;
+        $this->deleteBusName = null;
+
+        $this->loadBuses();
+
+        $this->dispatch('show-toast', [
+            'type' => 'success',
+            'message' => 'تم حذف الحافلة بنجاح'
+        ]);
+    }
+
+    public function cancel()
+    {
+        $this->resetForm();
+    }
+
+    public function resetForm()
+    {
+        $this->editId = null;
+        $this->BusType = '';
+        $this->StudentsNo = '';
+        $this->Model = '';
+        $this->SeatsNo = '';
+        $this->CustomsNo = '';
+        $this->location_id = '';
+        $this->editMode = false;
+        $this->selectedBus = null;
+        $this->showForm = false;
+    }
+
+    public function render()
+    {
+        return view('livewire.buses');
+    }
+}

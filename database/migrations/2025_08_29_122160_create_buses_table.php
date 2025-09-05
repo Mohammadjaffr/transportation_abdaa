@@ -12,14 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('buses', function (Blueprint $table) {
-            $table->id();
-            $table->integer('BusNo')->unique();
+            $table->id(); 
             $table->string('BusType', 50);
             $table->string('Model', 30);
             $table->integer('SeatsNo');
             $table->string('CustomsNo', 30)->nullable();
             $table->integer('StudentsNo')->default(0);
-            $table->integer('LocNo');
+
+            $table->foreignId('location_id')->constrained('locations')->onDelete('cascade');
             $table->timestamps();
         });
     }

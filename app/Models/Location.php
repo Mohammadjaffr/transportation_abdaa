@@ -10,16 +10,17 @@ class Location extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'LocNo';
-    public $incrementing = false;
-    protected $keyType = 'integer';
-
     protected $fillable = [
-        'LocNo', 'Name', 'DailyAmount', 'Fees'
+        'Name', 'DailyAmount', 'Fees'
     ];
 
     public function buses()
     {
-        return $this->hasMany(Bus::class, 'LocNo', 'LocNo');
+        return $this->hasMany(Bus::class);
+    }
+
+    public function wages()
+    {
+        return $this->hasMany(Wage::class);
     }
 }
