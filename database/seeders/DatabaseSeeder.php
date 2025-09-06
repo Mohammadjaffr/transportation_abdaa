@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
 
         User::factory()->create([
             'name' => 'mohammad',
-            'password' => Hash::make('password')
+            'password' => Hash::make('123456789')
         ]);
         $this->call([
         LocationsTableSeeder::class,
