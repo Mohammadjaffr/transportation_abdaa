@@ -28,7 +28,7 @@
 
         <div class="input-group mb-3">
             <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                value="{{ old('name') }}" placeholder="{{ __('adminlte::adminlte.email') }}" autofocus>
+                value="{{ old('name') }}" placeholder="{{ __('adminlte::adminlte.name') }}" autofocus>
 
             <div class="input-group-append">
                 <div class="input-group-text">
