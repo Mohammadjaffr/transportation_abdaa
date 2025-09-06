@@ -47,7 +47,7 @@
 
                 @if (app()->getLocale() == 'ar')
                     @vite(['resources/css/adminlte-rtl.css'])
-                    
+                
                     @else
                     @vite(['resources/css/adminlte.css'])
                 @endif
