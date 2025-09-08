@@ -22,27 +22,64 @@
                 <form wire:submit.prevent="{{ $editMode ? 'updateRetreat' : 'createRetreat' }}">
                     <div class="row g-3">
                         <div class="col-md-4">
+                            {{-- <label class="form-label fw-bold"> الاسم</label>
+                            < class="input-group input-group-sm shadow-sm rounded-pill overflow-hidden  py-2">
+                                <span class="input-group-text bg-white border-0">
+                                    <i class="fas fa-filter text-primary"></i>
+                                </span> --}}
                             <label class="form-label">الاسم</label>
-                            <input type="text" wire:model="Name"
-                                class="form-control @error('Name') is-invalid @enderror">
-                            @error('Name') <span class="text-danger small">{{ $message }}</span> @enderror
+                            <select wire:model="Name" class="form-control">
+                                <option value="">-- اختر الاسم --</option>
+                                @foreach ($students as $student)
+                                    <option value="{{ $student->Name }}">الصف {{ $student->Name }} -
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('Name')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="col-md-4">
-                            <label class="form-label">الصف</label>
+                            {{-- <label class="form-label">الصف</label>
                             <input type="text" wire:model="Grade"
                                 class="form-control @error('Grade') is-invalid @enderror">
-                            @error('Grade') <span class="text-danger small">{{ $message }}</span> @enderror
+                            @error('Grade')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror --}}
+
+
+                            {{-- <label class="form-label fw-bold"> الصف</label>
+                            < class="input-group input-group-sm shadow-sm rounded-pill overflow-hidden  py-2">
+                                <span class="input-group-text bg-white ">
+                                    <i class="fas fa-filter text-primary"></i>
+                                </span> --}}
+                            <label class="form-label">الصف</label>
+
+                            <select wire:model="Grade" class="form-control ">
+                                <option value="">-- اختر الصف --</option>
+                                @foreach ($students as $student)
+                                    <option value="{{ $student->Grade }}">{{ $student->Grade }} -
+                                    </option>
+                                @endforeach
+                            </select>
+
+                            @error('Grade')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">رقم الحافلة</label>
-                            <select wire:model="bus_id"
-                                class="form-control @error('bus_id') is-invalid @enderror">
+                            <select wire:model="bus_id" class="form-control @error('bus_id') is-invalid @enderror">
                                 <option value="">-- اختر الحافلة --</option>
                                 @foreach ($buses as $bus)
-                                    <option value="{{ $bus->id }}">{{ $bus->id }} - {{ $bus->BusType }}</option>
+                                    <option value="{{ $bus->id }}">{{ $bus->id }} - {{ $bus->BusType }}
+                                    </option>
                                 @endforeach
                             </select>
-                            @error('bus_id') <span class="text-danger small">{{ $message }}</span> @enderror
+                            @error('bus_id')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
                         </div>
 
                         <div class="col-6 mt-3">
@@ -132,8 +169,7 @@
                         <h5 class="modal-title">
                             <i class="fas fa-exclamation-triangle me-2"></i> تأكيد الحذف
                         </h5>
-                        <button type="button" class="btn-close btn-light"
-                            wire:click="$set('deleteId', null)"></button>
+                        <button type="button" class="btn-close btn-light" wire:click="$set('deleteId', null)"></button>
                     </div>
                     <div class="modal-body">
                         <p>هل أنت متأكد أنك تريد حذف السجل التالي؟</p>
@@ -142,8 +178,8 @@
                     <div class="modal-footer justify-content-start">
                         <button type="button" class="btn btn-secondary rounded-pill"
                             wire:click="$set('deleteId', null)">إلغاء</button>
-                        <button type="button" class="btn btn-danger rounded-pill"
-                            wire:click="deleteRetreat">نعم، احذف</button>
+                        <button type="button" class="btn btn-danger rounded-pill" wire:click="deleteRetreat">نعم،
+                            احذف</button>
                     </div>
                 </div>
             </div>

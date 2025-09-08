@@ -16,7 +16,8 @@
 
     @if(session('status'))
         <div class="alert alert-success">
-            {{ session('status') }}
+            {{-- {{ session('status') }} --}}
+            {{'تم ارسال رابط استعادة كلمة المرور الى بريدك الالكتروني'}}
         </div>
     @endif
 

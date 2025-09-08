@@ -4,14 +4,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard;
 use Illuminate\Support\Facades\Auth;
 Route::get('/', function () {
-    return view('auth.login');
+    return redirect()->route('login');
 });
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Auth::routes(['register' => false]);
 
-Route::get('/dashboard', [Dashboard::class, 'index'])->name('dashboard');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/home', [Dashboard::class, 'index'])->name('home');
 Route::get('/buses', [Dashboard::class, 'buses'])->name('buses');
 Route::get('/drivers', [Dashboard::class, 'drivers'])->name('drivers'); 
 Route::get('/students', [Dashboard::class, 'students'])->name('students');

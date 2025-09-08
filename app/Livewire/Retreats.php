@@ -5,7 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Retreat;
 use App\Models\Bus;
-
+use App\Models\Student;
 class Retreats extends Component
 {
 
@@ -89,6 +89,7 @@ class Retreats extends Component
     public function render()
     {
         $this->buses = Bus::all();
+        $students = Student::all();
         $this->retreats = Retreat::with('bus')
             ->when($this->search, function ($query) {
                 $query->where('Name', 'like', "%{$this->search}%")
@@ -96,6 +97,8 @@ class Retreats extends Component
                     ->orWhere('bus_id', 'like', "%{$this->search}%");
             })
             ->get();
-        return view('livewire.retreats');
+        return view('livewire.retreats', [
+            'students' => $students,
+        ]);
     }
 }

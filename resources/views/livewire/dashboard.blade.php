@@ -10,38 +10,44 @@
 
     {{-- البطاقات الرئيسية --}}
     <div class="row g-4 mb-4">
-        {{-- باصات كوستر --}}
+        {{-- كوستر --}}
         <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm border-0 hover-card text-center p-3">
+            <div class="card shadow-sm border-0 hover-card text-center">
                 <div class="card-body">
-                    <img src="{{ asset('image/costur.jpg') }}" class="rounded-circle mb-3 img-fluid mx-auto"
-                        style="width: 300px; height: 180px; object-fit: cover;" alt="كوستر">
+                    <img src="{{ asset('image/costur.jpg') }}" 
+                         class="rounded-circle mb-3 img-fluid mx-auto"
+                         style="width:200px; height:120px; object-fit:cover;" 
+                         alt="كوستر">
                     <h5 class="card-title">باصات كوستر</h5>
                     <h3 class="fw-bold text-primary">{{ $stats['coaster'] }}</h3>
-                    <p class="text-muted small">إجمالي الباصات من هذا النوع</p>
+                    <p class="text-muted small">إجمالي الباصات</p>
                 </div>
             </div>
         </div>
 
-        {{-- باصات هايس --}}
+        {{-- هايس --}}
         <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm border-0 hover-card text-center p-3">
+            <div class="card shadow-sm border-0 hover-card text-center">
                 <div class="card-body">
-                    <img src="{{ asset('image/hise.jpg') }}" class="rounded-circle mb-3 img-fluid mx-auto"
-                        style="width: 300px; height: 180px; object-fit: cover;" alt="هايس">
+                    <img src="{{ asset('image/hise.jpg') }}" 
+                         class="rounded-circle mb-3 img-fluid mx-auto"
+                         style="width:200px; height:120px; object-fit:cover;" 
+                         alt="هايس">
                     <h5 class="card-title">باصات هايس</h5>
                     <h3 class="fw-bold text-success">{{ $stats['hiace'] }}</h3>
-                    <p class="text-muted small">إجمالي الباصات من هذا النوع</p>
+                    <p class="text-muted small">إجمالي الباصات</p>
                 </div>
             </div>
         </div>
 
         {{-- السائقين --}}
         <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm border-0 hover-card text-center p-3">
+            <div class="card shadow-sm border-0 hover-card text-center">
                 <div class="card-body">
-                    <img src="{{ asset('image/school.jpg') }}" class="rounded-circle mb-3 img-fluid mx-auto"
-                        style="width: 300px; height: 180px; object-fit: cover;" alt="سائقين">
+                    <img src="{{ asset('image/school.jpg') }}" 
+                         class="rounded-circle mb-3 img-fluid mx-auto"
+                         style="width:200px; height:120px; object-fit:cover;" 
+                         alt="سائقين">
                     <h5 class="card-title">السائقين</h5>
                     <h3 class="fw-bold text-warning">{{ $stats['drivers'] }}</h3>
                     <p class="text-muted small">عدد السائقين المسجلين</p>
@@ -51,10 +57,12 @@
 
         {{-- الطلاب --}}
         <div class="col-xl-3 col-md-6">
-            <div class="card shadow-sm border-0 hover-card text-center p-3">
+            <div class="card shadow-sm border-0 hover-card text-center">
                 <div class="card-body">
-                    <img src="{{ asset('image/hise.jpg') }}" class="rounded-circle mb-3 img-fluid mx-auto"
-                        style="width: 300px; height: 180px; object-fit: cover;" alt="طلاب">
+                    <img src="{{ asset('image/hise.jpg') }}" 
+                         class="rounded-circle mb-3 img-fluid mx-auto"
+                         style="width:200px; height:120px; object-fit:cover;" 
+                         alt="طلاب">
                     <h5 class="card-title">الطلاب</h5>
                     <h3 class="fw-bold text-danger">{{ $stats['students'] }}</h3>
                     <p class="text-muted small">عدد الطلاب المسجلين</p>
@@ -63,14 +71,24 @@
         </div>
     </div>
 
-    {{-- بطاقة الباصات النشطة --}}
+    {{-- البطاقات الثانوية --}}
     <div class="row g-4 mb-4">
-        <div class="col-md-12">
+        <div class="col-md-6">
             <div class="card shadow-sm border-0 p-4 text-center bg-light hover-card">
                 <h5 class="card-title mb-2">
                     <i class="fas fa-bus text-success"></i> الباصات النشطة حالياً
                 </h5>
                 <h2 class="fw-bold text-success">{{ $stats['active_buses'] }}</h2>
+                <p class="text-muted">الباصات التي تعمل الآن</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 p-4 text-center bg-light hover-card">
+                <h5 class="card-title mb-2">
+                    <i class="fas fa-map-marker-alt text-secondary"></i> المواقع
+                </h5>
+                <h2 class="fw-bold text-secondary">{{ $stats['locations'] }}</h2>
+                <p class="text-muted">إجمالي المواقع المسجلة</p>
             </div>
         </div>
     </div>
@@ -89,80 +107,51 @@
         </div>
     </div>
 
-</div>
-
-{{-- CSS إضافي --}}
+    {{-- جدول سريع (آخر 5 سائقين) --}}
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-info text-white">
+                    <i class="fas fa-users me-2"></i> آخر السائقين المسجلين
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped text-center mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>#</th>
+                                <th>الاسم</th>
+                                <th>الهاتف</th>
+                                <th>الباص</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach(\App\Models\Driver::latest()->take(5)->get() as $driver)
+                                <tr>
+                                    <td>{{ $driver->id }}</td>
+                                    <td>{{ $driver->name }}</td>
+                                    <td>{{ $driver->phone }}</td>
+                                    <td>{{ $driver->bus->BusNo ?? '-' }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 @push('styles')
-    <style>
-        .hover-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            transition: 0.3s;
-        }
-
-        @media (max-width: 576px) {
-            .card-title {
-                font-size: 1rem;
-            }
-
-            .fw-bold {
-                font-size: 1.5rem;
-            }
-
-            img.rounded-circle {
-                width: 100px;
-                height: 100px;
-            }
-        }
-    </style>
+<style>
+    .hover-card {
+        transition: 0.3s;
+    }
+    .hover-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+    .card-title {
+        font-weight: bold;
+    }
+</style>
 @endpush
 
-{{-- Chart.js --}}
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        const ctx = document.getElementById('statsChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: ['كوستر', 'هايس', 'سائقين', 'طلاب', 'المواقع', 'باصات نشطة'],
-                datasets: [{
-                    label: 'إحصائيات النظام',
-                    data: [
-                        {{ $stats['coaster'] }},
-                        {{ $stats['hiace'] }},
-                        {{ $stats['drivers'] }},
-                        {{ $stats['students'] }},
-                        {{ $stats['locations'] }},
-                        {{ $stats['active_buses'] }}
-                    ],
-                    backgroundColor: [
-                        '#0d6efd',
-                        '#198754',
-                        '#ffc107',
-                        '#dc3545',
-                        '#6c757d',
-                        '#20c997'
-                    ]
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        enabled: true
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    </script>
-@endpush
+</div>

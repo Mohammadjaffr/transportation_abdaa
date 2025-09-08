@@ -322,7 +322,7 @@ return [
         ],
         [
             'text' => 'لوحة التحكم',
-            'url' => 'dashboard',
+            'url' => 'home',
             'icon' => 'fas fa-fw fa-tachometer-alt',
             'label_color' => 'success',
         ],

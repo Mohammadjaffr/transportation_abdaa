@@ -24,7 +24,7 @@
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEdit ? 'update' : 'store' }}">
                         <div class="row g-3">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label">اسم الموقع</label>
                                 <input type="text" wire:model="Name"
                                     class="form-control @error('Name') is-invalid @enderror">
@@ -32,7 +32,7 @@
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
-                            {{-- <div class="col-md-3">
+                            {{-- <div class="col-md-4">
                                 <label class="form-label">رقم الموقع</label>
                                 <input type="number" wire:model="LocNo"
                                     class="form-control @error('LocNo') is-invalid @enderror"
@@ -42,7 +42,7 @@
                                 @enderror
                             </div> --}}
 
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label">المبلغ اليومي</label>
                                 <input type="number" wire:model="DailyAmount"
                                     class="form-control @error('DailyAmount') is-invalid @enderror">
@@ -50,7 +50,7 @@
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <label class="form-label">الرسوم</label>
                                 <input type="number" wire:model="Fees"
                                     class="form-control @error('Fees') is-invalid @enderror">
@@ -59,14 +59,14 @@
                                 @enderror
                             </div>
 
-                            <div class="col-6 mt-3">
+                            <div class="col-6 mt-4">
                                 <button type="submit"
                                     class="btn btn-{{ $isEdit ? 'primary' : 'success' }} w-100 rounded-pill">
                                     <i class="fas {{ $isEdit ? 'fa-save' : 'fa-plus-circle' }} me-1"></i>
                                     {{ $isEdit ? 'تحديث' : 'إضافة' }}
                                 </button>
                             </div>
-                            <div class="col-6 mt-3">
+                            <div class="col-6 mt-4">
                                 <button type="button" wire:click="cancel"
                                     class="btn btn-outline-secondary w-100 rounded-pill">
                                     إلغاء

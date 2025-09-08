@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
+use Illuminate\Http\Request;
 class LoginController extends Controller
 {
     /*
@@ -41,5 +41,19 @@ class LoginController extends Controller
         public function username()
     {
         return 'name';
+    }
+    
+      protected function validateLogin(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|exists:users,name',
+            'password' => 'required|string',
+        ], [
+            'name.required' => 'حقل اسم المستخدم مطلوب.',
+            'name.string' => 'يجب أن يكون اسم المستخدم نصًا.',
+            'name.exists' => ' الايميل غير مسجل في النظام.',
+            'password.required' => 'حقل كلمة المرور مطلوب.',
+            'password.string' => 'يجب أن تكون كلمة المرور نصًا.',
+        ]);
     }
 }
