@@ -51,7 +51,7 @@ class LoginController extends Controller
         ], [
             'name.required' => 'حقل اسم المستخدم مطلوب.',
             'name.string' => 'يجب أن يكون اسم المستخدم نصًا.',
-            'name.exists' => ' الايميل غير مسجل في النظام.',
+            'name.exists' => ' الاسم غير مسجل في النظام.',
             'password.required' => 'حقل كلمة المرور مطلوب.',
             'password.string' => 'يجب أن تكون كلمة المرور نصًا.',
         ]);

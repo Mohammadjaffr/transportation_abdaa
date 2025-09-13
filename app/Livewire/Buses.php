@@ -6,13 +6,14 @@ use Livewire\Component;
 use App\Models\Bus;
 use App\Models\region;
 use App\Models\Driver;
+
 class Buses extends Component
 {
     public $buses;
     public $regions;
     public $drivers;
 
-    public $StudentsNo, $BusType, $Model, $SeatsNo, $CustomsNo, $region_id,$driver_id;
+    public $StudentsNo, $BusType, $Model, $SeatsNo, $CustomsNo, $region_id, $driver_id;
 
     public $editMode = false;
     public $selectedBus;
@@ -38,11 +39,11 @@ class Buses extends Component
 
     public function loadBuses()
     {
-        $this->buses = Bus::with('region','driver')
+        $this->buses = Bus::with('region', 'driver')
             ->when($this->search, function ($query) {
                 $query->where('BusType', 'like', "%{$this->search}%")->orWhere('id', 'like', "%{$this->search}%");
             })
-          
+
             ->when($this->driver_id, function ($query) {
                 $query->where('driver_id', $this->driver_id);
             })
