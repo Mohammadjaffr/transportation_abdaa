@@ -10,12 +10,12 @@ class Bus extends Model
     use HasFactory;
 
     protected $fillable = [
-        'BusType', 'Model', 'SeatsNo', 'CustomsNo', 'StudentsNo', 'location_id'
+        'BusType', 'Model', 'SeatsNo', 'CustomsNo', 'StudentsNo', 'region_id','driver_id'
     ];
 
-    public function location()
+    public function region()
     {
-        return $this->belongsTo(Location::class);
+        return $this->belongsTo(region::class);
     }
 
     public function driver()
@@ -28,10 +28,7 @@ class Bus extends Model
         return $this->hasMany(Student::class);
     }
 
-    public function presentations()
-    {
-        return $this->hasMany(Presentation::class);
-    }
+ 
 
     public function retreats()
     {

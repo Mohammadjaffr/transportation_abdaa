@@ -3,12 +3,12 @@
 namespace App\Livewire;
 
 use Livewire\Component;
-use App\Models\Location;
+use App\Models\region;
 
-class Locations extends Component
+class Regions extends Component
 {
-    public $locations;
-    public  $Name, $DailyAmount, $Fees;
+    public $regions;
+    public $Name;
     public $isEdit = false;
     public $deleteId = null;
     public $deleteTitle = null;
@@ -20,17 +20,17 @@ class Locations extends Component
 
     public function mount()
     {
-        $this->loadLocations();
+        $this->loadRegions();
     }
 
     public function updatedSearch()
     {
-        $this->loadLocations();
+        $this->loadRegions();
     }
 
-    public function loadLocations()
+    public function loadRegions()
     {
-        $this->locations = Location::query()
+        $this->regions = region::query()
             ->when($this->search, fn($q) => $q->where('Name', 'like', '%' . $this->search . '%'))
             ->orderBy('id', 'desc')
             ->get();
@@ -45,98 +45,80 @@ class Locations extends Component
     protected function rules()
     {
         return [
-
             'Name' => 'required|string|max:255',
-            'DailyAmount' => 'required|numeric|min:0',
-            'Fees' => 'required|numeric|min:0',
         ];
     }
+
     protected $messages = [
         'Name.required' => 'اسم الموقع مطلوب',
         'Name.string'   => 'اسم الموقع يجب أن يكون نصًا',
         'Name.max'      => 'اسم الموقع لا يجب أن يتجاوز 255 حرفًا',
-        'DailyAmount.required' => 'المبلغ اليومي مطلوب',
-        'DailyAmount.numeric' => 'المبلغ اليومي يجب أن يكون رقمًا',
-        'DailyAmount.min'     => 'المبلغ اليومي لا يمكن أن يكون أقل من صفر',
-
-        'Fees.required' => 'الرسوم مطلوبة',
-        'Fees.numeric' => 'الرسوم يجب أن تكون رقمًا',
-        'Fees.min'     => 'الرسوم لا يمكن أن تكون أقل من صفر',
     ];
-
 
     public function store()
     {
         $this->validate();
 
-        Location::create([
-
+        region::create([
             'Name' => $this->Name,
-            'DailyAmount' => $this->DailyAmount,
-            'Fees' => $this->Fees,
         ]);
 
         $this->resetForm();
-        $this->loadLocations();
+        $this->loadRegions();
 
         $this->dispatch('show-toast', [
             'type' => 'success',
-            'message' => 'تم إضافة الموقع بنجاح',
+            'message' => 'تم إضافة المنطقة بنجاح',
         ]);
     }
 
     public function edit($id)
     {
-        $loc = Location::findOrFail($id);
+        $loc = region::findOrFail($id);
         $this->editId = $loc->id;
         $this->Name = $loc->Name;
-        $this->DailyAmount = $loc->DailyAmount;
-        $this->Fees = $loc->Fees;
         $this->isEdit = true;
         $this->showForm = true;
     }
-
 
     public function update()
     {
         $this->validate();
 
-        $loc = Location::findOrFail($this->editId);
+        $loc = region::findOrFail($this->editId);
         $loc->update([
             'Name' => $this->Name,
-            'DailyAmount' => $this->DailyAmount,
-            'Fees' => $this->Fees,
         ]);
 
         $this->resetForm();
-        $this->loadLocations();
+        $this->loadRegions();
 
         $this->dispatch('show-toast', [
             'type' => 'success',
-            'message' => 'تم تعديل الموقع بنجاح',
+            'message' => 'تم تعديل المنطقة بنجاح',
         ]);
     }
 
     public function confirmDelete($id)
     {
-        $loc = Location::findOrFail($id);
+        $loc = region::findOrFail($id);
         $this->deleteId = $loc->id;
         $this->deleteTitle = $loc->Name;
     }
 
-    public function deleteLocation()
+    public function deleteRegion()
     {
-        $loc = Location::findOrFail($this->deleteId);
+        $loc = region::findOrFail($this->deleteId);
         $loc->delete();
 
         $this->deleteId = null;
         $this->deleteTitle = null;
 
-        $this->loadLocations();
+        $this->loadRegions();
 
         $this->dispatch('show-toast', [
             'type' => 'success',
-            'message' => 'تم حذف الموقع بنجاح',
+            'message' => 'تم حذف المنطقة بنجاح',
         ]);
     }
 
@@ -149,14 +131,12 @@ class Locations extends Component
     {
         $this->editId = null;
         $this->Name = '';
-        $this->DailyAmount = '';
-        $this->Fees = '';
         $this->isEdit = false;
         $this->showForm = false;
     }
 
     public function render()
     {
-        return view('livewire.locations');
+        return view('livewire.regions');
     }
 }

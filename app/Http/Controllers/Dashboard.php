@@ -23,9 +23,9 @@ class Dashboard extends Controller
         {
             return view('students.index');
         } 
-        public function locations()
+        public function region()
         {
-            return view('locations.index');
+            return view('regions.index');
         }
         public function presentations()
         {
@@ -38,5 +38,13 @@ class Dashboard extends Controller
         public function wages()
         {
             return view('wages.index');
+        }
+        public function preparationStus()
+        {
+            return view('preparation_stus.index');
+        }
+        public function preparationDrivers()
+        {
+            return view('preparation_drivers.index');
         }
 }

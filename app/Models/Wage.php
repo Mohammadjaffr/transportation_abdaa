@@ -10,7 +10,7 @@ class Wage extends Model
     use HasFactory;
 
     protected $fillable = [
-        'Fees', 'Date', 'bus_id', 'location_id'
+        'Fees', 'Date', 'driver_id', 'region_id',
     ];
 
     public function bus()
@@ -18,8 +18,12 @@ class Wage extends Model
         return $this->belongsTo(Bus::class);
     }
 
-    public function location()
+    public function region()
     {
-        return $this->belongsTo(Location::class);
+        return $this->belongsTo(region::class);
+    }
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class);
     }
 }

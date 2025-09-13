@@ -4,34 +4,48 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Wage;
-use App\Models\Bus;
-use App\Models\Location;
+use App\Models\Driver;
+use App\Models\region;
 
 class Wages extends Component
 {
-
-    public $wages, $buses, $locations;
-    public $wageId, $bus_id, $Fees, $Date, $location_id;
+    public $wages, $buses, $drivers, $regions;
+    public $wageId,  $Fees, $Date, $driver_id, $region_id;
     public $editMode = false, $selectedWage;
     public $showForm = false;
-    public $deleteId = null, $deleteWageName = null;
+    public $deleteId = null;
     public $search = '';
 
     protected $rules = [
-        'bus_id' => 'required|exists:buses,id',
-        'Fees'  => 'required|numeric|min:0',
-        'Date'  => 'required|date',
-        'location_id' => 'required|exists:locations,id',
+        'driver_id' => 'required|exists:drivers,id',
+        'region_id' => 'required|exists:regions,id',
+        'Fees' => 'required|numeric|min:0',
+        'Date' => 'required|date',
     ];
+
+    protected $messages = [
+        'driver_id' => 'السائق مطلوب',
+        'region_id' => 'المنطقة مطلوبة',
+        'Fees' => 'الأجرة مطلوبة',
+        'Date' => 'التاريخ مطلوب',
+    ];
+
+    public function mount()
+    {
+        $this->drivers = Driver::all();
+        $this->regions = region::all();
+    }
+
     public function createWage()
     {
         $this->validate();
 
         Wage::create([
-            'bus_id' => $this->bus_id,
-            'Fees'  => $this->Fees,
-            'Date'  => $this->Date,
-            'location_id' => $this->location_id,
+
+            'driver_id' => $this->driver_id,
+            'region_id' => $this->region_id,
+            'Fees' => $this->Fees,
+            'Date' => $this->Date,
         ]);
 
         $this->resetForm();
@@ -42,10 +56,10 @@ class Wages extends Component
     {
         $this->selectedWage = Wage::findOrFail($id);
         $this->wageId = $id;
-        $this->bus_id = $this->selectedWage->bus_id;
+        $this->driver_id = $this->selectedWage->driver_id;
+        $this->region_id = $this->selectedWage->region_id;
         $this->Fees = $this->selectedWage->Fees;
         $this->Date = $this->selectedWage->Date;
-        $this->location_id = $this->selectedWage->location_id;
         $this->editMode = true;
         $this->showForm = true;
     }
@@ -55,10 +69,10 @@ class Wages extends Component
         $this->validate();
 
         $this->selectedWage->update([
-            'bus_id' => $this->bus_id,
-            'Fees'  => $this->Fees,
-            'Date'  => $this->Date,
-            'location_id' => $this->location_id,
+            'driver_id' => $this->driver_id,
+            'region_id' => $this->region_id,
+            'Fees' => $this->Fees,
+            'Date' => $this->Date,
         ]);
 
         $this->resetForm();
@@ -67,16 +81,13 @@ class Wages extends Component
 
     public function confirmDelete($id)
     {
-        $wage = Wage::findOrFail($id);
         $this->deleteId = $id;
-        $this->deleteWageName = $wage->bus?->bus_id . ' - ' . $wage->Date;
-        
     }
 
     public function deleteWage()
     {
         Wage::destroy($this->deleteId);
-        $this->reset(['deleteId', 'deleteWageName']);
+        $this->reset('deleteId');
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم حذف الأجرة بنجاح']);
     }
 
@@ -87,24 +98,22 @@ class Wages extends Component
 
     private function resetForm()
     {
-        $this->reset(['wageId', 'bus_id', 'Fees', 'Date', 'location_id', 'editMode', 'showForm']);
-        
+        $this->reset(['wageId', 'driver_id', 'region_id', 'Fees', 'Date', 'editMode', 'showForm', 'selectedWage']);
     }
 
     public function render()
     {
-        $this->buses = Bus::all();
-        $this->locations = Location::all();
+        $this->wages = Wage::with(['bus', 'driver', 'region'])
+            ->when(
+                $this->search,
+                fn($q) => $q->whereHas('bus', fn($b) => $b->where('BusType', 'like', '%' . $this->search . '%'))
+                    ->orWhereHas('driver', fn($d) => $d->where('Name', 'like', '%' . $this->search . '%'))
+                    ->orWhereHas('region', fn($r) => $r->where('Name', 'like', '%' . $this->search . '%'))
+                    ->orWhere('Fees', 'like', '%' . $this->search . '%')
+                    ->orWhere('Date', 'like', '%' . $this->search . '%')
+            )
+            ->orderBy('Date', 'desc')->get();
 
-        $this->wages = Wage::with(['bus', 'location'])
-            ->when($this->search, function ($query) {
-                $query->where('Fees', 'like', "%{$this->search}%")
-                    ->orWhere('Date', 'like', "%{$this->search}%")
-                    ->orWhere('bus.BusType', 'like', "%{$this->search}%")
-                    ->orWhere('location.Name', 'like', "%{$this->search}%");
-            })
-            ->orderBy('Date', 'desc')
-            ->get();
         return view('livewire.wages');
     }
 }

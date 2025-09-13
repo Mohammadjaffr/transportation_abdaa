@@ -87,7 +87,7 @@
                 <h5 class="card-title mb-2">
                     <i class="fas fa-map-marker-alt text-secondary"></i> المواقع
                 </h5>
-                <h2 class="fw-bold text-secondary">{{ $stats['locations'] }}</h2>
+                <h2 class="fw-bold text-secondary">{{ $stats['regions'] }}</h2>
                 <p class="text-muted">إجمالي المواقع المسجلة</p>
             </div>
         </div>

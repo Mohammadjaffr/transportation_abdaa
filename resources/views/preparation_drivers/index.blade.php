@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', ' الابداع | إدارة المكانات')
+@section('title', ' الابداع | إدارة التحضير السائقين')
 
 
 @section('css')
@@ -9,7 +9,7 @@
 @stop
 
 @section('content')
-@livewire('locations')
+@livewire('preparation-drivers')
 
 <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js')}}"></script>
 <script>

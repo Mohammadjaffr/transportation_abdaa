@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wages', function (Blueprint $table) {
+        Schema::create('regions', function (Blueprint $table) {
             $table->id();
-            $table->decimal('Fees', 10, 2);
-            $table->date('Date');
-            $table->foreignId('driver_id')->constrained('drivers')->onDelete('cascade');
-            $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->string('Name', 100);
+            $table->foreign('parent_id')->references('id')->on('regions')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wages');
+        Schema::dropIfExists('regions');
     }
 };

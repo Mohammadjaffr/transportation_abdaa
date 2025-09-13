@@ -327,11 +327,11 @@ return [
             'label_color' => 'success',
         ],
         // ['header' => 'account_settings'],
-        [
-            'text' => 'ادارة الحافلات',
-            'url' => 'buses',
-            'icon' => 'fas fa-fw fa-bus',
-        ],
+        // [
+        //     'text' => 'ادارة الحافلات',
+        //     'url' => 'buses',
+        //     'icon' => 'fas fa-fw fa-bus',
+        // ],
         [
             'text' => 'ادارة السائقين',
             'url' => 'drivers',
@@ -343,15 +343,11 @@ return [
             'icon' => 'fas fa-fw fa-user-graduate',
         ],
           [
-            'text' => 'ادارة المواقع',
-            'url' => 'locations',
+            'text' => 'ادارة المناطق',
+            'url' => 'regions',
             'icon' => 'fas fa-fw fa-map-marker-alt',
         ],
-        [
-            'text' => 'ادارة الحضور',
-            'url' => 'presentations',
-            'icon' => 'fas fa-fw fa-clipboard',
-        ], 
+      
         [
             'text' => 'ادارة المنسحبين',
             'url' => 'retreats',
@@ -362,44 +358,24 @@ return [
             'url' => 'wages',
             'icon' => 'fas fa-fw fa-money-bill-wave',
         ],
-        // [
-        //     'text' => 'multilevel',
-        //     'icon' => 'fas fa-fw fa-share',
-        //     'submenu' => [
-        //         [
-        //             'text' => 'level_one',
-        //             'url' => '#',
-        //         ],
-        //         [
-        //             'text' => 'level_one',
-        //             'url' => '#',
-        //             'submenu' => [
-        //                 [
-        //                     'text' => 'level_two',
-        //                     'url' => '#',
-        //                 ],
-        //                 [
-        //                     'text' => 'level_two',
-        //                     'url' => '#',
-        //                     'submenu' => [
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url' => '#',
-        //                         ],
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url' => '#',
-        //                         ],
-        //                     ],
-        //                 ],
-        //             ],
-        //         ],
-        //         [
-        //             'text' => 'level_one',
-        //             'url' => '#',
-        //         ],
-        //     ],
-        // ],
+        [
+            'text' => 'ادارة التحضير',
+            'icon' => 'fas fa-fw fa-clipboard-check',
+            'submenu' => [
+                [
+                    'text' => 'تحضير الطلاب',
+                    'url' => 'preparation-stus',
+                    'icon' => 'fas fa-fw fa-user-graduate',
+                ],
+                 [
+                    'text' => 'تحضير السائقين',
+                    'url' => 'preparation-drivers',
+                    'icon' => 'fas fa-fw fa-user',
+                ],
+          
+           
+            ],
+        ],
         // ['header' => 'labels'],
         // [
         //     'text' => 'important',

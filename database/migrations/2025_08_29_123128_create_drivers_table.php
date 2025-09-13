@@ -14,17 +14,17 @@ return new class extends Migration
         Schema::create('drivers', function (Blueprint $table) {
             $table->id();
             $table->string('Name', 100);
-            $table->string('Phone', 20);
-            $table->string('LicenseNo', 50);
-            $table->string('Ownership', 50)->nullable();
-            $table->string('Wing', 50)->nullable();
-            $table->boolean('CheckUp')->nullable();
-            $table->boolean('Behavior')->nullable();
-            $table->boolean('Form')->nullable();
-            $table->boolean('Fitnes')->nullable();
-
-
-            $table->foreignId('bus_id')->constrained('buses')->onDelete('cascade');
+            $table->string('IDNo', 50);
+            $table->string('Phone', 10);
+            $table->string('LicenseNo', 20)->nullable()->unique();
+            $table->string('Picture', 50)->nullable();
+            $table->string('Ownership', 50);
+            $table->foreignId('wing_id')->constrained('wings')->onDelete('cascade');
+            $table->boolean('CheckUp')->nullable(); //الفحص
+            $table->boolean('Behavior')->nullable(); //السلوك
+            $table->boolean('Form')->nullable(); //الاستمارة
+            $table->boolean('Fitnes')->nullable(); //اللياقة
+            $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
             $table->timestamps();
         });
     }

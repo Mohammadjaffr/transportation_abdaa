@@ -65,8 +65,8 @@
                                     <select wire:model="location_id"
                                         class="form-control border-0  @error('location_id') is-invalid @enderror">
                                         <option value="">-- اختر الموقع --</option>
-                                        @foreach ($locations as $location)
-                                            <option value="{{ $location->id }}">{{ $location->Name }}</option>
+                                        @foreach ($regions as $region)
+                                            <option value="{{ $region->id }}">{{ $region->Name }}</option>
                                         @endforeach
                                     </select>
                                     @error('location_id')
@@ -141,7 +141,7 @@
                                     <td>{{ $bus->Model }}</td>
                                     <td><span class="badge bg-success text-dark">{{ $bus->SeatsNo }}</span></td>
                                     <td>{{ $bus->CustomsNo ?? '-' }}</td>
-                                    <td>{{ $bus->location?->Name ?? '-' }}</td>
+                                    <td>{{ $bus->region?->Name ?? '-' }}</td>
                                     <td>{{ $bus->StudentsNo }}</td>
 
                                     <td class="d-flex justify-content-center gap-2">

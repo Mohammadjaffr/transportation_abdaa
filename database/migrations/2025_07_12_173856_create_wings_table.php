@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('wages', function (Blueprint $table) {
+        Schema::create('wings', function (Blueprint $table) {
             $table->id();
-            $table->decimal('Fees', 10, 2);
-            $table->date('Date');
-            $table->foreignId('driver_id')->constrained('drivers')->onDelete('cascade');
-            $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
+               $table->string('Name', 100);
             $table->timestamps();
         });
     }
@@ -26,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('wages');
+        Schema::dropIfExists('wings');
     }
 };

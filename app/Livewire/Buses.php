@@ -4,14 +4,14 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Bus;
-use App\Models\Location;
+use App\Models\region;
 
 class Buses extends Component
 {
     public $buses;
-    public $locations;
+    public $regions;
 
-    public $StudentsNo, $BusType, $Model, $SeatsNo, $CustomsNo, $location_id;
+    public $StudentsNo, $BusType, $Model, $SeatsNo, $CustomsNo, $region_id;
 
     public $editMode = false;
     public $selectedBus;
@@ -26,7 +26,7 @@ class Buses extends Component
     public function mount()
     {
         $this->loadBuses();
-        $this->locations = Location::all();
+        $this->regions = region::all();
     }
 
     public function updatedSearch()
@@ -36,7 +36,7 @@ class Buses extends Component
 
     public function loadBuses()
     {
-        $this->buses = Bus::with('location')
+        $this->buses = Bus::with('region')
             ->when($this->search, function ($query) {
                 $query->where('BusType', 'like', "%{$this->search}%")->orWhere('id', 'like', "%{$this->search}%");
             })
@@ -55,14 +55,14 @@ class Buses extends Component
                 'CustomsNo' => 'nullable|string|max:30',
                 'StudentsNo' => 'required|integer|min:0',
 
-                'location_id' => 'required|exists:locations,id',
+                'region_id' => 'required|exists:regions,id',
             ]
             : [
                 'BusType' => 'required|string|max:50',
                 'Model' => 'required|string|max:30',
                 'SeatsNo' => 'required|integer|min:1',
                 'CustomsNo' => 'nullable|string|max:30',
-                'location_id' => 'required|exists:locations,id',
+                'region_id' => 'required|exists:regions,id',
             ];
     }
 
@@ -86,8 +86,8 @@ class Buses extends Component
         'CustomsNo.string' => 'رقم الجمارك يجب أن يكون نصًا',
         'CustomsNo.max'    => 'رقم الجمارك لا يجب أن يتجاوز 30 حرفًا',
 
-        'location_id.required' => 'الموقع مطلوب',
-        'location_id.exists'   => 'الموقع غير صحيح',
+        'region_id.required' => 'الموقع مطلوب',
+        'region_id.exists'   => 'الموقع غير صحيح',
     ];
 
 
@@ -101,7 +101,7 @@ class Buses extends Component
             'SeatsNo' => $this->SeatsNo,
             'CustomsNo' => $this->CustomsNo,
             'StudentsNo' => $this->StudentsNo,
-            'location_id' => $this->location_id
+            'region_id' => $this->region_id
         ]);
 
         $this->resetForm();
@@ -126,7 +126,7 @@ class Buses extends Component
         $this->SeatsNo = $bus->SeatsNo;
         $this->CustomsNo = $bus->CustomsNo;
         $this->StudentsNo = $bus->StudentsNo;
-        $this->location_id = $bus->location_id;
+        $this->region_id = $bus->region_id;
     }
 
     public function updateBus()
@@ -140,7 +140,7 @@ class Buses extends Component
             'SeatsNo' => $this->SeatsNo,
             'CustomsNo' => $this->CustomsNo,
             'StudentsNo' => $this->StudentsNo,
-            'location_id' => $this->location_id
+            'region_id' => $this->region_id
         ]);
 
         $this->resetForm();
@@ -188,7 +188,7 @@ class Buses extends Component
         $this->Model = '';
         $this->SeatsNo = '';
         $this->CustomsNo = '';
-        $this->location_id = '';
+        $this->region_id = '';
         $this->editMode = false;
         $this->selectedBus = null;
         $this->showForm = false;

@@ -15,7 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('Name', 100);
             $table->string('Grade', 20);
-            $table->foreignId('bus_id')->constrained('buses')->onDelete('cascade');
+            $table->string('Sex', 20);
+            $table->string('Phone', 20);
+            $table->string('Picture', 100);
+            $table->string('Stu_position', 200);
+            $table->foreignId('wing_id')->constrained('wings')->onDelete('cascade');
+            $table->string('Division', 20)->nullable();
+            $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

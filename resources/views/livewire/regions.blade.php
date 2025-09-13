@@ -19,13 +19,13 @@
         @if ($showForm)
             <div class="card shadow-sm mb-4">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">{{ $isEdit ? 'تعديل الموقع' : 'إضافة موقع جديد' }}</h5>
+                    <h5 class="mb-0">{{ $isEdit ? 'تعديل المنطقة' : 'إضافة منطقة جديد' }}</h5>
                 </div>
                 <div class="card-body">
                     <form wire:submit.prevent="{{ $isEdit ? 'update' : 'store' }}">
                         <div class="row g-3">
-                            <div class="col-md-4">
-                                <label class="form-label">اسم الموقع</label>
+                            <div class="col-md-12">
+                                <label class="form-label">اسم المنطقة</label>
                                 <input type="text" wire:model="Name"
                                     class="form-control @error('Name') is-invalid @enderror">
                                 @error('Name')
@@ -42,7 +42,7 @@
                                 @enderror
                             </div> --}}
 
-                            <div class="col-md-4">
+                            {{-- <div class="col-md-4">
                                 <label class="form-label">المبلغ اليومي</label>
                                 <input type="number" wire:model="DailyAmount"
                                     class="form-control @error('DailyAmount') is-invalid @enderror">
@@ -57,7 +57,7 @@
                                 @error('Fees')
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
-                            </div>
+                            </div> --}}
 
                             <div class="col-6 mt-4">
                                 <button type="submit"
@@ -96,17 +96,17 @@
                         <thead class="table-success">
                             <tr>
                                 <th>اسم المنطقة</th>
-                                <th>المبلغ اليومي</th>
-                                <th>الرسوم</th>
+                                {{-- <th>المبلغ اليومي</th>
+                                <th>الرسوم</th> --}}
                                 <th>الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($locations as $loc)
+                            @forelse($regions as $loc)
                                 <tr>
                                     <td>{{ $loc->Name }}</td>
-                                    <td>{{ $loc->DailyAmount }}</td>
-                                    <td>{{ $loc->Fees }}</td>
+                                    {{-- <td>{{ $loc->DailyAmount }}</td>
+                                    <td>{{ $loc->Fees }}</td> --}}
                                     <td class="d-flex gap-2 justify-content-center">
                                         <button wire:click="edit({{ $loc->id }})"
                                             class="btn btn-outline-success btn-sm rounded-pill mr-2">
@@ -149,7 +149,7 @@
                                 wire:click="$set('deleteId', null)">
                                 إلغاء
                             </button>
-                            <button type="button" class="btn btn-danger rounded-pill" wire:click="deleteLocation">
+                            <button type="button" class="btn btn-danger rounded-pill" wire:click="deleteRegion">
                                 نعم، احذف
                             </button>
                         </div>

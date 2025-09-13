@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('retreats', function (Blueprint $table) {
+        Schema::create('preparation_stus', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
-            $table->string('Grade', 20);
-            $table->string('Division', 20)->nullable();
-            $table->dateTime('Date_of_interruption');
-            $table->string('Reason', 200);
-            $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
+            $table->boolean('Atend');
+            $table->date('Year');
             $table->foreignId('driver_id')->constrained('drivers')->onDelete('cascade');
+            $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
+            $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('retreats');
+        Schema::dropIfExists('preparation_stus');
     }
 };
