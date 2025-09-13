@@ -7,12 +7,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Region extends Model
 {
-     use HasFactory;
+    use HasFactory;
 
     protected $fillable = [
-        'Name','parent_id'
+        'Name',
+        'parent_id'
     ];
+    public function parent()
+    {
+        return $this->belongsTo(Region::class, 'parent_id');
+    }
 
+    public function children()
+    {
+        return $this->hasMany(Region::class, 'parent_id');
+    }
     public function buses()
     {
         return $this->hasMany(Bus::class);

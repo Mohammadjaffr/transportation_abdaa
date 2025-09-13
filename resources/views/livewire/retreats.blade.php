@@ -1,15 +1,15 @@
 <div class="container py-4">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  
-      <div class="d-flex justify-content-between align-items-center mb-4">
-            @if(!$showForm)
-                <button wire:click="$set('showForm', true)" class="btn btn-primary add-btn">
-                    <i class="fas fa-plus-circle me-1"></i> إضافة أجرة جديدة
-                </button>
-            @endif
-            <h3 class="fw-bold text-primary d-none d-md-block">إدارة أجرة الطلاب</h3>
-        </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        @if (!$showForm)
+            <button wire:click="$set('showForm', true)" class="btn btn-primary add-btn">
+                <i class="fas fa-plus-circle me-1"></i> إضافة منسحب جديدة
+            </button>
+        @endif
+        <h3 class="fw-bold text-primary d-none d-md-block" >   إدارة الطلاب المنسحبين</h3>
+    </div>
 
     {{-- النموذج --}}
     @if ($showForm)
@@ -54,7 +54,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label>المنطقة</label>
                             <select wire:model="region_id" class="form-control">
                                 <option value="">-- اختر المنطقة --</option>
@@ -67,7 +67,7 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label>تاريخ الانسحاب</label>
                             <input type="date" wire:model="Date_of_interruption" class="form-control">
                             @error('Date_of_interruption')
@@ -75,10 +75,17 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label>السبب</label>
                             <input type="text" wire:model="Reason" class="form-control">
                             @error('Reason')
+                                <span class="text-danger small">{{ $message }}</span>
+                            @enderror
+                        </div>
+                              <div class="col-md-6">
+                            <label>الشعبة</label>
+                            <input type="text" wire:model="Division" class="form-control">
+                            @error('Division')
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
                         </div>
@@ -110,7 +117,7 @@
 
     <div class="card shadow-lg border-0 rounded-3">
         <div class="card-header bg-success text-white">
-            <h5 class="mb-0">رواتب السائقين</h5>
+            <h5 class="mb-0">قائمة الطلاب المنسحبين</h5>
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -123,6 +130,7 @@
                             <th>المنطقة</th>
                             <th>تاريخ الانسحاب</th>
                             <th>السبب</th>
+                            <th>الشعبة</th>
                             <th>إجراءات</th>
                         </tr>
                     </thead>
@@ -135,15 +143,18 @@
                                 <td>{{ $retreat->region?->Name ?? '-' }}</td>
                                 <td>{{ $retreat->Date_of_interruption }}</td>
                                 <td>{{ $retreat->Reason }}</td>
+                                <td>{{ $retreat->Division ?? '-'}}</td>
                                 <td>
-                               
 
-                                           <button wire:click="edit({{ $retreat->id }})" class="btn btn-outline-success btn-sm rounded-pill mr-2">
-                                            <i class="fas fa-edit"></i> تعديل
-                                        </button>
-                                        <button wire:click="confirmDelete({{ $retreat->id }})" class="btn btn-outline-danger btn-sm rounded-pill">
-                                            <i class="fas fa-trash-alt"></i> حذف
-                                        </button>
+
+                                    <button wire:click="edit({{ $retreat->id }})"
+                                        class="btn btn-outline-success btn-sm rounded-pill mr-2">
+                                        <i class="fas fa-edit"></i> تعديل
+                                    </button>
+                                    <button wire:click="confirmDelete({{ $retreat->id }})"
+                                        class="btn btn-outline-danger btn-sm rounded-pill">
+                                        <i class="fas fa-trash-alt"></i> حذف
+                                    </button>
                                 </td>
                             </tr>
                         @empty
@@ -156,28 +167,27 @@
             </div>
         </div>
     </div>
-                {{-- نافذة الحذف --}}
-                @if ($deleteId)
-                    <div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.5);">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header bg-danger text-white">
-                                    <h5>تأكيد الحذف</h5>
-                                    <button type="button" class="btn-close btn-light"
-                                        wire:click="$set('deleteId', null)"></button>
-                                </div>
-                                <div class="modal-body">
-                                    هل أنت متأكد من حذف "{{ $deleteRetreatName }}"؟
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary"
-                                        wire:click="$set('deleteId', null)">إلغاء</button>
-                                    <button type="button" class="btn btn-danger" wire:click="deleteRetreat">نعم،
-                                        احذف</button>
-                                </div>
-                            </div>
-                        </div>
+    {{-- نافذة الحذف --}}
+    @if ($deleteId)
+        <div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5>تأكيد الحذف</h5>
+                        <button type="button" class="btn-close btn-light" wire:click="$set('deleteId', null)"></button>
                     </div>
-                @endif
-
+                    <div class="modal-body">
+                        هل أنت متأكد من حذف "{{ $deleteRetreatName }}"؟
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                            wire:click="$set('deleteId', null)">إلغاء</button>
+                        <button type="button" class="btn btn-danger" wire:click="deleteRetreat">نعم،
+                            احذف</button>
+                    </div>
+                </div>
             </div>
+        </div>
+    @endif
+
+</div>

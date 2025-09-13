@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
             $table->string('Grade', 20);
             $table->string('Division', 20)->nullable();
-            $table->dateTime('Date_of_interruption');
+            $table->date('Date_of_interruption');
             $table->string('Reason', 200);
             $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
             $table->foreignId('driver_id')->constrained('drivers')->onDelete('cascade');

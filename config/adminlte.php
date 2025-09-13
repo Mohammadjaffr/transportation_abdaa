@@ -327,11 +327,11 @@ return [
             'label_color' => 'success',
         ],
         // ['header' => 'account_settings'],
-        // [
-        //     'text' => 'ادارة الحافلات',
-        //     'url' => 'buses',
-        //     'icon' => 'fas fa-fw fa-bus',
-        // ],
+        [
+            'text' => 'ادارة الحافلات',
+            'url' => 'buses',
+            'icon' => 'fas fa-fw fa-bus',
+        ],
         [
             'text' => 'ادارة السائقين',
             'url' => 'drivers',

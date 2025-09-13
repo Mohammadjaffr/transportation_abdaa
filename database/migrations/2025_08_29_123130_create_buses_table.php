@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('CustomsNo', 30)->nullable();
             $table->integer('StudentsNo')->default(0);
             $table->foreignId('driver_id')->constrained('drivers')->onDelete('cascade');
-
             $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
             $table->timestamps();
         });

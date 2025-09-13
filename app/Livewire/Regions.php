@@ -2,124 +2,108 @@
 
 namespace App\Livewire;
 
-use Livewire\Component;
 use App\Models\region;
+use Livewire\Component;
 
 class Regions extends Component
 {
+
     public $regions;
-    public $Name;
+    public $Name, $parent_id, $region_id;
     public $isEdit = false;
     public $deleteId = null;
-    public $deleteTitle = null;
+    public $deleteName = null;
     public $search = '';
     public $showForm = false;
-    public $editId = null;
-
-    protected $queryString = ['search'];
 
     public function mount()
     {
         $this->loadRegions();
     }
-
     public function updatedSearch()
     {
         $this->loadRegions();
     }
-
     public function loadRegions()
     {
-        $this->regions = region::query()
-            ->when($this->search, fn($q) => $q->where('Name', 'like', '%' . $this->search . '%'))
-            ->orderBy('id', 'desc')
+        $this->regions = region::with('parent')
+            ->when($this->search, function ($query) {
+                $query->where('Name', 'like', '%' . $this->search . '%');
+            })
+            ->orderBy('id', 'asc')
             ->get();
     }
 
-    public function create()
-    {
-        $this->resetForm();
-        $this->showForm = true;
-    }
-
-    protected function rules()
-    {
-        return [
-            'Name' => 'required|string|max:255',
-        ];
-    }
-
-    protected $messages = [
-        'Name.required' => 'اسم الموقع مطلوب',
-        'Name.string'   => 'اسم الموقع يجب أن يكون نصًا',
-        'Name.max'      => 'اسم الموقع لا يجب أن يتجاوز 255 حرفًا',
-    ];
-
     public function store()
     {
-        $this->validate();
+        $this->validate([
+            'Name' => 'required|string|max:255|unique:regions,Name',
+        ]);
 
         region::create([
             'Name' => $this->Name,
+            'parent_id' => $this->parent_id,
         ]);
-
         $this->resetForm();
         $this->loadRegions();
-
         $this->dispatch('show-toast', [
             'type' => 'success',
-            'message' => 'تم إضافة المنطقة بنجاح',
+            'message' => 'تم اضافة المنطقه بنجاح'
         ]);
     }
 
     public function edit($id)
     {
-        $loc = region::findOrFail($id);
-        $this->editId = $loc->id;
-        $this->Name = $loc->Name;
+
+        $region = region::findOrFail($id);
+        $this->region_id = $region->id;
+        $this->Name = $region->Name;
+        $this->parent_id = $region->parent_id;
         $this->isEdit = true;
         $this->showForm = true;
     }
 
     public function update()
     {
-        $this->validate();
-
-        $loc = region::findOrFail($this->editId);
-        $loc->update([
-            'Name' => $this->Name,
+        $this->validate([
+            'Name' => 'required|string|max:255',
         ]);
 
+        $region = region::findOrFail($this->region_id);
+        $region->update([
+            'Name' => $this->Name,
+            'parent_id' => $this->parent_id,
+        ]);
         $this->resetForm();
         $this->loadRegions();
-
         $this->dispatch('show-toast', [
             'type' => 'success',
-            'message' => 'تم تعديل المنطقة بنجاح',
+            'message' => 'تم تعديل المنطقه بنجاح'
         ]);
     }
-
     public function confirmDelete($id)
     {
-        $loc = region::findOrFail($id);
-        $this->deleteId = $loc->id;
-        $this->deleteTitle = $loc->Name;
+        $region = region::findOrFail($id);
+        $this->deleteId = $region->id;
+        $this->deleteName = $region->Name;
     }
-
     public function deleteRegion()
     {
-        $loc = region::findOrFail($this->deleteId);
-        $loc->delete();
-
-        $this->deleteId = null;
-        $this->deleteTitle = null;
-
+        region::findOrFail($this->deleteId)->delete();
         $this->loadRegions();
-
         $this->dispatch('show-toast', [
             'type' => 'success',
-            'message' => 'تم حذف المنطقة بنجاح',
+            'message' => 'تم حذف المنطقه بنجاح'
         ]);
+        $this->deleteId = null;
+        $this->deleteName = null;
+
+        $this->dispatch('close-delete-modal');
+    }
+    public function create()
+    {
+        $this->resetForm();
+        $this->showForm = true;
     }
 
     public function cancel()
@@ -129,14 +113,16 @@ class Regions extends Component
 
     public function resetForm()
     {
-        $this->editId = null;
         $this->Name = '';
+        $this->parent_id = null;
+        $this->region_id = null;
         $this->isEdit = false;
         $this->showForm = false;
     }
 
     public function render()
     {
-        return view('livewire.regions');
+        $parents = region::with('parent')->get();
+        return view('livewire.regions', compact('parents'));
     }
 }

@@ -1,76 +1,101 @@
 <div>
-    {{-- Toast --}}
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    @if (session()->has('success'))
+        <div class="alert alert-success ">{{ session('success') }}</div>
+    @endif
+    <div class="container py-2 py-md-4">
 
+        <div class="d-flex justify-content-between align-items-start my-2" dir="rtl">
+            @if (!$showForm && !$isEdit)
+                <button wire:click="create" class="btn btn-primary add-btn ">
+                    <i class="fas fa-plus me-1 d-none d-md-inline"></i>
+                    <span>إضافة منطقة</span>
 
-    <div class="container py-4">
-        {{-- العنوان وزر إضافة --}}
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            @if (!$showForm)
-                <button wire:click="create" class="btn btn-primary add-btn">
-                    <i class="fas fa-plus-circle me-1"></i> إضافة موقع جديد
                 </button>
             @endif
-            <h3 class="fw-bold text-primary d-none d-md-block">إدارة المواقع</h3>
-
+            <h3 class="fw-bold text-primary mb-2 mb-sm-0 text-center text-sm-start d-none d-sm-block">
+                إدارة المناطق
+            </h3>
         </div>
 
-        {{-- Form --}}
-        @if ($showForm)
-            <div class="card shadow-sm mb-4">
-                <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">{{ $isEdit ? 'تعديل المنطقة' : 'إضافة منطقة جديد' }}</h5>
+        @if ($showForm || $isEdit)
+            <div class="card mb-4 border-0 shadow-sm rounded-3">
+                <div class="bg-success text-white py-2 py-md-3 rounded-top-3">
+                    <h5 class="mb-0 ">
+                        {{ $isEdit ? 'تعديل المنطقة' : 'إضافة منطقة جديدة' }}
+                        <i class="fas fa-map-marked-alt ml-2"></i>
+                    </h5>
                 </div>
-                <div class="card-body">
+
+                <div class="card-body py-3 py-md-4">
                     <form wire:submit.prevent="{{ $isEdit ? 'update' : 'store' }}">
                         <div class="row g-3">
-                            <div class="col-md-12">
-                                <label class="form-label">اسم المنطقة</label>
-                                <input type="text" wire:model="Name"
-                                    class="form-control @error('Name') is-invalid @enderror">
-                                @error('Name')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            {{-- <div class="col-md-4">
-                                <label class="form-label">رقم الموقع</label>
-                                <input type="number" wire:model="LocNo"
-                                    class="form-control @error('LocNo') is-invalid @enderror"
-                                    {{ $isEdit ? 'disabled' : '' }}>
-                                @error('LocNo')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
-                            </div> --}}
+                            {{-- حقل المنطقة الرئيسية --}}
+                            <div class="col-12 col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label text-primary fw-bold d-block  mb-1 mb-md-2">
+                                        المنطقة الرئيسية
+                                    </label>
 
-                            {{-- <div class="col-md-4">
-                                <label class="form-label">المبلغ اليومي</label>
-                                <input type="number" wire:model="DailyAmount"
-                                    class="form-control @error('DailyAmount') is-invalid @enderror">
-                                @error('DailyAmount')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
+                                    <div class="input-group input-group-lg shadow-sm rounded-2 overflow-hidden">
+                                        <span class="input-group-text bg-white border-0">
+                                            <i class="fas fa-layer-group text-primary"></i>
+                                        </span>
+                                        <select wire:model.defer="parent_id" class="form-control  border-0 ">
+                                            <option value="">بدون منطقة رئيسية</option>
+                                            @foreach ($parents as $parent)
+                                                <option value="{{ $parent->id }}">{{ $parent->Name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">الرسوم</label>
-                                <input type="number" wire:model="Fees"
-                                    class="form-control @error('Fees') is-invalid @enderror">
-                                @error('Fees')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
-                            </div> --}}
 
-                            <div class="col-6 mt-4">
-                                <button type="submit"
-                                    class="btn btn-{{ $isEdit ? 'primary' : 'success' }} w-100 rounded-pill">
-                                    <i class="fas {{ $isEdit ? 'fa-save' : 'fa-plus-circle' }} me-1"></i>
-                                    {{ $isEdit ? 'تحديث' : 'إضافة' }}
-                                </button>
+                            {{-- حقل اسم المنطقة --}}
+                            <div class="col-12 col-md-6">
+                                <div class="form-group mb-3">
+                                    <label class="form-label text-primary fw-bold d-block  mb-1 mb-md-2">
+                                        اسم المنطقة <span class="text-danger">*</span>
+                                    </label>
+
+                                    <div class="input-group input-group-lg shadow-sm rounded-2 overflow-hidden">
+                                        <span class="input-group-text bg-white border-0">
+                                            <i class="fas fa-map-marker-alt text-primary"></i>
+                                        </span>
+                                        <input type="text" wire:model.defer="Name"
+                                            class="form-control border-0  py-2 py-md-3 @error('Name') is-invalid @enderror"
+                                            placeholder="أدخل اسم المنطقة">
+
+                                    </div>
+
+                                    @error('Name')
+                                        <div class="invalid-feedback  d-block mt-1 mt-md-2">
+                                            <i class="fas fa-exclamation-circle me-2"></i>{{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
                             </div>
-                            <div class="col-6 mt-4">
-                                <button type="button" wire:click="cancel"
-                                    class="btn btn-outline-secondary w-100 rounded-pill">
-                                    إلغاء
-                                </button>
+
+                            {{-- زر الإرسال والإلغاء --}}
+                            <div class="col-12 m-2 mt-md-4">
+                                <div class="d-flex flex-column flex-md-row gap-2 gap-md-3 mx-1">
+                                    <div class="flex-grow-1">
+                                        <button type="submit"
+                                            class="btn btn-{{ $isEdit ? 'warning' : 'primary' }} btn-lg w-100 rounded-pill shadow-sm ">
+                                            <i class="fas {{ $isEdit ? 'fa-save' : 'fa-plus-circle' }} mr-2"></i>
+                                            {{ $isEdit ? 'حفظ التعديلات' : 'إضافة منطقة' }}
+
+                                        </button>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <button type="button" wire:click="cancel"
+                                            class="btn btn-outline-secondary btn-lg w-100 rounded-pill shadow-sm ">
+                                            <i class="fas fa-times mr-2"></i> إلغاء
+
+                                        </button>
+                                    </div>
+
+                                
+                                </div>
                             </div>
                         </div>
                     </form>
@@ -78,50 +103,83 @@
             </div>
         @endif
 
-        <div class="col-md-12 mb-3">
-            <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden">
-                <span class="input-group-text bg-white border-0"><i class="fas fa-search text-primary"></i></span>
-                <input type="text" wire:model.debounce.300ms.live="search" class="form-control border-0 py-2"
-                    placeholder="ابحث باسم الموقع...">
-            </div>
-        </div>
+        <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+            <div class=" bg-success py-2 py-md-3">
+                <div class="row align-items-center">
+                    <div class="col-12 col-md-6 d-none d-md-block">
+                        <h5 class="mb-0 text-white ">
+                            <i class="fas fa-map-marked-alt ml-2"></i> قائمة المناطق
+                        </h5>
+                    </div>
+                    <div class="col-12 col-md-6 mb-2  mb-md-0">
+                        <div class="input-group shadow-sm rounded-pill overflow-hidden border-0 ">
+                            <span class="input-group-text bg-white border-0 rounded-0">
+                                <i class="fas fa-search text-primary"></i>
+                            </span>
+                            <input type="text" class="form-control border-0  py-2 "
+                                placeholder="ابحث باسم المنطقه..." wire:model.debounce.300ms.live="search">
+                        </div>
+                    </div>
 
-        <div class="card shadow-lg border-0 rounded-3">
-            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">إدارة الطلاب</h5>
+                </div>
             </div>
+
+            <!-- جدول البيانات -->
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table table-hover table-striped align-middle mb-0 text-center">
+                    <table class="table table-hover align-middle mb-0">
                         <thead class="table-success">
                             <tr>
-                                <th>اسم المنطقة</th>
-                                {{-- <th>المبلغ اليومي</th>
-                                <th>الرسوم</th> --}}
-                                <th>الإجراءات</th>
+                                <th class="text-center py-2 py-md-3 fw-bold">#</th>
+                                <th class="text-start py-2 py-md-3 fw-bold">المنطقة</th>
+                                <th class="text-start py-2 py-md-3 fw-bold">المديرية</th>
+                                <th class="text-center py-2 py-md-3 fw-bold">الإجراءات</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse($regions as $loc)
-                                <tr>
-                                    <td>{{ $loc->Name }}</td>
-                                    {{-- <td>{{ $loc->DailyAmount }}</td>
-                                    <td>{{ $loc->Fees }}</td> --}}
-                                    <td class="d-flex gap-2 justify-content-center">
-                                        <button wire:click="edit({{ $loc->id }})"
-                                            class="btn btn-outline-success btn-sm rounded-pill mr-2">
-                                            <i class="fas fa-edit"></i> تعديل
-                                        </button>
-                                        <button wire:click="confirmDelete({{ $loc->id }})"
-                                            class="btn btn-outline-danger btn-sm rounded-pill">
-                                            <i class="fas fa-trash"></i> حذف
-                                        </button>
+                            @forelse ($regions as $region)
+                                <tr class="border-bottom">
+                                    <td class="text-center text-muted">{{ $loop->iteration }}</td>
+
+                                    <td class="text-start">
+                                        <span class="fw-bold">{{ $region->Name }}</span>
+                                    </td>
+
+                                    <td class="text-start">
+                                        @if ($region->parent)
+                                            <span
+                                                class="badge bg-success bg-opacity-10 text-white rounded-pill px-2 px-md-3 py-1">
+                                                <i class="fas fa-map-marker-alt me-1"></i>
+                                                {{ $region->parent->Name }}
+                                            </span>
+                                        @else
+                                            <span class="text-muted">—</span>
+                                        @endif
+                                    </td>
+
+                                    <td class="text-center">
+                                        <div class="d-flex justify-content-center gap-1 gap-md-2 ">
+                                            <button class="btn btn-icon btn-sm btn-success rounded-circle shadow-sm mx-1"
+                                                wire:click="edit({{ $region->id }})" data-bs-toggle="tooltip"
+                                                title="تعديل">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-icon btn-sm btn-danger rounded-circle shadow-sm"
+                                                wire:click="confirmDelete({{ $region->id }})" data-bs-toggle="modal"
+                                                data-bs-target="#deleteModal" data-bs-toggle="tooltip" title="حذف">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="text-center text-muted">
-                                        لا توجد مواقع حالياً
+                                    <td colspan="4" class="text-center py-4 py-md-5 text-muted">
+                                        <i class="fas fa-map-marker-alt fa-2x mb-3"></i>
+                                        <p class="mb-0 fs-5">لا توجد مناطق مسجلة</p>
+                                        @if ($search)
+                                            <p class="text-muted small mt-2">لا توجد نتائج مطابقة لبحثك</p>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforelse
@@ -130,32 +188,36 @@
                 </div>
             </div>
         </div>
-        {{-- Delete Modal --}}
-        @if ($deleteId)
-            <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content shadow-sm">
-                        <div class="modal-header bg-danger text-white">
-                            <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i> تأكيد الحذف</h5>
-                            <button type="button" class="btn-close btn-light"
-                                wire:click="$set('deleteId', null)"></button>
+    </div>
+
+    {{-- مودال الحذف Livewire فقط --}}
+    @if ($deleteId)
+        <div class="modal fade show d-block " tabindex="-1" style="background-color: rgba(0,0,0,0.5)">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">تأكيد الحذف</h5>
+                        <button type="button" class="btn-close btn-light rounded-circle"
+                            wire:click="$set('deleteId', false)" aria-label="Close">X</button>
+
+
+                    </div>
+                    <div class="modal-body">
+                        <p>:هل أنت متأكد أنك تريد حذف المنطقة</p>
+                        <div>
+                            <p class="text-danger fw-bold">"{{ $deleteName }}"</p>
+                            <p>لايمكن التراجع بعد الحذف</p>
                         </div>
-                        <div class="modal-body">
-                            <p>هل أنت متأكد أنك تريد حذف الموقع التالي؟</p>
-                            <p class="fw-bold text-danger">"منطقة :{{ $deleteTitle }}"</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary rounded-pill"
-                                wire:click="$set('deleteId', null)">
-                                إلغاء
-                            </button>
-                            <button type="button" class="btn btn-danger rounded-pill" wire:click="deleteRegion">
-                                نعم، احذف
-                            </button>
-                        </div>
+
+                    </div>
+                    <div class="modal-footer justify-content-start">
+                        <button type="button" class="btn btn-secondary btn-sm"
+                            wire:click="$set('deleteId', false)">إلغاء</button>
+                        <button type="button" class="btn btn-danger btn-sm" wire:click="deleteRegion">نعم،
+                            حذف</button>
                     </div>
                 </div>
             </div>
-        @endif
-    </div>
+        </div>
+    @endif
 </div>

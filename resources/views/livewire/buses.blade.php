@@ -62,28 +62,47 @@
                                     <span class="input-group-text bg-white border-0">
                                         <i class="fas fa-filter text-primary"></i>
                                     </span>
-                                    <select wire:model="location_id"
-                                        class="form-control border-0  @error('location_id') is-invalid @enderror">
-                                        <option value="">-- اختر الموقع --</option>
+                                    <select wire:model="region_id"
+                                        class="form-control border-0  @error('region_id') is-invalid @enderror">
+                                        <option value="">-- اختر المنطقة --</option>
                                         @foreach ($regions as $region)
                                             <option value="{{ $region->id }}">{{ $region->Name }}</option>
                                         @endforeach
                                     </select>
-                                    @error('location_id')
-                                        <span class="text-danger small">{{ $message }}</span>
-                                    @enderror
-                                </div>
 
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">عدد الطلاب</label>
-                                <input type="number" class="form-control" wire:model="StudentsNo">
-                                @error('StudentsNo')
-                                    <span class="text-danger">{{ $message }}</span>
+                                </div>
+                                @error('region_id')
+                                    <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
+                            <div class="col-md-6">
+                                <div
+                                    class="input-group input-group-sm shadow-sm rounded-pill overflow-hidden mt-4 py-2">
+                                    <span class="input-group-text bg-white border-0">
+                                        <i class="fas fa-filter text-primary"></i>
+                                    </span>
+                                    <select wire:model="driver_id"
+                                        class="form-control border-0  @error('driver_id') is-invalid @enderror">
+                                        <option value="">-- اختر السائق --</option>
+                                        @foreach ($drivers as $driver)
+                                            <option value="{{ $driver->id }}">{{ $driver->Name }}</option>
+                                        @endforeach
+                                    </select>
 
-
+                                </div>
+                                @error('driver_id')
+                                    <span class="text-danger small">{{ $message }}</span>
+                                @enderror
+                            </div>
+                    
+                            <div class="col-md-12">
+                                <label class="form-label">عدد الطلاب</label>    
+                                <input type="text" wire:model="StudentsNo"
+                                    class="form-control @error('StudentsNo') is-invalid @enderror">
+                                @error('StudentsNo')
+                                    <span class="text-danger small">{{ $message }}</span>
+                                @enderror
+                            </div>
                             <div class="col-6 mt-3">
                                 <button type="submit"
                                     class="btn btn-{{ $editMode ? 'primary' : 'success' }} w-100 rounded-pill">
@@ -124,11 +143,13 @@
                     <table class="table table-hover table-striped align-middle mb-0">
                         <thead class="table-success">
                             <tr class="text-center">
+                                <th>رقم الحافلة</th>
+                                <th>السائق</th>
                                 <th>نوع الحافلة</th>
                                 <th>الموديل</th>
                                 <th>عدد المقاعد</th>
                                 <th>الجمارك</th>
-                                <th>الموقع</th>
+                                <th>المنطقة</th>
                                 <th>عدد الطلاب</th>
                                 <th>الإجراءات</th>
                             </tr>
@@ -136,13 +157,15 @@
                         <tbody>
                             @forelse($buses as $bus)
                                 <tr class="text-center">
-                                    {{-- <td><span class=" px-3 py-2">{{ $bus->id }}</span></td> --}}
+                                    <td><span class=" px-3 py-2">{{ $bus->id }}</span></td>
+                                    <td>{{ $bus->driver?->Name ?? '-' }}</td>
                                     <td>{{ $bus->BusType }}</td>
                                     <td>{{ $bus->Model }}</td>
                                     <td><span class="badge bg-success text-dark">{{ $bus->SeatsNo }}</span></td>
                                     <td>{{ $bus->CustomsNo ?? '-' }}</td>
                                     <td>{{ $bus->region?->Name ?? '-' }}</td>
-                                    <td>{{ $bus->StudentsNo }}</td>
+
+                                    <td><span class="badge bg-success text-dark">{{ $bus->StudentsNo }}</span></td>
 
                                     <td class="d-flex justify-content-center gap-2">
 

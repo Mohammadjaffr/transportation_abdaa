@@ -5,13 +5,14 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Bus;
 use App\Models\region;
-
+use App\Models\Driver;
 class Buses extends Component
 {
     public $buses;
     public $regions;
+    public $drivers;
 
-    public $StudentsNo, $BusType, $Model, $SeatsNo, $CustomsNo, $region_id;
+    public $StudentsNo, $BusType, $Model, $SeatsNo, $CustomsNo, $region_id,$driver_id;
 
     public $editMode = false;
     public $selectedBus;
@@ -27,6 +28,7 @@ class Buses extends Component
     {
         $this->loadBuses();
         $this->regions = region::all();
+        $this->drivers = Driver::all();
     }
 
     public function updatedSearch()
@@ -36,9 +38,13 @@ class Buses extends Component
 
     public function loadBuses()
     {
-        $this->buses = Bus::with('region')
+        $this->buses = Bus::with('region','driver')
             ->when($this->search, function ($query) {
                 $query->where('BusType', 'like', "%{$this->search}%")->orWhere('id', 'like', "%{$this->search}%");
+            })
+          
+            ->when($this->driver_id, function ($query) {
+                $query->where('driver_id', $this->driver_id);
             })
             ->orderBy('id', 'desc')
             ->get();
@@ -52,17 +58,19 @@ class Buses extends Component
                 'BusType' => 'required|string|max:50',
                 'Model' => 'required|string|max:30',
                 'SeatsNo' => 'required|integer|min:1',
-                'CustomsNo' => 'nullable|string|max:30',
+                'CustomsNo' => 'required|string|max:30',
                 'StudentsNo' => 'required|integer|min:0',
-
                 'region_id' => 'required|exists:regions,id',
+                'driver_id' => 'required|exists:drivers,id',
             ]
             : [
                 'BusType' => 'required|string|max:50',
                 'Model' => 'required|string|max:30',
                 'SeatsNo' => 'required|integer|min:1',
-                'CustomsNo' => 'nullable|string|max:30',
+                'StudentsNo' => 'required|integer|min:0',
+                'CustomsNo' => 'required|string|max:30',
                 'region_id' => 'required|exists:regions,id',
+                'driver_id' => 'required|exists:drivers,id',
             ];
     }
 
@@ -84,10 +92,14 @@ class Buses extends Component
         'SeatsNo.min'      => 'عدد المقاعد لا يمكن أن يقل عن 1',
 
         'CustomsNo.string' => 'رقم الجمارك يجب أن يكون نصًا',
+        'CustomsNo.required' => 'رقم الجمارك مطلوب',
         'CustomsNo.max'    => 'رقم الجمارك لا يجب أن يتجاوز 30 حرفًا',
+        'CustomsNo.unique' => 'رقم الجمارك موجود بالفعل',
 
         'region_id.required' => 'الموقع مطلوب',
         'region_id.exists'   => 'الموقع غير صحيح',
+        'driver_id.required' => 'السائق مطلوب',
+        'driver_id.exists'   => 'السائق غير صحيح',
     ];
 
 
@@ -101,7 +113,8 @@ class Buses extends Component
             'SeatsNo' => $this->SeatsNo,
             'CustomsNo' => $this->CustomsNo,
             'StudentsNo' => $this->StudentsNo,
-            'region_id' => $this->region_id
+            'region_id' => $this->region_id,
+            'driver_id' => $this->driver_id,
         ]);
 
         $this->resetForm();
@@ -127,6 +140,7 @@ class Buses extends Component
         $this->CustomsNo = $bus->CustomsNo;
         $this->StudentsNo = $bus->StudentsNo;
         $this->region_id = $bus->region_id;
+        $this->driver_id = $bus->driver_id;
     }
 
     public function updateBus()
@@ -140,7 +154,8 @@ class Buses extends Component
             'SeatsNo' => $this->SeatsNo,
             'CustomsNo' => $this->CustomsNo,
             'StudentsNo' => $this->StudentsNo,
-            'region_id' => $this->region_id
+            'region_id' => $this->region_id,
+            'driver_id' => $this->driver_id,
         ]);
 
         $this->resetForm();
@@ -189,6 +204,7 @@ class Buses extends Component
         $this->SeatsNo = '';
         $this->CustomsNo = '';
         $this->region_id = '';
+        $this->driver_id = '';
         $this->editMode = false;
         $this->selectedBus = null;
         $this->showForm = false;

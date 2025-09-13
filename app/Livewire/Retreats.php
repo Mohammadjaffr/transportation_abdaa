@@ -100,7 +100,6 @@ class Retreats extends Component
     public function cancel()
     {
         $this->resetForm();
-        $this->dispatch('show-toast', ['type' => 'info', 'message' => 'تم إلغاء العملية بنجاح']);
     }
 
     private function resetForm()
