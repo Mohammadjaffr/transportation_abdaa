@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Wing;
 use App\Models\region;
 use App\Models\Driver;
+use Faker\Factory as Faker;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -48,15 +49,15 @@ class DatabaseSeeder extends Seeder
             'wing_id' => $wing->id,
             'region_id' => 1
         ]);
-        $this->call([
-            LocationsTableSeeder::class,
-            BusesTableSeeder::class,
-            DriversTableSeeder::class,
-            StudentsTableSeeder::class,
-            PresentationsTableSeeder::class,
-            RetreatsTableSeeder::class,
-            WagesTableSeeder::class,
-            AdminsTableSeeder::class,
-        ]);
+        // $this->call([
+        //     LocationsTableSeeder::class,
+        //     BusesTableSeeder::class,
+        //     DriversTableSeeder::class,
+        //     StudentsTableSeeder::class,
+        //     PresentationsTableSeeder::class,
+        //     RetreatsTableSeeder::class,
+        //     WagesTableSeeder::class,
+        //     AdminsTableSeeder::class,
+        // ]);
     }
 }
