@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Models\Wing;
 use App\Models\region;
 use App\Models\Driver;
-use Faker\Factory as Faker;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
