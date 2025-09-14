@@ -218,8 +218,8 @@
                               
                                 <td class="text-center">
 
-                                    @if ($student->primary_image)
-                                        <img src="{{ url($student->primary_image) }}" alt="Bank Logo"
+                                    @if ($student->Picture)
+                                        <img src="{{ url($student->Picture) }}" alt="Bank Logo"
                                             class="img-thumbnail" width="80" height="80">
                                     @else
                                         <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-light"
