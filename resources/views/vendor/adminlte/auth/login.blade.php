@@ -88,7 +88,7 @@
     {{-- Password reset link --}}
     @if ($passResetUrl)
         <div class="row">
-            <div class="col-6">
+            <div class="col-12">
                 <p class="my-0">
                     <a class="text-success" href="{{ $passResetUrl }}">
                         {{ __('adminlte::adminlte.i_forgot_my_password') }}
@@ -98,14 +98,14 @@
     @endif
 
     {{-- Register link --}}
-    @if ($registerUrl)
+    {{-- @if ($registerUrl)
         <div class="col-6">
             <p class="my-0">
                 <a class="text-success" href="{{ $registerUrl }}">
                     {{ __('adminlte::adminlte.register_a_new_membership') }}
                 </a>
             </p>
-    @endif
+    @endif --}}
     </div>
     </div>
 @stop
