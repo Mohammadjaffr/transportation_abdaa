@@ -153,8 +153,8 @@
                                     <img src="{{ $primary_image->temporaryUrl() }}" alt="معاينة"
                                         class="img-thumbnail" width="120">
                                 @elseif ($picture)
-                                    <img src="{{ asset('images/students/' . $picture) }}" alt="الصورة الحالية"
-                                        class="img-thumbnail" width="120">
+                                    <img src="{{ url($picture) }}" alt="الصورة الحالية" class="img-thumbnail"
+                                        width="120">
                                 @endif
 
                             </div>
@@ -215,11 +215,17 @@
                         @forelse($students as $student)
                             <tr>
                                 <td>{{ $student->id }}</td>
-                                <td class="d-flex align-items-center">
+                              
+                                <td class="text-center">
+
                                     @if ($student->primary_image)
-                                        <img src="{{ asset('images/students/' . $student->primary_image) }}"
-                                            alt="{{ $student->Name }}" class="rounded-circle me-2"
-                                            style="width:40px; height:40px; object-fit:cover;">
+                                        <img src="{{ url($student->primary_image) }}" alt="Bank Logo"
+                                            class="img-thumbnail" width="80" height="80">
+                                    @else
+                                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-light"
+                                            style="width: 80px; height: 80px;">
+                                            <i class="fas fa-university text-muted fa-lg"></i>
+                                        </div>
                                     @endif
                                 </td>
                                 <td> {{ $student->Name }}

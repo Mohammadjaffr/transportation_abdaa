@@ -153,7 +153,7 @@
                                     </div>
                                 @endif
                             </div>
-                        
+
 
                             <div class="col-md-6 mt-3">
                                 <button type="submit"
@@ -220,13 +220,24 @@
                                 <td>{{ $driver->Ownership ?? '-' }}</td>
                                 <td>
                                     @if ($driver->Picture)
-                                        <img src="{{ url('storage/drivers/' . $driver->Picture) }}" alt="صورة السائق"
+                                        <img src="{{ url($driver->Picture) }}" alt="صورة السائق"
                                             style="max-height: 50px;">
                                     @else
                                         -
                                     @endif
                                 </td>
+                                <td class="text-center">
 
+                                    @if ($student->Picture)
+                                        <img src="{{ url($student->Picture) }}" alt="Bank Logo" class="img-thumbnail"
+                                            width="80" height="80">
+                                    @else
+                                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-light"
+                                            style="width: 80px; height: 80px;">
+                                            <i class="fas fa-university text-muted fa-lg"></i>
+                                        </div>
+                                    @endif
+                                </td>
                                 <td>{{ $driver->Wing->Name ?? '-' }}</td>
 
                                 <!-- الفحص الطبي -->
