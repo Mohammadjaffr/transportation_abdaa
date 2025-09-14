@@ -220,7 +220,7 @@
                                 <td>{{ $driver->Ownership ?? '-' }}</td>
                                 <td>
                                     @if ($driver->Picture)
-                                        <img src="{{ asset('storage/' . $driver->Picture) }}" alt="صورة السائق"
+                                        <img src="{{ url('storage/drivers/' . $driver->Picture) }}" alt="صورة السائق"
                                             style="max-height: 50px;">
                                     @else
                                         -

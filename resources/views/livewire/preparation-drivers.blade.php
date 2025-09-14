@@ -1,6 +1,119 @@
 <div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Switch Toggle Styles */
+        .form-switch {
+            position: relative;
+            display: inline-block;
+            width: 2.5rem;
+            height: 1.4rem;
+            margin-right: 0.5rem;
+        }
 
+        .form-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .form-switch label::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 2.5rem;
+            height: 1.4rem;
+            background-color: #adb5bd;
+            border-radius: 1.5rem;
+            transition: background-color 0.3s;
+        }
+
+        .form-switch label::after {
+            content: "";
+            position: absolute;
+            top: 0.1rem;
+            right: 0.1rem;
+            width: 1.2rem;
+            height: 1.2rem;
+            background-color: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        .form-switch input:checked+label::after {
+            transform: translateX(-1.1rem);
+        }
+
+        .switch-active label::before {
+            background-color: #28a745;
+        }
+
+        .switch-banned label::before {
+            background-color: #dc3545;
+        }
+
+        /* Badge Styles */
+        .badge-red {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .badge-yellow {
+            background-color: #ffc107;
+            color: #212529;
+        }
+
+        .badge-green {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .badge-red,
+        .badge-yellow,
+        .badge-green {
+            padding: 0.35em 0.65em;
+            border-radius: 0.25rem;
+            font-size: 0.875em;
+        }
+
+        /* Table Styles */
+        .table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+
+        /* Pagination */
+        .pagination {
+            justify-content: flex-start;
+        }
+
+        /* Action Links */
+        .action-link {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .action-link:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+        /* Custom Card Styles */
+        .card-header-custom {
+            background: linear-gradient(135deg, #1976D2 0%, #0D47A1 100%);
+        }
+
+        .filter-section {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+    </style>
     <div class="container py-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             @if (!$showForm)
@@ -46,21 +159,25 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <label class="form-label">التاريخ</label>
                                 <input type="date" wire:model="Month" class="form-control">
                                 @error('Month')
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
-
-                            <div class="col-md-6">
-                                <label class="form-label">حاضر</label>
-                                <input type="checkbox" wire:model="Atend" class="form-check-input ms-2">
-                                @error('Atend')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
+{{-- 
+                            <div class="form-switch {{ $Atend ? 'switch-active' : 'switch-banned' }}">
+                                <input type="checkbox" id="atendSwitch" wire:model="Atend">
+                                <label for="atendSwitch"></label>
                             </div>
+                            <span class="ms-2 fw-semibold {{ $Atend ? 'text-success' : 'text-danger' }}">
+                                {{ $Atend ? 'حاضر' : 'غائب' }}
+                            </span> --}}
+
+
+
+
 
                             <div class="col-6 mt-3">
                                 <button type="submit" class="btn btn-{{ $editMode ? 'primary' : 'success' }} w-100">
@@ -108,7 +225,20 @@
                                     <td>{{ $prep->driver?->Name ?? '-' }}</td>
                                     <td>{{ $prep->region?->Name ?? '-' }}</td>
                                     <td>{{ $prep->Month }}</td>
-                                    <td>{{ $prep->Atend ? 'نعم' : 'لا' }}</td>
+                                    <td>
+                                        <div
+                                            class="form-switch {{ $prep->Atend ? 'switch-active' : 'switch-banned' }}">
+                                            <input type="checkbox" id="atendSwitch{{ $prep->id }}"
+                                                wire:click="toggleAtend({{ $prep->id }})"
+                                                @if ($prep->Atend) checked @endif>
+                                            <label for="atendSwitch{{ $prep->id }}"></label>
+                                        </div>
+                                        <span
+                                            class="ms-2 fw-semibold {{ $prep->Atend ? 'text-success' : 'text-danger' }}">
+                                            {{ $prep->Atend ? 'حاضر' : 'غائب' }}
+                                        </span>
+                                    </td>
+
                                     <td>
                                         <button wire:click="editPreparation({{ $prep->id }})"
                                             class="btn btn-outline-success btn-sm rounded-pill mr-2">

@@ -61,7 +61,7 @@ class Drivers extends Component
                 'fields.Form' => 'required|boolean',
                 'fields.Fitnes' => 'required|boolean',
                 'fields.region_id' => 'required|exists:regions,id',
-                'primary_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'primary_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
             ]
             : [
@@ -77,7 +77,7 @@ class Drivers extends Component
                 'fields.Form' => 'required|boolean',
                 'fields.Fitnes' => 'required|boolean',
                 'fields.region_id' => 'required|exists:regions,id',
-                'primary_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'primary_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ];
     }
 
@@ -107,6 +107,7 @@ class Drivers extends Component
         'fields.Form.boolean' => 'حقل النموذج يجب أن يكون صحيحًا أو خطأ',
         'fields.Fitnes.required' => 'حقل اللياقة مطلوب',
         'fields.Fitnes.boolean' => 'حقل اللياقة يجب أن يكون صحيحًا أو خطأ',
+        'fields.Picture.required' => 'صورة السائق مطلوبة',
         'primary_image.image' => 'صورة يجب أن تكون صورة',
         'primary_image.mimes' => 'صورة يجب أن تكون من نوع jpeg, png, jpg, gif, svg',
         'primary_image.max' => 'صورة يجب أن تقل عن 2 ميجابايت',
@@ -174,8 +175,14 @@ class Drivers extends Component
 
         $data = $this->fields;
 
+        $imageService = new ImageService();
+        $primary_image = null;
+
         if ($this->primary_image) {
-            $data['Picture'] = $this->primary_image->store('drivers', 'public');
+            $primary_image = $imageService->saveImage($this->primary_image, 'images/drivers');
+            $data['Picture'] = $primary_image;
+        } else {
+            $data['Picture'] = $this->selectedDriver->Picture;
         }
 
         $this->selectedDriver->update($data);

@@ -46,6 +46,19 @@ class PreparationStus extends Component
         $this->loadPreparations();
     }
 
+    public function toggleAtend($prepId)
+{
+    $prep = PreparationStu::find($prepId);
+    if ($prep) {
+        $prep->Atend = !$prep->Atend;
+        $prep->save();
+        $this->dispatch('show-toast', [
+            'type' => 'success',
+            'message' => 'تم تحديث حالة الحضور لطالب'
+        ]);
+        $this->loadPreparations(); 
+    }
+}
     public function loadPreparations()
     {
         $this->preparations = PreparationStu::with(['driver','region','student'])

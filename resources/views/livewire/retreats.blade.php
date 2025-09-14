@@ -8,7 +8,7 @@
                 <i class="fas fa-plus-circle me-1"></i> إضافة منسحب جديدة
             </button>
         @endif
-        <h3 class="fw-bold text-primary d-none d-md-block" >   إدارة الطلاب المنسحبين</h3>
+        <h3 class="fw-bold text-primary d-none d-md-block"> إدارة الطلاب المنسحبين</h3>
     </div>
 
     {{-- النموذج --}}
@@ -33,11 +33,26 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-4">
+                        <div class="col-md-4 mb-3">
+
                             <label>الصف</label>
-                            <input type="text" wire:model="Grade" class="form-control">
-                            @error('Grade')
-                                <span class="text-danger small">{{ $message }}</span>
+                            <select wire:model="grade" class="form-control">
+                                <option value="">اختر الصف</option>
+                                <option value="الاول">الاول</option>
+                                <option value="الثاني">الثاني</option>
+                                <option value="الثالث">الثالث</option>
+                                <option value="الرابع">الرابع</option>
+                                <option value="الخامس">الخامس</option>
+                                <option value="السادس">السادس</option>
+                                <option value="السابع">السابع</option>
+                                <option value="الثامن">الثامن</option>
+                                <option value="التاسع">التاسع</option>
+                                <option value="اول ثانوي">اول ثانوي</option>
+                                <option value="ثاني ثانوي">ثاني ثانوي</option>
+                                <option value="ثالث ثانوي">ثالث ثانوي</option>
+                            </select>
+                            @error('grade')
+                                <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
 
@@ -74,7 +89,17 @@
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
                         </div>
-
+                        <div class="col-md-6 mb-3">
+                            <label>الشعبه</label>
+                            <select wire:model="division" class="form-control">
+                                <option value="">اختر الشعبه</option>
+                                <option value="أ">أ</option>
+                                <option value="ب">ب</option>
+                            </select>
+                            @error('division')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
                         <div class="col-md-6">
                             <label>السبب</label>
                             <input type="text" wire:model="Reason" class="form-control">
@@ -82,13 +107,7 @@
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
                         </div>
-                              <div class="col-md-6">
-                            <label>الشعبة</label>
-                            <input type="text" wire:model="Division" class="form-control">
-                            @error('Division')
-                                <span class="text-danger small">{{ $message }}</span>
-                            @enderror
-                        </div>
+
 
                         <div class="col-6 mt-3">
                             <button type="submit" class="btn btn-{{ $editMode ? 'primary' : 'success' }} w-100">
@@ -143,7 +162,7 @@
                                 <td>{{ $retreat->region?->Name ?? '-' }}</td>
                                 <td>{{ $retreat->Date_of_interruption }}</td>
                                 <td>{{ $retreat->Reason }}</td>
-                                <td>{{ $retreat->Division ?? '-'}}</td>
+                                <td>{{ $retreat->Division ?? '-' }}</td>
                                 <td>
 
 
@@ -174,7 +193,8 @@
                 <div class="modal-content">
                     <div class="modal-header bg-danger text-white">
                         <h5>تأكيد الحذف</h5>
-                        <button type="button" class="btn-close btn-light" wire:click="$set('deleteId', null)"></button>
+                        <button type="button" class="btn-close btn-light"
+                            wire:click="$set('deleteId', null)"></button>
                     </div>
                     <div class="modal-body">
                         هل أنت متأكد من حذف "{{ $deleteRetreatName }}"؟

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('preparation_drivers', function (Blueprint $table) {
             $table->id();
-            $table->boolean('Atend');
+            $table->boolean('Atend')->default(1);
             $table->date('Month');
             $table->foreignId('driver_id')->constrained('drivers')->onDelete('cascade');
             $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');

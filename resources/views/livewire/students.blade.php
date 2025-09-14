@@ -34,8 +34,23 @@
                             </div>
 
                             <div class="col-md-4 mb-3">
+
                                 <label>الصف</label>
-                                <input type="text" wire:model="grade" class="form-control">
+                                <select wire:model="grade" class="form-control">
+                                    <option value="">اختر الصف</option>
+                                    <option value="الاول">الاول</option>
+                                    <option value="الثاني">الثاني</option>
+                                    <option value="الثالث">الثالث</option>
+                                    <option value="الرابع">الرابع</option>
+                                    <option value="الخامس">الخامس</option>
+                                    <option value="السادس">السادس</option>
+                                    <option value="السابع">السابع</option>
+                                    <option value="الثامن">الثامن</option>
+                                    <option value="التاسع">التاسع</option>
+                                    <option value="اول ثانوي">اول ثانوي</option>
+                                    <option value="ثاني ثانوي">ثاني ثانوي</option>
+                                    <option value="ثالث ثانوي">ثالث ثانوي</option>
+                                </select>
                                 @error('grade')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -55,7 +70,7 @@
 
                             <div class="col-md-4 mb-3">
                                 <label>الهاتف</label>
-                                <input type="text" wire:model="phone" class="form-control">
+                                <input type="number" wire:model="phone" class="form-control">
                                 @error('phone')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -65,7 +80,11 @@
 
                             <div class="col-md-4 mb-3">
                                 <label>موقف الطالب</label>
-                                <input type="text" wire:model="stu_position" class="form-control">
+                                <select wire:model="stu_position" class="form-control">
+                                    <option value="">اختر الموقف</option>
+                                    <option value="مفرق  العنين">مفرق العنين</option>
+                                    <option value="المرقده">المرقده</option>
+                                </select>
                                 @error('stu_position')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -86,7 +105,11 @@
 
                             <div class="col-md-6 mb-3">
                                 <label>الشعبه</label>
-                                <input type="text" wire:model="division" class="form-control">
+                                <select wire:model="division" class="form-control">
+                                    <option value="">اختر الشعبه</option>
+                                    <option value="أ">أ</option>
+                                    <option value="ب">ب</option>
+                                </select>
                                 @error('division')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -116,7 +139,8 @@
                                     <label class="input-group-text btn btn-primary text-white border-0"
                                         style="cursor: pointer;">
                                         <i class="fas fa-cloud-upload-alt me-2"></i> رفع
-                                        <input type="file" wire:model="primary_image" class="d-none" accept="image/*">
+                                        <input type="file" wire:model="primary_image" class="d-none"
+                                            accept="image/*">
                                     </label>
                                 </div>
 
@@ -126,11 +150,10 @@
                                     </div>
                                 @enderror
                                 @if ($primary_image)
-                                
                                     <img src="{{ $primary_image->temporaryUrl() }}" alt="معاينة"
                                         class="img-thumbnail" width="120">
                                 @elseif ($picture)
-                                    <img src="{{ asset('storage/' . $picture) }}" alt="الصورة الحالية"
+                                    <img src="{{ asset('images/students/' . $picture) }}" alt="الصورة الحالية"
                                         class="img-thumbnail" width="120">
                                 @endif
 
@@ -177,6 +200,7 @@
                     <thead class="table-success">
                         <tr>
                             <th>#</th>
+                            <th>الصورة</th>
                             <th>الاسم</th>
                             <th>الصف</th>
                             <th>النوع</th>
@@ -192,12 +216,13 @@
                             <tr>
                                 <td>{{ $student->id }}</td>
                                 <td class="d-flex align-items-center">
-                                    @if ($student->Picture)
-                                        <img src="{{ asset('storage/' . $student->Picture) }}"
+                                    @if ($student->primary_image)
+                                        <img src="{{ asset('images/students/' . $student->primary_image) }}"
                                             alt="{{ $student->Name }}" class="rounded-circle me-2"
                                             style="width:40px; height:40px; object-fit:cover;">
                                     @endif
-                                    {{ $student->Name }}
+                                </td>
+                                <td> {{ $student->Name }}
                                 </td>
                                 <td>{{ $student->Grade }}</td>
                                 <td>{{ $student->Sex }}</td>

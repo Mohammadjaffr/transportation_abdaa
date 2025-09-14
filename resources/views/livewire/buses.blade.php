@@ -24,14 +24,19 @@
                     <form wire:submit.prevent="{{ $editMode ? 'updateBus' : 'createBus' }}">
                         <div class="row g-3">
 
-                            <div class="col-md-6">
+                          
+                                  <div class="col-md-6 mb-3">
                                 <label class="form-label">نوع الحافلة</label>
-                                <input type="text" wire:model="BusType"
-                                    class="form-control @error('BusType') is-invalid @enderror">
-                                @error('BusType')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
-                            </div>
+                            <select wire:model="BusType" class="form-control">
+                                <option value="">اختر نوع الحافلة</option>
+                                <option value="هايس">هايس</option>
+                                <option value="كوستر">كوستر</option>
+                                <option value="كوستر26">كوستر26</option>
+                            </select>
+                            @error('BusType')
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
                             <div class="col-md-6">
                                 <label class="form-label">الموديل</label>
                                 <input type="text" wire:model="Model"

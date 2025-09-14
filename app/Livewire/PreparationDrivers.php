@@ -75,6 +75,7 @@ class PreparationDrivers extends Component
         $this->Month = $prep->Month;
         $this->driver_id = $prep->driver_id;
         $this->region_id = $prep->region_id;
+        $this->Atend = $prep->Atend;
     }
 
     public function updatePreparation()
@@ -82,14 +83,29 @@ class PreparationDrivers extends Component
         $this->validate();
         $prep = PreparationDriver::findOrFail($this->selectedId);
         $prep->update([
-            'Atend' => $this->Atend,
+            'Atend' => $this->Atend ? 1 : 0,
             'Month' => $this->Month,
             'driver_id' => $this->driver_id,
             'region_id' => $this->region_id,
+
         ]);
         $this->resetForm();
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تحديث سجل حضور السائق']);
     }
+public function toggleAtend($prepId)
+{
+    $prep = PreparationDriver::find($prepId);
+    if ($prep) {
+        $prep->Atend = !$prep->Atend;
+        $prep->save();
+        $this->dispatch('show-toast', [
+            'type' => 'success',
+            'message' => 'تم تحديث حالة الحضور للسائق'
+        ]);
+        $this->loadPreparations(); // لتحديث العرض مباشرة
+    }
+}
+
 
     public function confirmDelete($id)
     {

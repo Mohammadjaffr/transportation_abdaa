@@ -31,7 +31,8 @@ class Students extends Component
         'wing_id' => 'required|exists:wings,id',
         'division' => 'required|string|max:20',
         'region_id' => 'required|exists:regions,id',
-        'picture' => 'required|image|max:2048',
+        'primary_image' => 'required|image|max:2048',
+        
     ];
 
     protected $messages = [
@@ -50,9 +51,9 @@ class Students extends Component
         'region_id.required' => 'المنطقة مطلوبة',
         'region_id.exists' => 'المنطقة غير موجودة',
         'division.required' => 'الشعبه مطلوبة',
-        'picture.image' => 'الصورة يجب أن تكون صورة',
-       
-        'picture.max' => 'الصورة لا يجب أن تتجاوز 2048 كيلوبايت',
+        'primary_image.image' => 'الصورة يجب أن تكون صورة',
+        'primary_image.required' => 'الصورة مطلوبة',
+        'primary_image.max' => 'الصورة لا يجب أن تتجاوز 2048 كيلوبايت',
     ];
 
     public function mount()
@@ -68,8 +69,8 @@ class Students extends Component
         $imageService = new ImageService();
         $picturePath = null;
 
-        if ($this->picture) {
-            $picturePath = $imageService->saveImage($this->picture, 'images/students');
+        if ($this->primary_image) {
+            $picturePath = $imageService->saveImage($this->primary_image, 'images/students');
         }
         Student::create([
             'Name' => $this->name,
@@ -82,7 +83,7 @@ class Students extends Component
             'Division' => $this->division,
             'region_id' => $this->region_id,
         ]);
-
+         
         $this->resetForm();
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم إضافة الطالب بنجاح']);
     }
@@ -112,8 +113,8 @@ class Students extends Component
         $imageService = new ImageService();
         $picturePath = null;
 
-        if ($this->picture) {
-            $picturePath = $imageService->saveImage($this->picture, 'images/students');
+        if ($this->primary_image) {
+            $picturePath = $imageService->saveImage($this->primary_image, 'images/students');
         }
         $student = Student::findOrFail($this->selectedStudentId);
         $student->update([
