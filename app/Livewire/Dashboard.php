@@ -2,12 +2,11 @@
 
 namespace App\Livewire;
 
-use App\Models\region;
+use App\Models\Region;
 use Livewire\Component;
 use App\Models\Bus;
 use App\Models\Driver;
 use App\Models\Student;
-use App\Models\Location;
 class Dashboard extends Component
 {
     public function render()
@@ -16,7 +15,7 @@ class Dashboard extends Component
             'buses' => Bus::count(),
             'drivers' => Driver::count(),
             'students' => Student::count(),
-            'regions' => region::count(),
+            'regions' => Region::count(),
             'active_buses' => Bus::where('StudentsNo', '>', 0)->count(),
             'coaster'  => Bus::where('BusType', 'كوستر')->count(),
             'hiace'        => Bus::where('BusType', 'هايس')->count(),

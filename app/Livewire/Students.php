@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Student;
-use App\Models\Bus;
 use App\Models\Wing;
 use App\Models\Region;
 use App\Services\ImageService;

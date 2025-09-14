@@ -5,7 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\Wage;
 use App\Models\Driver;
-use App\Models\region;
+use App\Models\Region;
 
 class Wages extends Component
 {
@@ -33,7 +33,7 @@ class Wages extends Component
     public function mount()
     {
         $this->drivers = Driver::all();
-        $this->regions = region::all();
+        $this->regions = Region::all();
     }
 
     public function createWage()

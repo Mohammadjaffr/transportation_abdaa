@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Models\Retreat;
 use App\Models\Student;
 use App\Models\Driver;
-use App\Models\region;
+use App\Models\Region;
 class Retreats extends Component
 {
   public $retreats, $students, $drivers, $regions;
@@ -111,7 +111,7 @@ class Retreats extends Component
     {
         $this->students = Student::all();
         $this->drivers = Driver::all();
-        $this->regions = region::all();
+        $this->regions = Region::all();
 
         $this->retreats = Retreat::with(['student', 'driver', 'region'])
             ->when($this->search, function ($query) {

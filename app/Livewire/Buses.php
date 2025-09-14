@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Bus;
-use App\Models\region;
+use App\Models\Region;
 use App\Models\Driver;
 
 class Buses extends Component
@@ -28,7 +28,7 @@ class Buses extends Component
     public function mount()
     {
         $this->loadBuses();
-        $this->regions = region::all();
+        $this->regions = Region::all();
         $this->drivers = Driver::all();
     }
 

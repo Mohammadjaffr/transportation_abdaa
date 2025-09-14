@@ -6,7 +6,7 @@ use Livewire\Component;
 use App\Models\Driver;
 use App\Models\Bus;
 use App\Models\Wing;
-use App\Models\region;
+use App\Models\Region;
 use Livewire\WithFileUploads;
 use App\Services\ImageService;
 
@@ -118,7 +118,7 @@ class Drivers extends Component
         $this->loadDrivers();
         $this->buses = Bus::all();
         $this->wings = Wing::all();
-        $this->regions = region::all();
+        $this->regions = Region::all();
     }
 
     public function updatedSearch()

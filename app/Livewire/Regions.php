@@ -2,8 +2,10 @@
 
 namespace App\Livewire;
 
-use App\Models\region;
+use App\Models\Region;
 use Livewire\Component;
+
+use function Ramsey\Uuid\v1;
 
 class Regions extends Component
 {
@@ -26,7 +28,7 @@ class Regions extends Component
     }
     public function loadRegions()
     {
-        $this->regions = region::with('parent')
+        $this->regions = Region::with('parent')
             ->when($this->search, function ($query) {
                 $query->where('Name', 'like', '%' . $this->search . '%');
             })
@@ -40,7 +42,7 @@ class Regions extends Component
             'Name' => 'required|string|max:255|unique:regions,Name',
         ]);
 
-        region::create([
+        Region::create([
             'Name' => $this->Name,
             'parent_id' => $this->parent_id,
         ]);
@@ -55,7 +57,7 @@ class Regions extends Component
     public function edit($id)
     {
 
-        $region = region::findOrFail($id);
+        $region = Region::findOrFail($id);
         $this->region_id = $region->id;
         $this->Name = $region->Name;
         $this->parent_id = $region->parent_id;
@@ -83,13 +85,13 @@ class Regions extends Component
     }
     public function confirmDelete($id)
     {
-        $region = region::findOrFail($id);
+        $region = Region::findOrFail($id);
         $this->deleteId = $region->id;
         $this->deleteName = $region->Name;
     }
     public function deleteRegion()
     {
-        region::findOrFail($this->deleteId)->delete();
+        Region::findOrFail($this->deleteId)->delete();
         $this->loadRegions();
         $this->dispatch('show-toast', [
             'type' => 'success',
@@ -122,7 +124,7 @@ class Regions extends Component
 
     public function render()
     {
-        $parents = region::with('parent')->get();
+        $parents = Region::with('parent')->get();
         return view('livewire.regions', compact('parents'));
     }
 }
