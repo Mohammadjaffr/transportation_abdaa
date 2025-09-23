@@ -47,4 +47,8 @@ class Dashboard extends Controller
         {
             return view('preparation_drivers.index');
         }
+        public function distributionStu()
+        {
+            return view('distribution-stu.index');
+        }
 }

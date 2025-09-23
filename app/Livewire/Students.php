@@ -7,13 +7,16 @@ use App\Models\Student;
 use App\Models\Wing;
 use App\Models\Region;
 use App\Services\ImageService;
-use Livewire\WithFileUploads;
+use App\Models\Teacher;
+// use Livewire\WithFileUploads;
 
 class Students extends Component
 {
-    use WithFileUploads;
+    // use WithFileUploads;
     public $students, $buses, $wings, $regions;
-    public $name, $grade, $sex, $phone, $picture, $stu_position, $wing_id, $division, $region_id, $bus_id;
+    public $name, $grade, $sex, $phone, $teachers,
+        // $picture,
+        $stu_position, $wing_id, $division, $region_id, $bus_id;
     public $editMode = false, $selectedStudent;
     public $primary_image;
     public $showForm = false;
@@ -22,18 +25,21 @@ class Students extends Component
     public $selectedStudentId;
     public $editId = null;
 
+    public $teacher_id;
+
+    public $child_region_id;
     protected $rules = [
         'name' => 'required|string|max:200',
         'grade' => 'required|string|max:30',
         'sex' => 'required|string|max:20',
         'phone' => 'required|string|max:20',
-        'stu_position' => 'required|string|max:200',
+        'child_region_id' => 'required|string|max:200',
         'wing_id' => 'required|exists:wings,id',
         'division' => 'required|string|max:20',
         'region_id' => 'required|exists:regions,id',
-        'primary_image' => 'required|image|max:2048',
-        
+        'teacher_id' => 'nullable|exists:teachers,id',
     ];
+
 
     protected $messages = [
         'name.required' => 'اسم الطالب مطلوب',
@@ -51,39 +57,43 @@ class Students extends Component
         'region_id.required' => 'المنطقة مطلوبة',
         'region_id.exists' => 'المنطقة غير موجودة',
         'division.required' => 'الشعبه مطلوبة',
-        'primary_image.image' => 'الصورة يجب أن تكون صورة',
-        'primary_image.required' => 'الصورة مطلوبة',
-        'primary_image.max' => 'الصورة لا يجب أن تتجاوز 2048 كيلوبايت',
+        'child_region_id.required' => 'المنطقة الفرعية مطلوبة',
+
+        // 'primary_image.image' => 'الصورة يجب أن تكون صورة',
+        // 'primary_image.required' => 'الصورة مطلوبة',
+        // 'primary_image.max' => 'الصورة لا يجب أن تتجاوز 2048 كيلوبايت',
     ];
 
     public function mount()
     {
-        $this->students = Student::with('bus')->get();
+        $this->students = Student::with('driver')->get();
         $this->wings = Wing::all();
-        $this->regions = region::all();
+        $this->regions = Region::all();
+        $this->teachers = Teacher::all();
     }
 
     public function createStudent()
     {
         $this->validate();
-        $imageService = new ImageService();
-        $picturePath = null;
+        // $imageService = new ImageService();
+        // $picturePath = null;
 
-        if ($this->primary_image) {
-            $picturePath = $imageService->saveImage($this->primary_image, 'images/students');
-        }
+        // if ($this->primary_image) {
+        //     $picturePath = $imageService->saveImage($this->primary_image, 'images/students');
+        // }
         Student::create([
             'Name' => $this->name,
             'Grade' => $this->grade,
             'Sex' => $this->sex,
             'Phone' => $this->phone,
-            'Picture' => $picturePath,
-            'Stu_position' => $this->stu_position,
+            // 'Picture' => $picturePath,
+            'Stu_position' => $this->child_region_id,
             'wing_id' => $this->wing_id,
             'Division' => $this->division,
             'region_id' => $this->region_id,
+            'teacher_id' => $this->teacher_id,
         ]);
-         
+
         $this->resetForm();
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم إضافة الطالب بنجاح']);
     }
@@ -100,33 +110,36 @@ class Students extends Component
         $this->grade = $student->Grade;
         $this->sex = $student->Sex;
         $this->phone = $student->Phone;
-        $this->picture = $student->Picture;
+        // $this->picture = $student->Picture;
         $this->stu_position = $student->Stu_position;
         $this->wing_id = $student->wing_id;
         $this->division = $student->Division;
         $this->region_id = $student->region_id;
+        $this->child_region_id = $student->Stu_position;
+        $this->teacher_id = $student->teacher_id;
     }
 
     public function updateStudent()
     {
         $this->validate();
-        $imageService = new ImageService();
-        $picturePath = null;
+        // $imageService = new ImageService();
+        // $picturePath = null;
 
-        if ($this->primary_image) {
-            $picturePath = $imageService->saveImage($this->primary_image, 'images/students');
-        }
+        // if ($this->primary_image) {
+        //     $picturePath = $imageService->saveImage($this->primary_image, 'images/students');
+        // }
         $student = Student::findOrFail($this->selectedStudentId);
         $student->update([
             'Name' => $this->name,
             'Grade' => $this->grade,
             'Sex' => $this->sex,
             'Phone' => $this->phone,
-            'Picture' => $picturePath ?? $student->Picture,
-            'Stu_position' => $this->stu_position,
+            // 'Picture' => $picturePath ?? $student->Picture,
+            'Stu_position' => $this->child_region_id,
             'wing_id' => $this->wing_id,
             'Division' => $this->division,
             'region_id' => $this->region_id,
+            'teacher_id' => $this->teacher_id ?: null,
         ]);
 
         $this->resetForm();
@@ -160,12 +173,13 @@ class Students extends Component
             'grade',
             'sex',
             'phone',
-            'picture',
+            // 'picture',
             'stu_position',
             'wing_id',
             'division',
             'region_id',
-    
+            'child_region_id',
+            'teacher_id',
             'editMode',
             'selectedStudent',
             'showForm'
@@ -175,11 +189,16 @@ class Students extends Component
 
     public function render()
     {
-        $this->students = Student::with(['bus', 'wing', 'region'])
+        $this->students = Student::with([ 'wing', 'region'])
             ->where('Name', 'like', '%' . $this->search . '%')
             ->orWhere('id', 'like', '%' . $this->search . '%')
             ->get();
+        $children_regions = $this->region_id
+            ? Region::where('parent_id', $this->region_id)->get()
+            : null;
 
-        return view('livewire.students');
+        $parent_regions = Region::whereNull('parent_id')->get();
+
+        return view('livewire.students', compact('children_regions', 'parent_regions'));
     }
 }

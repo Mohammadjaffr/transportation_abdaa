@@ -13,18 +13,16 @@ class Student extends Model
         'Name',
         'Grade',
         'Phone',
-        'Picture',
+        // 'Picture',
         'Stu_position',
         'wing_id',
         'Division',
         'region_id',
         'Sex',
+        'teacher_id',
     ];
 
-    public function bus()
-    {
-        return $this->belongsTo(Bus::class);
-    }
+ 
     public function driver()
     {
         return $this->belongsTo(Driver::class);
@@ -41,4 +39,10 @@ class Student extends Model
     {
         return $this->hasMany(Retreat::class);
     }
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class, 'teacher_id');
+ 
+   }
+   
 }

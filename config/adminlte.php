@@ -327,10 +327,15 @@ return [
             'label_color' => 'success',
         ],
         // ['header' => 'account_settings'],
+        // [
+        //     'text' => 'ادارة الحافلات',
+        //     'url' => 'buses',
+        //     'icon' => 'fas fa-fw fa-bus',
+        // ],
         [
-            'text' => 'ادارة الحافلات',
-            'url' => 'buses',
-            'icon' => 'fas fa-fw fa-bus',
+            'text' => 'ادارة التوزيع',
+            'url' => 'distribution-stu',
+            'icon' => 'fas fa-fw fa-route',
         ],
         [
             'text' => 'ادارة السائقين',

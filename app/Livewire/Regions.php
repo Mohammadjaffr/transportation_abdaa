@@ -71,7 +71,7 @@ class Regions extends Component
             'Name' => 'required|string|max:255',
         ]);
 
-        $region = region::findOrFail($this->region_id);
+        $region = Region::findOrFail($this->region_id);
         $region->update([
             'Name' => $this->Name,
             'parent_id' => $this->parent_id,
@@ -125,6 +125,7 @@ class Regions extends Component
     public function render()
     {
         $parents = Region::with('parent')->get();
-        return view('livewire.regions', compact('parents'));
+                $parent_regions = Region::whereNull('parent_id')->get();
+        return view('livewire.regions', compact('parents','parent_regions'));
     }
 }

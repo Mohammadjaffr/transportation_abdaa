@@ -21,4 +21,5 @@ Route::get('/regions', [Dashboard::class, 'region'])->name('region');
 Route::get('/preparation-stus', [Dashboard::class, 'preparationStus'])->name('preparation-stus');
 Route::get('/preparation-drivers', [Dashboard::class, 'preparationDrivers'])->name('preparation-drivers');
 Route::get('/retreats', [Dashboard::class, 'retreats'])->name('retreats');
-Route::get('/wages', [Dashboard::class, 'wages'])->name('wages');
+Route::get('/wages', [Dashboard::class, 'wages'])->name('wages'); 
+Route::get('/distribution-stu', [Dashboard::class, 'distributionStu'])->name('distribution-stu');

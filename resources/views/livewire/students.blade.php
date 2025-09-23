@@ -76,19 +76,33 @@
                                 @enderror
                             </div>
 
-
-
                             <div class="col-md-4 mb-3">
-                                <label>موقف الطالب</label>
-                                <select wire:model="stu_position" class="form-control">
-                                    <option value="">اختر الموقف</option>
-                                    <option value="مفرق  العنين">مفرق العنين</option>
-                                    <option value="المرقده">المرقده</option>
+                                <label>المنطقة</label>
+                                <select wire:model.live="region_id" class="form-control">
+                                    <option value="">اختر المنطقة</option>
+                                    @foreach ($parent_regions as $region)
+                                        <option value="{{ $region->id }}">{{ $region->Name }}</option>
+                                    @endforeach
                                 </select>
-                                @error('stu_position')
+                                @error('region_id')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
+                            @if ($children_regions)
+
+                                <div class="col-md-4 mt-4">
+                                    <select wire:model.live="child_region_id" class="form-control">
+                                        <option value="">اختر الموقف</option>
+                                        @foreach ($children_regions as $region)
+                                            <option value="{{ $region->Name }}">{{ $region->Name }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('child_region_id')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+
+                                </div>
+                            @endif
 
                             <div class="col-md-4 mb-3">
                                 <label>الجناح</label>
@@ -103,7 +117,7 @@
                                 @enderror
                             </div>
 
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-4 mb-3">
                                 <label>الشعبه</label>
                                 <select wire:model="division" class="form-control">
                                     <option value="">اختر الشعبه</option>
@@ -114,22 +128,23 @@
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
-
-                            <div class="col-md-6 mb-3">
-                                <label>المنطقة</label>
-                                <select wire:model="region_id" class="form-control">
-                                    <option value="">اختر المنطقة</option>
-                                    @foreach ($regions as $region)
-                                        <option value="{{ $region->id }}">{{ $region->Name }}</option>
+                            <div class="col-md-4 mb-3">
+                                <label>المعلم\ة</label>
+                                <select wire:model="teacher_id" class="form-control">
+                                    <option value="">اختر المعلم\ة</option>
+                                    @foreach ($teachers as $teacher)
+                                        <option value="{{ $teacher->id }}">{{ $teacher->Name }}</option>
                                     @endforeach
                                 </select>
-                                @error('region_id')
+                                @error('teacher_id')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
 
 
-                            <div class="col-md-12 mb-3">
+
+
+                            {{-- <div class="col-md-12 mb-3">
                                 <label class="form-label text-primary fw-bold d-block mb-2">
                                     <span class="text-danger">*</span>
                                     <i class="fas fa-image me-2"></i> صورة الطالب
@@ -157,7 +172,7 @@
                                         width="120">
                                 @endif
 
-                            </div>
+                            </div> --}}
 
 
                             <div class="col-md-6 mt-3">
@@ -200,7 +215,7 @@
                     <thead class="table-success">
                         <tr>
                             <th>#</th>
-                            <th>الصورة</th>
+                            {{-- <th>الصورة</th> --}}
                             <th>الاسم</th>
                             <th>الصف</th>
                             <th>النوع</th>
@@ -208,6 +223,8 @@
                             <th>الجناح</th>
                             <th>القسم</th>
                             <th>المنطقة</th>
+                            <th>الموقف</th>
+                            <th>المعلم\ة</th>
                             <th>إجراءات</th>
                         </tr>
                     </thead>
@@ -215,8 +232,8 @@
                         @forelse($students as $student)
                             <tr>
                                 <td>{{ $student->id }}</td>
-                              
-                                <td class="text-center">
+
+                                {{-- <td class="text-center">
 
                                     @if ($student->Picture)
                                         <img src="{{ url($student->Picture) }}" alt="{{ $student->Name }}"
@@ -227,7 +244,7 @@
                                             <i class="fas fa-university text-muted fa-lg"></i>
                                         </div>
                                     @endif
-                                </td>
+                                </td> --}}
                                 <td> {{ $student->Name }}
                                 </td>
                                 <td>{{ $student->Grade }}</td>
@@ -236,6 +253,8 @@
                                 <td>{{ $student->wing?->Name }}</td>
                                 <td>{{ $student->Division }}</td>
                                 <td>{{ $student->region?->Name }}</td>
+                                <td>{{ $student->Stu_position }}</td>
+                                <td>{{ $student->teacher?->Name ?? 'غير موجود' }}</td>
                                 <td class="d-flex gap-2 justify-content-center">
                                     <button wire:click="editStudent({{ $student->id }})"
                                         class="btn btn-outline-success btn-sm rounded-pill mr-2">

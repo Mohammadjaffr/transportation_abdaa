@@ -1,7 +1,6 @@
 <div>
-    @if (session()->has('success'))
-        <div class="alert alert-success ">{{ session('success') }}</div>
-    @endif
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <div class="container py-2 py-md-4">
 
         <div class="d-flex justify-content-between align-items-start my-2" dir="rtl">
@@ -42,7 +41,7 @@
                                         </span>
                                         <select wire:model.defer="parent_id" class="form-control  border-0 ">
                                             <option value="">بدون منطقة رئيسية</option>
-                                            @foreach ($parents as $parent)
+                                            @foreach ($parent_regions as $parent)
                                                 <option value="{{ $parent->id }}">{{ $parent->Name }}</option>
                                             @endforeach
                                         </select>
@@ -131,8 +130,8 @@
                         <thead class="table-success">
                             <tr>
                                 <th class="text-center py-2 py-md-3 fw-bold">#</th>
+                                <th class="text-start py-2 py-md-3 fw-bold">الموقف</th>
                                 <th class="text-start py-2 py-md-3 fw-bold">المنطقة</th>
-                                <th class="text-start py-2 py-md-3 fw-bold">المديرية</th>
                                 <th class="text-center py-2 py-md-3 fw-bold">الإجراءات</th>
                             </tr>
                         </thead>
