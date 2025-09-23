@@ -1,18 +1,59 @@
 <div>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     <div class="container py-4">
 
-        {{-- العنوان وزر إضافة --}}
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            @if (!$showForm)
-                <button wire:click="$set('showForm', true)" class="btn btn-primary add-btn w-sm-100 mb-3">
-                    <i class="fas fa-plus-circle me-1"></i> إضافة طالب جديد
-                </button>
-            @endif
-            <h3 class="fw-bold text-primary d-none d-sm-block">إدارة الطلاب</h3>
+
+
+    <h3 class="fw-bold text-center d-none d-sm-block">إدارة الطلاب</h3>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        @if (!$showForm)
+            <button wire:click="$set('showForm', true)" class="btn btn-primary add-btn w-sm-100 mb-3">
+                <i class="fas fa-plus-circle me-1"></i> إضافة طالب جديد
+            </button>
+        @endif
+
+     <div class="d-flex justify-content-between mb-4">
+        <button wire:click="openImportModal" class="btn btn-success">
+            <i class="fas fa-file-excel me-1"></i> استيراد Excel
+        </button>
+
+        <button wire:click="exportExcel" class="btn btn-warning">
+            <i class="fas fa-file-export me-1"></i> تصدير Excel
+        </button>
+    </div>
+
+    {{-- موديل رفع الإكسل --}}
+    @if ($showImportModal)
+        <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content shadow">
+                    <div class="modal-header bg-success text-white">
+                        <h5 class="modal-title">استيراد ملف Excel</h5>
+                        <button type="button" class="btn-close btn-light" wire:click="closeImportModal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="file" wire:model="excelFile" accept=".xlsx,.csv" class="form-control">
+                        @error('excelFile') 
+                            <span class="text-danger d-block mt-2">{{ $message }}</span> 
+                        @enderror
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary rounded-pill" wire:click="closeImportModal">إلغاء</button>
+                        <button type="button" class="btn btn-success rounded-pill" wire:click="importExcel">استيراد</button>
+                    </div>
+                </div>
+            </div>
         </div>
+    @endif
+    </div>
+
+
+
+
 
         {{-- Form --}}
         @if ($showForm)
@@ -27,7 +68,8 @@
 
                             <div class="col-md-4 mb-3">
                                 <label>الاسم</label>
-                                <input type="text" wire:model="name" class="form-control">
+                                <input type="text" wire:model="name"
+                                    class="form-control @error('name') is-invalid @enderror">
                                 @error('name')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -36,7 +78,7 @@
                             <div class="col-md-4 mb-3">
 
                                 <label>الصف</label>
-                                <select wire:model="grade" class="form-control">
+                                <select wire:model="grade" class="form-control @error('grade') is-invalid @enderror">
                                     <option value="">اختر الصف</option>
                                     <option value="الاول">الاول</option>
                                     <option value="الثاني">الثاني</option>
@@ -58,7 +100,7 @@
 
                             <div class="col-md-4 mb-3">
                                 <label>النوع</label>
-                                <select wire:model="sex" class="form-control">
+                                <select wire:model="sex" class="form-control @error('sex') is-invalid @enderror">
                                     <option value="">اختر النوع</option>
                                     <option value="ذكر">ذكر</option>
                                     <option value="أنثى">أنثى</option>
@@ -70,7 +112,8 @@
 
                             <div class="col-md-4 mb-3">
                                 <label>الهاتف</label>
-                                <input type="number" wire:model="phone" class="form-control">
+                                <input type="number" wire:model="phone"
+                                    class="form-control @error('phone') is-invalid @enderror">
                                 @error('phone')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -78,7 +121,8 @@
 
                             <div class="col-md-4 mb-3">
                                 <label>المنطقة</label>
-                                <select wire:model.live="region_id" class="form-control">
+                                <select wire:model.live="region_id"
+                                    class="form-control @error('region_id') is-invalid @enderror">
                                     <option value="">اختر المنطقة</option>
                                     @foreach ($parent_regions as $region)
                                         <option value="{{ $region->id }}">{{ $region->Name }}</option>
@@ -91,7 +135,8 @@
                             @if ($children_regions)
 
                                 <div class="col-md-4 mt-4">
-                                    <select wire:model.live="child_region_id" class="form-control">
+                                    <select wire:model.live="child_region_id"
+                                        class="form-control @error('child_region_id') is-invalid @enderror">
                                         <option value="">اختر الموقف</option>
                                         @foreach ($children_regions as $region)
                                             <option value="{{ $region->Name }}">{{ $region->Name }}</option>
@@ -106,7 +151,8 @@
 
                             <div class="col-md-4 mb-3">
                                 <label>الجناح</label>
-                                <select wire:model="wing_id" class="form-control">
+                                <select wire:model="wing_id"
+                                    class="form-control @error('wing_id') is-invalid @enderror">
                                     <option value="">اختر الجناح</option>
                                     @foreach ($wings as $wing)
                                         <option value="{{ $wing->id }}">{{ $wing->Name }}</option>
@@ -119,7 +165,8 @@
 
                             <div class="col-md-4 mb-3">
                                 <label>الشعبه</label>
-                                <select wire:model="division" class="form-control">
+                                <select wire:model="division"
+                                    class="form-control @error('division') is-invalid @enderror">
                                     <option value="">اختر الشعبه</option>
                                     <option value="أ">أ</option>
                                     <option value="ب">ب</option>
@@ -130,7 +177,8 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label>المعلم\ة</label>
-                                <select wire:model="teacher_id" class="form-control">
+                                <select wire:model="teacher_id"
+                                    class="form-control @error('teacher_id') is-invalid @enderror">
                                     <option value="">اختر المعلم\ة</option>
                                     @foreach ($teachers as $teacher)
                                         <option value="{{ $teacher->id }}">{{ $teacher->Name }}</option>
@@ -221,7 +269,7 @@
                             <th>النوع</th>
                             <th>الهاتف</th>
                             <th>الجناح</th>
-                            <th>القسم</th>
+                            <th>الشعبة</th>
                             <th>المنطقة</th>
                             <th>الموقف</th>
                             <th>المعلم\ة</th>

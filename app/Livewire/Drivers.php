@@ -48,78 +48,86 @@ class Drivers extends Component
     {
         return $this->editMode
             ? [
-                'fields.Name' => 'required|string|max:100',
-                'fields.IDNo' => 'required|string|max:50|unique:drivers,IDNo,' . $this->selectedDriver->id,
+                'fields.Name' => 'required|string|max:50',
+                'fields.IDNo' => 'required|string|max:11|unique:drivers,IDNo,' . $this->selectedDriver->id,
                 'fields.Phone' => 'required|digits:9|unique:drivers,Phone,' . ($this->editMode ? $this->selectedDriver->id : 'NULL'),
 
                 'fields.LicenseNo' => 'required|string|max:10|unique:drivers,LicenseNo,' . $this->selectedDriver->id,
                 'fields.Ownership' => 'required|string|max:50',
                 'fields.wing_id' => 'required|exists:wings,id',
-                // 'fields.bus_id' => 'nullable|exists:buses,id',
                 'fields.CheckUp' => 'required|boolean',
                 'fields.Behavior' => 'required|boolean',
                 'fields.Form' => 'required|boolean',
                 'fields.Fitnes' => 'required|boolean',
                 'fields.region_id' => 'required|exists:regions,id',
-                'primary_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
 
             ]
             : [
-                'fields.Name' => 'required|string|max:100',
-                'fields.IDNo' => 'required|string|max:50|unique:drivers,IDNo',
+                'fields.Name' => 'required|string|max:50',
+                'fields.IDNo' => 'required|string|max:11|unique:drivers,IDNo',  
                 'fields.Phone' => 'required|digits:9|unique:drivers,Phone',
-                'fields.LicenseNo' => 'required|string|max:10|unique:drivers,LicenseNo',
+                'fields.LicenseNo' => 'required|string|max:8|unique:drivers,LicenseNo',
                 'fields.Ownership' => 'required|string|max:50',
                 'fields.wing_id' => 'required|exists:wings,id',
-                // 'fields.bus_id' => 'required|exists:buses,id',
                 'fields.CheckUp' => 'required|boolean',
                 'fields.Behavior' => 'required|boolean',
                 'fields.Form' => 'required|boolean',
                 'fields.Fitnes' => 'required|boolean',
                 'fields.region_id' => 'required|exists:regions,id',
-                'primary_image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             ];
     }
 
     protected $messages = [
-        'fields.Name.required' => 'اسم السائق مطلوب',
-        'fields.IDNo.required' => 'رقم الهوية مطلوب',
-        'fields.IDNo.unique'   => 'رقم الهوية مستخدم من قبل',
-        'fields.Phone.required' => 'رقم الهاتف مطلوب',
-        'fields.Phone.digits'   => 'رقم الهاتف يجب أن يكون 9 أرقام',
-        'fields.Phone.unique'   => 'رقم الهاتف مستخدم من قبل',
-        'fields.LicenseNo.required' => 'رقم الرخصة مطلوب',
-        'fields.LicenseNo.unique'   => 'رقم الرخصة مستخدم من قبل',
-        'fields.Ownership.required' => 'حقل الملكية مطلوب',
-        'fields.wing_id.required' => 'الجناح مطلوب',
-        'fields.wing_id.exists' => 'الجناح غير صحيح',
-        // 'fields.bus_id.exists' => 'رقم الحافلة غير صحيح',
+    'fields.Name.required'      => 'اسم السائق مطلوب',
+    'fields.Name.max'           => 'اسم السائق يجب ألا يتجاوز 50 حرف',
+    
+    'fields.IDNo.required'      => 'رقم الهوية مطلوب',
+    'fields.IDNo.unique'        => 'رقم الهوية مستخدم من قبل',
+    'fields.IDNo.max'           => 'رقم الهوية يجب ألا يتجاوز 11 ارقام',
+    
+    'fields.Phone.required'     => 'رقم الهاتف مطلوب',
+    'fields.Phone.digits'       => 'رقم الهاتف يجب أن يكون 9 أرقام',
+    'fields.Phone.unique'       => 'رقم الهاتف مستخدم من قبل',
+    
+    'fields.LicenseNo.required' => 'رقم الرخصة مطلوب',
+    'fields.LicenseNo.unique'   => 'رقم الرخصة مستخدم من قبل',
+    'fields.LicenseNo.max'      => 'رقم الرخصة يجب ألا يتجاوز 10 ارقام',
+    
+    'fields.Ownership.required' => 'حقل الملكية مطلوب',
+    'fields.Ownership.max'      => 'الملكية يجب ألا تتجاوز 20 ارقام',
 
-        'fields.region_id.exists' => 'رقم المنطقة غير صحيح',
-        'fields.region_id.required' => '  مطلوب  حقل  المنطقة ',
-        'fields.CheckUp.required' => 'حقل الفحص الطبي مطلوب',
-        'fields.CheckUp.boolean' => 'حقل الفحص الطبي يجب أن يكون صحيحًا أو خطأ',
-        'fields.Behavior.required' => 'حقل السلوك مطلوب',
-        'fields.Behavior.boolean' => 'حقل السلوك يجب أن يكون صحيحًا أو خطأ',
+    'fields.wing_id.required'   => 'الجناح مطلوب',
+    'fields.wing_id.exists'     => 'الجناح المحدد غير صحيح',
 
-        'fields.Form.required' => 'حقل النموذج مطلوب',
+    'fields.region_id.required' => 'المنطقة مطلوبة',
+    'fields.region_id.exists'   => 'رقم المنطقة غير صحيح',
 
-        'fields.Form.boolean' => 'حقل النموذج يجب أن يكون صحيحًا أو خطأ',
-        'fields.Fitnes.required' => 'حقل اللياقة مطلوب',
-        'fields.Fitnes.boolean' => 'حقل اللياقة يجب أن يكون صحيحًا أو خطأ',
-        'fields.Picture.required' => 'صورة السائق مطلوبة',
-        'primary_image.image' => 'صورة يجب أن تكون صورة',
-        'primary_image.mimes' => 'صورة يجب أن تكون من نوع jpeg, png, jpg, gif, svg',
-        'primary_image.max' => 'صورة يجب أن تقل عن 2 ميجابايت',
+    'fields.CheckUp.required'   => 'حقل الفحص الطبي مطلوب',
+    'fields.CheckUp.boolean'    => 'قيمة الفحص الطبي يجب أن تكون نعم أو لا',
 
-    ];
+    'fields.Behavior.required'  => 'حقل السلوك مطلوب',
+    'fields.Behavior.boolean'   => 'قيمة السلوك يجب أن تكون نعم أو لا',
+
+    'fields.Form.required'      => 'حقل الاستمارة مطلوب',
+    'fields.Form.boolean'       => 'قيمة الاستمارة يجب أن تكون نعم أو لا',
+
+    'fields.Fitnes.required'    => 'حقل اللياقة مطلوب',
+    'fields.Fitnes.boolean'     => 'قيمة اللياقة يجب أن تكون نعم أو لا',
+
+    'primary_image.required'    => 'صورة السائق مطلوبة',
+    'primary_image.image'       => 'الملف المرفوع يجب أن يكون صورة',
+    'primary_image.mimes'       => 'الصورة يجب أن تكون من نوع jpeg أو png أو jpg أو gif أو svg',
+    'primary_image.max'         => 'حجم الصورة يجب ألا يتجاوز 2 ميجابايت',
+];
+
 
     public function mount()
     {
         $this->loadDrivers();
         $this->buses = Bus::all();
         $this->wings = Wing::all();
-        $this->regions = Region::all();
+        // $this->regions = Region::all();
+       $this->regions =  Region::whereNull('parent_id')->get();
     }
 
     public function updatedSearch()
@@ -144,13 +152,13 @@ class Drivers extends Component
 
         $data = $this->fields;
 
-        $imageService = new ImageService();
-        $primary_image = null;
+        // $imageService = new ImageService();
+        // $primary_image = null;
 
-        if ($this->primary_image) {
-            $primary_image = $imageService->saveImage($this->primary_image, 'images/drivers');
-            $data['Picture'] = $primary_image;
-        }
+        // if ($this->primary_image) {
+        //     $primary_image = $imageService->saveImage($this->primary_image, 'images/drivers');
+        //     $data['Picture'] = $primary_image;
+        // }
 
         Driver::create($data);
 
@@ -175,15 +183,15 @@ class Drivers extends Component
 
         $data = $this->fields;
 
-        $imageService = new ImageService();
-        $primary_image = null;
+        // $imageService = new ImageService();
+        // $primary_image = null;
 
-        if ($this->primary_image) {
-            $primary_image = $imageService->saveImage($this->primary_image, 'images/drivers');
-            $data['Picture'] = $primary_image;
-        } else {
-            $data['Picture'] = $this->selectedDriver->Picture;
-        }
+        // if ($this->primary_image) {
+        //     $primary_image = $imageService->saveImage($this->primary_image, 'images/drivers');
+        //     $data['Picture'] = $primary_image;
+        // } else {
+        //     $data['Picture'] = $this->selectedDriver->Picture;
+        // }
 
         $this->selectedDriver->update($data);
 
@@ -218,7 +226,6 @@ class Drivers extends Component
             'LicenseNo' => '',
             'Ownership' => '',
             'wing_id' => '',
-            // 'bus_id' => '',
             'CheckUp' => '',
             'Behavior' => '',
             'Form' => '',

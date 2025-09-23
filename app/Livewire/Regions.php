@@ -11,6 +11,7 @@ class Regions extends Component
 {
 
     public $regions;
+    public $parent_regions;
     public $Name, $parent_id, $region_id;
     public $isEdit = false;
     public $deleteId = null;
@@ -28,6 +29,7 @@ class Regions extends Component
     }
     public function loadRegions()
     {
+        $this->parent_regions= Region::whereNull('parent_id')->get();
         $this->regions = Region::with('parent')
             ->when($this->search, function ($query) {
                 $query->where('Name', 'like', '%' . $this->search . '%');
@@ -125,7 +127,7 @@ class Regions extends Component
     public function render()
     {
         $parents = Region::with('parent')->get();
-                $parent_regions = Region::whereNull('parent_id')->get();
-        return view('livewire.regions', compact('parents','parent_regions'));
+        $parent_regions = Region::whereNull('parent_id')->get();
+        return view('livewire.regions', compact('parents', 'parent_regions'));
     }
 }

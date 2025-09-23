@@ -13,7 +13,6 @@ class Student extends Model
         'Name',
         'Grade',
         'Phone',
-        // 'Picture',
         'Stu_position',
         'wing_id',
         'Division',
