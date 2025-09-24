@@ -15,7 +15,7 @@
                 <i class="fas fa-plus-circle me-1"></i> إضافة طالب جديد
             </button>
         @endif
-
+{{-- 
      <div class="d-flex justify-content-between mb-4">
         <button wire:click="openImportModal" class="btn btn-success">
             <i class="fas fa-file-excel me-1"></i> استيراد Excel
@@ -24,7 +24,7 @@
         <button wire:click="exportExcel" class="btn btn-warning">
             <i class="fas fa-file-export me-1"></i> تصدير Excel
         </button>
-    </div>
+    </div> --}}
 
     {{-- موديل رفع الإكسل --}}
  @if ($showImportModal)
