@@ -99,6 +99,15 @@
                                                 </option>
                                             @endforeach
                                         </select>
+                                             <select class="custom-select"
+                                            wire:change="updateDistribution({{ $student->id }}, {{ $student->driver_id ?? 'null' }}, {{ $student->region_id ?? 'null' }}, $event.target.value)">
+                                            <option value="">اختر الموقف</option>
+                                            @foreach ($stu_postion as $position)
+                                                <option value="{{ $position }}" @selected($student->Stu_position == $position)>
+                                                    {{ $position }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </td>
                             </tr>

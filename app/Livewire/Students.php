@@ -3,31 +3,32 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use App\Models\Student;
 use App\Models\Wing;
 use App\Models\Region;
-use App\Services\ImageService;
 use App\Models\Teacher;
-// use Livewire\WithFileUploads;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\StudentsImport;
+use App\Exports\StudentsExport;
 
 class Students extends Component
 {
-    // use WithFileUploads;
-    public $students, $buses, $wings, $regions;
-    public $name, $grade, $sex, $phone, $teachers,
-        // $picture,
-        $stu_position, $wing_id, $division, $region_id, $bus_id;
-    public $editMode = false, $selectedStudent;
+    use WithFileUploads;
+
+    public $students, $wings, $regions, $teachers;
+    public $name, $grade, $sex, $phone,
+           $stu_position, $wing_id, $division, $region_id, $teacher_id;
+    public $editMode = false, $selectedStudentId, $editId = null;
     public $primary_image;
     public $showForm = false;
     public $deleteId = null;
     public $search = '';
-    public $selectedStudentId;
-    public $editId = null;
-
-    public $teacher_id;
-
     public $child_region_id;
+
+    public $excelFile;
+    public $showImportModal = false;
+
     protected $rules = [
         'name' => 'required|string|max:200',
         'grade' => 'required|string|max:30',
@@ -40,53 +41,66 @@ class Students extends Component
         'teacher_id' => 'nullable|exists:teachers,id',
     ];
 
-
-    protected $messages = [
-        'name.required' => 'اسم الطالب مطلوب',
-        'name.string'   => 'اسم الطالب يجب أن يكون نصًا',
-        'name.max'      => 'اسم الطالب لا يجب أن يتجاوز 200 حرف',
-        'grade.required' => 'الصف مطلوب',
-        'grade.string'  => 'الصف يجب أن يكون نصًا',
-        'grade.max'     => 'الصف لا يجب أن يتجاوز 30 حرف',
-        'sex.required' => 'النوع مطلوب',
-        'phone.max' => 'رقم الهاتف لا يجب أن يتجاوز 20 حرف',
-        'phone.required' => 'رقم الهاتف مطلوب',
-        'stu_position.required' => '  موقف الطالب مطلوب',
-        'wing_id.required' => 'الجناح مطلوب',
-        'wing_id.exists' => 'الجناح غير موجود',
-        'region_id.required' => 'المنطقة مطلوبة',
-        'region_id.exists' => 'المنطقة غير موجودة',
-        'division.required' => 'الشعبه مطلوبة',
-        'child_region_id.required' => 'المنطقة الفرعية مطلوبة',
-
-        // 'primary_image.image' => 'الصورة يجب أن تكون صورة',
-        // 'primary_image.required' => 'الصورة مطلوبة',
-        // 'primary_image.max' => 'الصورة لا يجب أن تتجاوز 2048 كيلوبايت',
-    ];
-
     public function mount()
     {
-        $this->students = Student::with('driver')->get();
+        $this->students = Student::with(['wing','region'])->get();
         $this->wings = Wing::all();
         $this->regions = Region::all();
         $this->teachers = Teacher::all();
     }
 
+    // فتح/إغلاق الموديل
+    public function openImportModal()
+    {
+        $this->resetErrorBag();
+        $this->resetValidation();
+        $this->excelFile = null;
+        $this->showImportModal = true;
+    }
+
+    public function closeImportModal()
+    {
+        $this->showImportModal = false;
+    }
+
+    // استيراد إكسل
+    public function importExcel()
+    {
+        $this->validate([
+            'excelFile' => 'required|mimes:xlsx,csv',
+        ]);
+
+        Excel::import(new StudentsImport, $this->excelFile->getRealPath());
+
+        $this->excelFile = null;
+        $this->students = Student::with(['wing','region'])->get();
+        $this->showImportModal = false;
+
+        $this->dispatch('show-toast', [
+            'type' => 'success',
+            'message' => 'تم استيراد الطلاب بنجاح'
+        ]);
+    }
+
+    // تصدير إكسل
+    // public function exportExcel()
+    // {
+    //     return Excel::download(new StudentsExport, 'students.xlsx');
+    // }
+
+
+
+
+
     public function createStudent()
     {
         $this->validate();
-        // $imageService = new ImageService();
-        // $picturePath = null;
 
-        // if ($this->primary_image) {
-        //     $picturePath = $imageService->saveImage($this->primary_image, 'images/students');
-        // }
         Student::create([
             'Name' => $this->name,
             'Grade' => $this->grade,
             'Sex' => $this->sex,
             'Phone' => $this->phone,
-            // 'Picture' => $picturePath,
             'Stu_position' => $this->child_region_id,
             'wing_id' => $this->wing_id,
             'Division' => $this->division,
@@ -110,7 +124,6 @@ class Students extends Component
         $this->grade = $student->Grade;
         $this->sex = $student->Sex;
         $this->phone = $student->Phone;
-        // $this->picture = $student->Picture;
         $this->stu_position = $student->Stu_position;
         $this->wing_id = $student->wing_id;
         $this->division = $student->Division;
@@ -122,19 +135,13 @@ class Students extends Component
     public function updateStudent()
     {
         $this->validate();
-        // $imageService = new ImageService();
-        // $picturePath = null;
 
-        // if ($this->primary_image) {
-        //     $picturePath = $imageService->saveImage($this->primary_image, 'images/students');
-        // }
         $student = Student::findOrFail($this->selectedStudentId);
         $student->update([
             'Name' => $this->name,
             'Grade' => $this->grade,
             'Sex' => $this->sex,
             'Phone' => $this->phone,
-            // 'Picture' => $picturePath ?? $student->Picture,
             'Stu_position' => $this->child_region_id,
             'wing_id' => $this->wing_id,
             'Division' => $this->division,
@@ -160,12 +167,7 @@ class Students extends Component
         }
     }
 
-    public function cancel()
-    {
-        $this->resetForm();
-    }
-
-    public  function resetForm()
+    public function resetForm()
     {
         $this->reset([
             'editId',
@@ -173,7 +175,6 @@ class Students extends Component
             'grade',
             'sex',
             'phone',
-            // 'picture',
             'stu_position',
             'wing_id',
             'division',
@@ -189,10 +190,11 @@ class Students extends Component
 
     public function render()
     {
-        $this->students = Student::with([ 'wing', 'region'])
+        $this->students = Student::with(['wing', 'region'])
             ->where('Name', 'like', '%' . $this->search . '%')
             ->orWhere('id', 'like', '%' . $this->search . '%')
             ->get();
+
         $children_regions = $this->region_id
             ? Region::where('parent_id', $this->region_id)->get()
             : null;
