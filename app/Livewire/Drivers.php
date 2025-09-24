@@ -53,6 +53,8 @@ class Drivers extends Component
                 'fields.Phone' => 'required|digits:9|unique:drivers,Phone,' . ($this->editMode ? $this->selectedDriver->id : 'NULL'),
 
                 'fields.LicenseNo' => 'required|string|max:10|unique:drivers,LicenseNo,' . $this->selectedDriver->id,
+                'fields.Bus_type' => 'required|string|max:10',
+                'fields.No_Passengers' => 'required|string|max:10',
                 'fields.Ownership' => 'required|string|max:50',
                 'fields.wing_id' => 'required|exists:wings,id',
                 'fields.CheckUp' => 'required|boolean',
@@ -65,6 +67,8 @@ class Drivers extends Component
             : [
                 'fields.Name' => 'required|string|max:50',
                 'fields.IDNo' => 'required|string|max:11|unique:drivers,IDNo',  
+                'fields.Bus_type' => 'required|string|max:10',
+                'fields.No_Passengers' => 'required|string|max:10',
                 'fields.Phone' => 'required|digits:9|unique:drivers,Phone',
                 'fields.LicenseNo' => 'required|string|max:8|unique:drivers,LicenseNo',
                 'fields.Ownership' => 'required|string|max:50',
@@ -88,6 +92,12 @@ class Drivers extends Component
     'fields.Phone.required'     => 'رقم الهاتف مطلوب',
     'fields.Phone.digits'       => 'رقم الهاتف يجب أن يكون 9 أرقام',
     'fields.Phone.unique'       => 'رقم الهاتف مستخدم من قبل',
+    
+    'fields.Bus_type.required'  => 'نوع الباص مطلوب',
+    'fields.Bus_type.max'       => 'نوع الباص يجب ألا يتجاوز 10 حرف',
+    
+    'fields.No_Passengers.required' => 'عدد الركاب مطلوب',
+    'fields.No_Passengers.max'      => 'عدد الركاب يجب ألا يتجاوز 10 رقم',
     
     'fields.LicenseNo.required' => 'رقم الرخصة مطلوب',
     'fields.LicenseNo.unique'   => 'رقم الرخصة مستخدم من قبل',
@@ -224,6 +234,8 @@ class Drivers extends Component
             'IDNo' => '',
             'Phone' => '',
             'LicenseNo' => '',
+            'Bus_type' => '',
+            'No_Passengers' => '',
             'Ownership' => '',
             'wing_id' => '',
             'CheckUp' => '',

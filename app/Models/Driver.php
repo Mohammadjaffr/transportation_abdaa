@@ -16,6 +16,8 @@ class Driver extends Model
         'LicenseNo',
         'Picture',
         'Ownership',
+        'Bus_type',
+        'No_Passengers',
         'wing_id',
         'CheckUp',
         'Behavior',

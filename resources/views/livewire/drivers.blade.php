@@ -69,6 +69,30 @@
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
+                            {{-- نوع الباص --}}
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">نوع الباص</label>
+                                     <select wire:model="fields.Bus_type" class="form-control border-5  @error('fields.Bus_type') is-invalid @enderror">
+                                            <option value="">-- اختر نوع الباص --</option>
+                                            <option value="هايس">هايس</option>
+                                            <option value="كوستر">كوستر</option>
+                                        </select>
+                                @error('fields.Bus_type')
+                                    <span class="text-danger small">{{ $message }}</span>
+                                @enderror
+                            </div>
+                            {{-- عدد الركاب --}}
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">عدد الركاب</label>
+                                <input
+                                    type="text"
+                                    wire:model="fields.No_Passengers"
+                                    class="form-control @error('fields.No_Passengers') is-invalid @enderror"
+                                >
+                                @error('fields.No_Passengers')
+                                    <span class="text-danger small">{{ $message }}</span>
+                                @enderror
+                            </div>
 
                             {{-- المنطقة --}}
                             <div class="col-md-12 mb-3">
@@ -157,6 +181,8 @@
                                 <th>الهاتف</th>
                                 <th>رقم الرخصة</th>
                                 <th>الملكية</th>
+                                <th>نوع الباص</th>
+                                <th>عدد الركاب</th>
                                 <th>الجناح</th>
                                 <th>المنطقة</th>
                                 <th>الاستمارة</th>
@@ -174,6 +200,8 @@
                                     <td>{{ $driver->Phone }}</td>
                                     <td>{{ $driver->LicenseNo }}</td>
                                     <td>{{ $driver->Ownership ?? '-' }}</td>
+                                    <td>{{ $driver->Bus_type ?? '-' }}</td>
+                                    <td>{{ $driver->No_Passengers ?? '-' }}</td>
                                     <td>{{ $driver->Wing->Name ?? '-' }}</td>
                                     <td>{{ $driver->Region->Name ?? '-' }}</td>
                                     <td>
