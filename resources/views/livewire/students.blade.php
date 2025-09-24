@@ -7,79 +7,80 @@
 
 
 
-    <h3 class="fw-bold text-center d-none d-sm-block">إدارة الطلاب</h3>
+        <h3 class="fw-bold text-center d-none d-sm-block">إدارة الطلاب</h3>
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        @if (!$showForm)
-            <button wire:click="$set('showForm', true)" class="btn btn-primary add-btn w-sm-100 mb-3">
-                <i class="fas fa-plus-circle me-1"></i> إضافة طالب جديد
-            </button>
-        @endif
-{{-- 
-     <div class="d-flex justify-content-between mb-4">
-        <button wire:click="openImportModal" class="btn btn-success">
-            <i class="fas fa-file-excel me-1"></i> استيراد Excel
-        </button>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            @if (!$showForm && !$showImportForm)
+                <button wire:click="$set('showForm', true)" class="btn btn-primary add-btn w-sm-100 mb-3">
+                    <i class="fas fa-plus-circle me-1"></i> إضافة طالب جديد
+                </button>
 
-        <button wire:click="exportExcel" class="btn btn-warning">
-            <i class="fas fa-file-export me-1"></i> تصدير Excel
-        </button>
-    </div> --}}
+                <button wire:click="$set('showImportForm', true)" class="btn btn-success w-sm-100 mb-3">
+                    <i class="fas fa-file-excel me-1"></i> استيراد Excel
+                </button>
+            @endif
 
-    {{-- موديل رفع الإكسل --}}
- @if ($showImportModal)
-    <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content shadow">
-                <div class="modal-header bg-success text-white">
-                    <h5 class="modal-title">استيراد ملف Excel</h5>
-                    <button type="button" class="btn-close btn-light" wire:click="closeImportModal"></button>
-                </div>
-                <div class="modal-body">
-                    {{-- رفع الملف --}}
-                    <input type="file" wire:model="excelFile" accept=".xlsx,.csv" class="form-control">
-                    @error('excelFile') 
-                        <span class="text-danger d-block mt-2">{{ $message }}</span> 
-                    @enderror
 
-                    {{-- Progress Bar --}}
-                    <div x-data="{ progress: 0 }"
-                         x-on:livewire-upload-start="progress = 0"
-                         x-on:livewire-upload-progress="progress = $event.detail.progress"
-                         x-on:livewire-upload-finish="progress = 100; setTimeout(() => progress = 0, 1200)"
-                         x-on:livewire-upload-error="progress = 0"
-                         class="mt-3">
 
-                        <div x-show="progress > 0" class="progress" style="height: 22px;">
-                            <div class="progress-bar bg-success fw-bold"
-                                 role="progressbar"
-                                 :style="`width: ${progress}%`"
-                                 x-text="progress + '%'">
+            @if ($showImportForm)
+                <div class="card shadow-sm mb-4 rounded-3 w-100 ">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">استيراد ملف Excel</h5>
+                    </div>
+                    <div class="card-body ">
+                        <form wire:submit.prevent="importExcel" enctype="multipart/form-data">
+
+                            <div class="mb-3">
+                                <label>اختر ملف Excel</label>
+                                <input type="file" wire:model="excelFile" 
+                                    class="form-control @error('excelFile') is-invalid @enderror">
+                                @error('excelFile')
+                                    <span class="text-danger">{{ $message }}</span>
+                                @enderror
                             </div>
-                        </div>
+                            @if ($excelFile)
+                                <p class="text-success">تم اختيار الملف: {{ $excelFile->getClientOriginalName() }}</p>
+                            @endif
+
+                            {{-- Progress Bar --}}
+                            <div x-data="{ progress: 0 }" x-on:livewire-upload-start="progress = 0"
+                                x-on:livewire-upload-progress="progress = $event.detail.progress"
+                                x-on:livewire-upload-finish="progress = 100; setTimeout(() => progress = 0, 1200)"
+                                x-on:livewire-upload-error="progress = 0" class="mt-3">
+                                <div x-show="progress > 0" class="progress" style="height: 22px;">
+                                    <div class="progress-bar bg-success fw-bold" role="progressbar"
+                                        :style="`width: ${progress}%`" x-text="progress + '%'">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    <button type="submit" class="btn btn-success w-100 rounded-pill"
+                                        wire:loading.attr="disabled">
+                                        <span wire:loading.remove wire:target="importExcel">
+                                            <i class="fas fa-file-import me-1"></i> استيراد
+                                        </span>
+                                        <span wire:loading wire:target="importExcel">
+                                            <i class="fas fa-spinner fa-spin me-1"></i> جاري الاستيراد...
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="button" wire:click="resetImportForm"
+                                        class="btn btn-outline-secondary w-100 rounded-pill">
+                                        إلغاء
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
                     </div>
                 </div>
+            @endif
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary rounded-pill" wire:click="closeImportModal">إلغاء</button>
 
-                    {{-- زر الاستيراد مع سبينر --}}
-                    <button type="button" class="btn btn-success rounded-pill"
-                            wire:click="importExcel" wire:loading.attr="disabled">
-                        <span wire:loading.remove wire:target="importExcel">
-                            <i class="fas fa-file-import me-1"></i> استيراد
-                        </span>
-                        <span wire:loading wire:target="importExcel">
-                            <i class="fas fa-spinner fa-spin me-1"></i> جاري الاستيراد...
-                        </span>
-                    </button>
-                </div>
-            </div>
         </div>
-    </div>
-@endif
-
-    </div>
 
 
 

@@ -18,15 +18,16 @@ class Students extends Component
 
     public $students, $wings, $regions, $teachers;
     public $name, $grade, $sex, $phone,
-           $stu_position, $wing_id, $division, $region_id, $teacher_id;
+        $stu_position, $wing_id, $division, $region_id, $teacher_id;
     public $editMode = false, $selectedStudentId, $editId = null;
     public $primary_image;
     public $showForm = false;
     public $deleteId = null;
     public $search = '';
     public $child_region_id;
-
+    public $showImportForm = false;
     public $excelFile;
+
     public $showImportModal = false;
 
     protected $rules = [
@@ -43,52 +44,48 @@ class Students extends Component
 
     public function mount()
     {
-        $this->students = Student::with(['wing','region'])->get();
+        $this->students = Student::with(['wing', 'region'])->get();
         $this->wings = Wing::all();
         $this->regions = Region::all();
         $this->teachers = Teacher::all();
     }
 
-    // فتح/إغلاق الموديل
-    public function openImportModal()
-    {
-        $this->resetErrorBag();
-        $this->resetValidation();
-        $this->excelFile = null;
-        $this->showImportModal = true;
-    }
+    // public function openImportModal()
+    // {
+    //     $this->resetErrorBag();
+    //     $this->resetValidation();
+    //     $this->excelFile = null;
+    //     $this->showImportModal = true;
+    // }
 
     public function closeImportModal()
     {
         $this->showImportModal = false;
     }
 
-    // استيراد إكسل
-   public function importExcel()
-{
-    $this->validate([
-        'excelFile' => 'required|mimes:xlsx,csv',
-    ]);
+    public function importExcel()
+    {
+        $this->validate([
+            'excelFile' => 'required|mimes:xlsx,csv',
+        ]);
 
-    Excel::import(new StudentsImport, $this->excelFile->getRealPath());
+        Excel::import(new StudentsImport, $this->excelFile);
 
-    $this->excelFile = null;
-    $this->students = Student::with(['wing','region'])->get();
-    $this->showImportModal = false;
+        // $this->excelFile = null;
+        // $this->students = Student::with(['wing', 'region'])->get();
+        $this->showImportModal = false;
+        $this->reset('excelFile', 'showImportForm');
 
-    $this->dispatch('show-toast', [
-        'type' => 'success',
-        'message' => 'تم استيراد الطلاب بنجاح'
-    ]);
-}
+        $this->dispatch('show-toast', [
+            'type' => 'success',
+            'message' => 'تم استيراد الطلاب بنجاح'
+        ]);
+    }
 
-
-    // تصدير إكسل
-    // public function exportExcel()
-    // {
-    //     return Excel::download(new StudentsExport, 'students.xlsx');
-    // }
-
+    public function resetImportForm()
+    {
+        $this->reset('excelFile', 'showImportForm');
+    }
 
 
 
