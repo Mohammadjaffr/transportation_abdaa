@@ -33,7 +33,7 @@ class DistributionStu extends Component
         }
     }
 
-    public function updateDistribution($studentId, $driverId, $regionId,$positionId)
+    public function updateDistribution($studentId, $driverId, $regionId)
     {
         $student = Student::find($studentId);
         if ($student) {
@@ -42,9 +42,6 @@ class DistributionStu extends Component
             }
             if ($regionId !== '') {
                 $student->region_id = $regionId;
-            }
-            if($positionId !== ''){
-                $student->Stu_position = $positionId;
             }
             $student->save();
         }
@@ -101,7 +98,7 @@ class DistributionStu extends Component
 
         $this->students = $query->get();
         $this->drivers = Driver::all();
-       $this->regions =  Region::whereNull('parent_id')->get();
+        $this->regions = Region::all();
         $this->stu_postion = Student::distinct()->pluck('Stu_position')->toArray();
 
         return view('livewire.distribution-stu');

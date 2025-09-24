@@ -17,12 +17,14 @@ return new class extends Migration
             $table->string('Grade', 20);
             $table->string('Sex', 20);
             $table->string('Phone', 20);
+            // $table->string('Picture', 100);
             $table->string('Stu_position', 20);
             $table->foreignId('wing_id')->constrained('wings')->onDelete('cascade');
             $table->string('Division', 20)->nullable();
             $table->foreignId('region_id')->nullable()->constrained('regions')->onDelete('cascade');
             $table->foreignId('teacher_id')->nullable()->constrained('teachers')->nullOnDelete();
             $table->foreignId('driver_id')->nullable()->constrained('drivers')->nullOnDelete();
+
             $table->timestamps();
         });
     }

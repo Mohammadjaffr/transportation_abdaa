@@ -1,5 +1,5 @@
 <div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <div class="container py-2 py-md-4">
 
@@ -93,7 +93,7 @@
                                         </button>
                                     </div>
 
-
+                                
                                 </div>
                             </div>
                         </div>
@@ -130,9 +130,8 @@
                         <thead class="table-success">
                             <tr>
                                 <th class="text-center py-2 py-md-3 fw-bold">#</th>
-                                <th class="text-start py-2 py-md-3 fw-bold">المنطقة</th>
                                 <th class="text-start py-2 py-md-3 fw-bold">الموقف</th>
-
+                                <th class="text-start py-2 py-md-3 fw-bold">المنطقة</th>
                                 <th class="text-center py-2 py-md-3 fw-bold">الإجراءات</th>
                             </tr>
                         </thead>
@@ -141,7 +140,9 @@
                                 <tr class="border-bottom">
                                     <td class="text-center text-muted">{{ $loop->iteration }}</td>
 
-                                   
+                                    <td class="text-start">
+                                        <span class="fw-bold">{{ $region->Name }}</span>
+                                    </td>
 
                                     <td class="text-start">
                                         @if ($region->parent)
@@ -154,14 +155,10 @@
                                             <span class="text-muted">—</span>
                                         @endif
                                     </td>
-                                     <td class="text-start">
-                                        <span class="fw-bold">{{ $region->Name }}</span>
-                                    </td>
 
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center gap-1 gap-md-2 ">
-                                            <button
-                                                class="btn btn-icon btn-sm btn-success rounded-circle shadow-sm mx-1"
+                                            <button class="btn btn-icon btn-sm btn-success rounded-circle shadow-sm mx-1"
                                                 wire:click="edit({{ $region->id }})" data-bs-toggle="tooltip"
                                                 title="تعديل">
                                                 <i class="fas fa-edit"></i>

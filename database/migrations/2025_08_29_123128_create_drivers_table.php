@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('drivers', function (Blueprint $table) {
             $table->id();
-            $table->string('Name', 50);
-            $table->string('IDNo', 11);
-            $table->string('Phone', 9);
-            $table->string('LicenseNo', length: 8)->nullable()->unique();
-            $table->string('Picture', 20)->nullable();
-            $table->string('Ownership', 10);
+            $table->string('Name', 100);
+            $table->string('IDNo', 50);
+            $table->string('Phone', 10);
+            $table->string('LicenseNo', 20)->nullable()->unique();
+            $table->string('Picture', 50)->nullable();
+            $table->string('Ownership', 50);
             $table->foreignId('wing_id')->constrained('wings')->onDelete('cascade');
             $table->boolean('CheckUp')->nullable(); //الفحص
             $table->boolean('Behavior')->nullable(); //السلوك
