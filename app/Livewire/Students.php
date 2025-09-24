@@ -64,23 +64,24 @@ class Students extends Component
     }
 
     // استيراد إكسل
-    public function importExcel()
-    {
-        $this->validate([
-            'excelFile' => 'required|mimes:xlsx,csv',
-        ]);
+   public function importExcel()
+{
+    $this->validate([
+        'excelFile' => 'required|mimes:xlsx,csv',
+    ]);
 
-        Excel::import(new StudentsImport, $this->excelFile->getRealPath());
+    Excel::import(new StudentsImport, $this->excelFile->getRealPath());
 
-        $this->excelFile = null;
-        $this->students = Student::with(['wing','region'])->get();
-        $this->showImportModal = false;
+    $this->excelFile = null;
+    $this->students = Student::with(['wing','region'])->get();
+    $this->showImportModal = false;
 
-        $this->dispatch('show-toast', [
-            'type' => 'success',
-            'message' => 'تم استيراد الطلاب بنجاح'
-        ]);
-    }
+    $this->dispatch('show-toast', [
+        'type' => 'success',
+        'message' => 'تم استيراد الطلاب بنجاح'
+    ]);
+}
+
 
     // تصدير إكسل
     // public function exportExcel()

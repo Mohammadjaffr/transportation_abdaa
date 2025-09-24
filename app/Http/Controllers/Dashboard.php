@@ -21,7 +21,7 @@ class Dashboard extends Controller
 
         public function students()
         {
-            return view('students.index');
+            return view('Students.index');
         } 
         public function region()
         {
