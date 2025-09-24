@@ -11,12 +11,17 @@ use App\Models\Teacher;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\StudentsImport;
 use App\Exports\StudentsExport;
+use Livewire\WithPagination;
+
 
 class Students extends Component
 {
-    use WithFileUploads;
 
-    public $students, $wings, $regions, $teachers;
+    use WithFileUploads;
+    use WithPagination;
+
+    protected $paginationTheme = 'bootstrap';
+    public  $wings, $regions, $teachers;
     public $name, $grade, $sex, $phone,
         $stu_position, $wing_id, $division, $region_id, $teacher_id;
     public $editMode = false, $selectedStudentId, $editId = null;
@@ -44,19 +49,12 @@ class Students extends Component
 
     public function mount()
     {
-        $this->students = Student::with(['wing', 'region'])->get();
         $this->wings = Wing::all();
         $this->regions = Region::all();
         $this->teachers = Teacher::all();
     }
 
-    // public function openImportModal()
-    // {
-    //     $this->resetErrorBag();
-    //     $this->resetValidation();
-    //     $this->excelFile = null;
-    //     $this->showImportModal = true;
-    // }
+
 
     public function closeImportModal()
     {
@@ -65,21 +63,56 @@ class Students extends Component
 
     public function importExcel()
     {
-        $this->validate([
-            'excelFile' => 'required|mimes:xlsx,csv',
-        ]);
+        $this->validate(
+            [
+                'excelFile' => 'required|mimes:xlsx,csv',
+            ],
+            [
+                'excelFile.required' => 'يرجى اختيار ملف Excel',
+                'excelFile.mimes'    => 'يجب أن يكون الملف بصيغة Excel (xlsx) أو CSV فقط',
+            ]
+        );
 
-        Excel::import(new StudentsImport, $this->excelFile);
 
-        // $this->excelFile = null;
-        // $this->students = Student::with(['wing', 'region'])->get();
-        $this->showImportModal = false;
+        $import = new StudentsImport();
+        Excel::import($import, $this->excelFile->getRealPath());
+
+        if ($import->failures()->isNotEmpty()) {
+
+            $labels = [
+                'name' => 'عمود الاسم ',
+                'grad' => 'عمود الصف',
+                'sex' => 'عمود النوع',
+                'phone' => 'عمود الهاتف',
+                'stu_position' => 'عمود الموقف',
+                'wing' => 'عمود الجناح',
+                'region' => 'عمود المنطقة',
+                'teacher' => 'عمود المعلم',
+                'division' => 'عمود الشعبة',
+            ];
+
+            foreach ($import->failures() as $failure) {
+                $row    = $failure->row();
+                $attr   = $failure->attribute();
+                $value  = $failure->values()[$attr] ?? '';
+                $label  = $labels[$attr] ?? $attr;
+
+                foreach ($failure->errors() as $msg) {
+                    $pretty = "الصف {$row} – {$label}: {$msg}" . ($value !== '' ? " (القيمة: {$value})" : '');
+                    $this->addError('excelFile', $pretty);
+                }
+            }
+
+            return;
+        }
+
         $this->reset('excelFile', 'showImportForm');
+        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم استيراد الطلاب بنجاح']);
+    }
 
-        $this->dispatch('show-toast', [
-            'type' => 'success',
-            'message' => 'تم استيراد الطلاب بنجاح'
-        ]);
+    public function exportExcel()
+    {
+        return Excel::download(new StudentsExport, 'students.xlsx');
     }
 
     public function resetImportForm()
@@ -180,7 +213,6 @@ class Students extends Component
             'child_region_id',
             'teacher_id',
             'editMode',
-            'selectedStudent',
             'showForm'
         ]);
         $this->primary_image = null;
@@ -188,10 +220,13 @@ class Students extends Component
 
     public function render()
     {
-        $this->students = Student::with(['wing', 'region'])
-            ->where('Name', 'like', '%' . $this->search . '%')
-            ->orWhere('id', 'like', '%' . $this->search . '%')
-            ->get();
+        $students = Student::with(['wing', 'region', 'teacher'])
+            ->when($this->search, function ($query) {
+                $query->where('Name', 'like', '%' . $this->search . '%')
+                    ->orWhere('id', 'like', '%' . $this->search . '%');
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10);
 
         $children_regions = $this->region_id
             ? Region::where('parent_id', $this->region_id)->get()
@@ -199,6 +234,6 @@ class Students extends Component
 
         $parent_regions = Region::whereNull('parent_id')->get();
 
-        return view('livewire.students', compact('children_regions', 'parent_regions'));
+        return view('livewire.students', compact('students', 'children_regions', 'parent_regions'));
     }
 }
