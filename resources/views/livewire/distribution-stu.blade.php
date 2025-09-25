@@ -79,37 +79,59 @@
                                 </td>
                                 <td><span class="badge bg-primary">{{ $student->driver?->Name ?? 'غير محدد' }}</span>
                                 </td>
-                                <td>
-                                    <div class="d-flex gap-2">
-                                        <select class="custom-select"
-                                            wire:change="updateDistribution({{ $student->id }}, $event.target.value, {{ $student->region_id ?? 'null' }})">
-                                            <option value="">اختر سائق</option>
-                                            @foreach ($drivers as $driver)
-                                                <option value="{{ $driver->id }}" @selected($student->driver_id == $driver->id)>
-                                                    {{ $driver->Name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                        <select class="custom-select"
-                                            wire:change="updateDistribution({{ $student->id }}, {{ $student->driver_id ?? 'null' }}, $event.target.value)">
-                                            <option value="">اختر منطقة</option>
-                                            @foreach ($regions as $region)
-                                                <option value="{{ $region->id }}" @selected($student->region_id == $region->id)>
-                                                    {{ $region->Name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                             <select class="custom-select"
-                                            wire:change="updateDistribution({{ $student->id }}, {{ $student->driver_id ?? 'null' }}, {{ $student->region_id ?? 'null' }}, $event.target.value)">
-                                            <option value="">اختر الموقف</option>
-                                            @foreach ($stu_postion as $position)
-                                                <option value="{{ $position }}" @selected($student->Stu_position == $position)>
-                                                    {{ $position }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </td>
+                           <td>
+    <div class="d-flex gap-2">
+
+        {{-- اختيار السائق --}}
+        <select class="custom-select"
+            wire:change="updateDistribution(
+                {{ $student->id }},
+                $event.target.value,
+                {{ $student->region_id ?? 'null' }},
+                '{{ $student->Stu_position ?? '' }}'
+            )">
+            <option value="">اختر سائق</option>
+            @foreach ($drivers as $driver)
+                <option value="{{ $driver->id }}" @selected($student->driver_id == $driver->id)>
+                    {{ $driver->Name }}
+                </option>
+            @endforeach
+        </select>
+
+        {{-- اختيار المنطقة --}}
+        <select class="custom-select"
+            wire:change="updateDistribution(
+                {{ $student->id }},
+                {{ $student->driver_id ?? 'null' }},
+                $event.target.value,
+                '{{ $student->Stu_position ?? '' }}'
+            )">
+            <option value="">اختر منطقة</option>
+            @foreach ($regions as $region)
+                <option value="{{ $region->id }}" @selected($student->region_id == $region->id)>
+                    {{ $region->Name }}
+                </option>
+            @endforeach
+        </select>
+
+        {{-- اختيار الموقف --}}
+        <select class="custom-select"
+        wire:change="updateDistribution(
+            {{ $student->id }},
+            {{ $student->driver_id ?? 'null' }},
+            {{ $student->region_id ?? 'null' }},
+            $event.target.value
+        )">
+        <option value="">اختر الموقف</option>
+        @foreach ($stu_postion as $position)
+            <option value="{{ $position }}" @selected($student->Stu_position == $position)>
+                {{ $position }}
+            </option>
+        @endforeach
+    </select>
+    </div>
+</td>
+
                             </tr>
                         @empty
                             <tr>

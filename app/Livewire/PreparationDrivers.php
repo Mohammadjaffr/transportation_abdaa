@@ -35,10 +35,31 @@ class PreparationDrivers extends Component
 
     public function mount()
     {
-        $this->drivers = Driver::all();
         $this->regions = Region::all();
         $this->Month = now()->format('Y-m-d');
+        $this->refreshDrivers();   // تحميل السائقين بدون المكررين
         $this->loadPreparations();
+    }
+
+    /** فلترة السائقين بحيث لا يظهروا إذا تم تحضيرهم في نفس اليوم */
+    private function refreshDrivers()
+    {
+        $this->drivers = Driver::whereNotNull('Name')
+            ->whereDoesntHave('preparations', function ($q) {
+                $q->whereDate('Month', $this->Month);
+            })
+            ->get();
+    }
+
+    /** عند اختيار السائق يجيب منطقته تلقائي */
+    public function updatedDriverId($value)
+    {
+        if ($value) {
+            $driver = Driver::with('region')->find($value);
+            if ($driver) {
+                $this->region_id = $driver->region_id;
+            }
+        }
     }
 
     public function loadPreparations()
@@ -46,7 +67,7 @@ class PreparationDrivers extends Component
         $this->preparations = PreparationDriver::with(['driver', 'region'])
             ->when($this->search, function ($q) {
                 $q->whereHas('driver', fn($dq) => $dq->where('Name', 'like', '%' . $this->search . '%'))
-                    ->orWhere('Month', 'like', '%' . $this->search . '%');
+                  ->orWhere('Month', 'like', '%' . $this->search . '%');
             })
             ->get();
     }
@@ -54,13 +75,17 @@ class PreparationDrivers extends Component
     public function createPreparation()
     {
         $this->validate();
+
         PreparationDriver::create([
-            'Atend' => $this->Atend,
+            'Atend' => $this->Atend ? 1 : 0,
             'Month' => $this->Month,
             'driver_id' => $this->driver_id,
             'region_id' => $this->region_id,
         ]);
+
         $this->resetForm();
+        $this->refreshDrivers();   // يحدث السائقين بعد الإضافة
+        $this->loadPreparations(); // يحدث الجدول
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تسجيل حضور السائق']);
     }
 
@@ -71,41 +96,43 @@ class PreparationDrivers extends Component
         $this->editMode = true;
         $this->showForm = true;
 
-        $this->Atend = $prep->Atend;
-        $this->Month = $prep->Month;
+        $this->Atend     = $prep->Atend;
+        $this->Month     = $prep->Month;
         $this->driver_id = $prep->driver_id;
         $this->region_id = $prep->region_id;
-        $this->Atend = $prep->Atend;
     }
 
     public function updatePreparation()
     {
         $this->validate();
         $prep = PreparationDriver::findOrFail($this->selectedId);
+
         $prep->update([
-            'Atend' => $this->Atend ? 1 : 0,
-            'Month' => $this->Month,
+            'Atend'     => $this->Atend ? 1 : 0,
+            'Month'     => $this->Month,
             'driver_id' => $this->driver_id,
             'region_id' => $this->region_id,
-
         ]);
+
         $this->resetForm();
+        $this->refreshDrivers();
+        $this->loadPreparations();
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تحديث سجل حضور السائق']);
     }
-public function toggleAtend($prepId)
-{
-    $prep = PreparationDriver::find($prepId);
-    if ($prep) {
-        $prep->Atend = !$prep->Atend;
-        $prep->save();
-        $this->dispatch('show-toast', [
-            'type' => 'success',
-            'message' => 'تم تحديث حالة الحضور للسائق'
-        ]);
-        $this->loadPreparations(); // لتحديث العرض مباشرة
-    }
-}
 
+    public function toggleAtend($prepId)
+    {
+        $prep = PreparationDriver::find($prepId);
+        if ($prep) {
+            $prep->Atend = !$prep->Atend;
+            $prep->save();
+            $this->dispatch('show-toast', [
+                'type' => 'success',
+                'message' => 'تم تحديث حالة الحضور للسائق'
+            ]);
+            $this->loadPreparations();
+        }
+    }
 
     public function confirmDelete($id)
     {
@@ -117,6 +144,8 @@ public function toggleAtend($prepId)
         if ($this->deleteId) {
             PreparationDriver::find($this->deleteId)->delete();
             $this->deleteId = null;
+            $this->refreshDrivers();
+            $this->loadPreparations();
             $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم حذف سجل حضور السائق']);
         }
     }
@@ -136,10 +165,10 @@ public function toggleAtend($prepId)
     {
         $this->loadPreparations();
     }
+
     public function render()
     {
         $this->loadPreparations();
-
         return view('livewire.preparation-drivers');
     }
 }

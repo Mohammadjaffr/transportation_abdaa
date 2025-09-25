@@ -52,5 +52,9 @@ class Driver extends Model
 {
     return $this->belongsTo(Wing::class);
 }
+  public function preparations()
+{
+    return $this->hasMany(PreparationDriver::class, 'driver_id');
+}
 
 }

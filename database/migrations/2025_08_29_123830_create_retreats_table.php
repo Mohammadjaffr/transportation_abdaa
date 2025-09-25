@@ -19,7 +19,6 @@ return new class extends Migration
             $table->date('Date_of_interruption');
             $table->string('Reason', 200);
             $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
-            $table->foreignId('driver_id')->constrained('drivers')->onDelete('cascade');
             $table->timestamps();
         });
     }

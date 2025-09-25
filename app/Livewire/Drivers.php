@@ -234,8 +234,6 @@ class Drivers extends Component
             'IDNo' => '',
             'Phone' => '',
             'LicenseNo' => '',
-            'Bus_type' => '',
-            'No_Passengers' => '',
             'Ownership' => '',
             'wing_id' => '',
             'CheckUp' => '',

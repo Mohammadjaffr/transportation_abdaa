@@ -1,6 +1,7 @@
 <div class="container py-4">
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.css" rel="stylesheet">
 
     <div class="d-flex justify-content-between align-items-center mb-4">
         @if (!$showForm)
@@ -20,9 +21,11 @@
             <div class="card-body">
                 <form wire:submit.prevent="{{ $editMode ? 'updateRetreat' : 'createRetreat' }}">
                     <div class="row g-3">
-                        <div class="col-md-4">
-                            <label>الطالب</label>
-                            <select wire:model="student_id" class="form-control">
+
+                        {{-- اختيار الطالب --}}
+                        <div class="col-md-6">
+                            <label class="fw-bold">الطالب</label>
+                            <select id="student-select" wire:model.live="student_id" class="form-control">
                                 <option value="">-- اختر الطالب --</option>
                                 @foreach ($students as $student)
                                     <option value="{{ $student->id }}">{{ $student->Name }}</option>
@@ -33,45 +36,21 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-4 mb-3">
-
-                            <label>الصف</label>
-                            <select wire:model="grade" class="form-control">
-                                <option value="">اختر الصف</option>
-                                <option value="الاول">الاول</option>
-                                <option value="الثاني">الثاني</option>
-                                <option value="الثالث">الثالث</option>
-                                <option value="الرابع">الرابع</option>
-                                <option value="الخامس">الخامس</option>
-                                <option value="السادس">السادس</option>
-                                <option value="السابع">السابع</option>
-                                <option value="الثامن">الثامن</option>
-                                <option value="التاسع">التاسع</option>
-                                <option value="اول ثانوي">اول ثانوي</option>
-                                <option value="ثاني ثانوي">ثاني ثانوي</option>
-                                <option value="ثالث ثانوي">ثالث ثانوي</option>
-                            </select>
-                            @error('grade')
-                                <span class="text-danger">{{ $message }}</span>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-4">
-                            <label>الحافلة</label>
-                            <select wire:model="driver_id" class="form-control">
-                                <option value="">-- اختر السائق --</option>
-                                @foreach ($drivers as $driver)
-                                    <option value="{{ $driver->id }}">{{ $driver->Name }}</option>
-                                @endforeach
-                            </select>
-                            @error('driver_id')
+                        {{-- الصف --}}
+                        <div class="col-md-6">
+                            <label class="fw-bold">الصف</label>
+                            <input type="text" class="form-control" wire:model="Grade" readonly>
+                            @error('Grade')
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
                         </div>
 
+                      
+
+                        {{-- المنطقة --}}
                         <div class="col-md-6">
-                            <label>المنطقة</label>
-                            <select wire:model="region_id" class="form-control">
+                            <label class="fw-bold">المنطقة</label>
+                            <select wire:model="region_id" class="form-control" disabled>
                                 <option value="">-- اختر المنطقة --</option>
                                 @foreach ($regions as $region)
                                     <option value="{{ $region->id }}">{{ $region->Name }}</option>
@@ -82,33 +61,35 @@
                             @enderror
                         </div>
 
+                        {{-- تاريخ الانسحاب --}}
                         <div class="col-md-6">
-                            <label>تاريخ الانسحاب</label>
+                            <label class="fw-bold">تاريخ الانسحاب</label>
                             <input type="date" wire:model="Date_of_interruption" class="form-control">
                             @error('Date_of_interruption')
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="col-md-6 mb-3">
-                            <label>الشعبه</label>
-                            <select wire:model="division" class="form-control">
-                                <option value="">اختر الشعبه</option>
-                                <option value="أ">أ</option>
-                                <option value="ب">ب</option>
-                            </select>
-                            @error('division')
-                                <span class="text-danger">{{ $message }}</span>
+
+                        {{-- الشعبة --}}
+                        <div class="col-md-6">
+                            <label class="fw-bold">الشعبة</label>
+                            <input type="text" class="form-control" wire:model="Division" readonly>
+                            @error('Division')
+                                <span class="text-danger small">{{ $message }}</span>
                             @enderror
                         </div>
-                        <div class="col-md-6">
-                            <label>السبب</label>
+
+
+                        {{-- السبب --}}
+                        <div class="col-md-12">
+                            <label class="fw-bold">السبب</label>
                             <input type="text" wire:model="Reason" class="form-control">
                             @error('Reason')
                                 <span class="text-danger small">{{ $message }}</span>
                             @enderror
                         </div>
 
-
+                        {{-- أزرار --}}
                         <div class="col-6 mt-3">
                             <button type="submit" class="btn btn-{{ $editMode ? 'primary' : 'success' }} w-100">
                                 {{ $editMode ? 'تحديث' : 'إضافة' }}
@@ -125,7 +106,7 @@
         </div>
     @endif
 
-    {{-- Search --}}
+    {{-- البحث --}}
     <div class="col-md-12 mb-3">
         <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden">
             <span class="input-group-text bg-white border-0"><i class="fas fa-search text-primary"></i></span>
@@ -134,6 +115,7 @@
         </div>
     </div>
 
+    {{-- جدول --}}
     <div class="card shadow-lg border-0 rounded-3">
         <div class="card-header bg-success text-white">
             <h5 class="mb-0">قائمة الطلاب المنسحبين</h5>
@@ -164,8 +146,6 @@
                                 <td>{{ $retreat->Reason }}</td>
                                 <td>{{ $retreat->Division ?? '-' }}</td>
                                 <td>
-
-
                                     <button wire:click="edit({{ $retreat->id }})"
                                         class="btn btn-outline-success btn-sm rounded-pill mr-2">
                                         <i class="fas fa-edit"></i> تعديل
@@ -186,6 +166,7 @@
             </div>
         </div>
     </div>
+
     {{-- نافذة الحذف --}}
     @if ($deleteId)
         <div class="modal fade show d-block" style="background-color: rgba(0,0,0,0.5);">
@@ -193,8 +174,7 @@
                 <div class="modal-content">
                     <div class="modal-header bg-danger text-white">
                         <h5>تأكيد الحذف</h5>
-                        <button type="button" class="btn-close btn-light"
-                            wire:click="$set('deleteId', null)"></button>
+                        <button type="button" class="btn-close btn-light" wire:click="$set('deleteId', null)"></button>
                     </div>
                     <div class="modal-body">
                         هل أنت متأكد من حذف "{{ $deleteRetreatName }}"؟
@@ -202,12 +182,25 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary"
                             wire:click="$set('deleteId', null)">إلغاء</button>
-                        <button type="button" class="btn btn-danger" wire:click="deleteRetreat">نعم،
-                            احذف</button>
+                        <button type="button" class="btn btn-danger" wire:click="deleteRetreat">نعم، احذف</button>
                     </div>
                 </div>
             </div>
         </div>
     @endif
+
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js"></script>
+    <script>
+        document.addEventListener('livewire:navigated', function() {
+            new TomSelect("#student-select", {
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                },
+                placeholder: "ابحث عن الطالب..."
+            });
+        });
+    </script>
 
 </div>

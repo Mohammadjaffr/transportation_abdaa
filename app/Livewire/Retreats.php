@@ -7,12 +7,13 @@ use App\Models\Retreat;
 use App\Models\Student;
 use App\Models\Driver;
 use App\Models\Region;
+
 class Retreats extends Component
 {
-  public $retreats, $students, $drivers, $regions;
+    public $retreats, $students, $drivers, $regions;
 
     public $retreatId;
-    public $student_id, $Grade, $Division, $Date_of_interruption, $Reason, $region_id, $driver_id;
+    public $student_id, $Grade, $Division, $Date_of_interruption, $Reason, $region_id;
 
     public $editMode = false, $selectedRetreat;
     public $showForm = false;
@@ -27,8 +28,24 @@ class Retreats extends Component
         'Date_of_interruption' => 'required|date',
         'Reason' => 'required|string|max:200',
         'region_id' => 'required|exists:regions,id',
-        'driver_id' => 'required|exists:drivers,id',
     ];
+
+    /**
+     * ✅ يتم استدعاؤه تلقائياً عند تغيير الطالب
+     */
+    public function updatedStudentId($value)
+    {
+        if ($value) {
+            $student = Student::with(['region'])->find($value);
+
+            if ($student) {
+                $this->Grade     = $student->Grade;
+                $this->region_id = $student->region_id;
+                $this->Division  = $student->Division;
+                
+            }
+        }
+    }
 
     public function createRetreat()
     {
@@ -41,7 +58,7 @@ class Retreats extends Component
             'Date_of_interruption' => $this->Date_of_interruption,
             'Reason' => $this->Reason,
             'region_id' => $this->region_id,
-            'driver_id' => $this->driver_id,
+
         ]);
 
         $this->resetForm();
@@ -59,7 +76,6 @@ class Retreats extends Component
         $this->Date_of_interruption = $this->selectedRetreat->Date_of_interruption;
         $this->Reason = $this->selectedRetreat->Reason;
         $this->region_id = $this->selectedRetreat->region_id;
-        $this->driver_id = $this->selectedRetreat->driver_id;
 
         $this->editMode = true;
         $this->showForm = true;
@@ -76,7 +92,7 @@ class Retreats extends Component
             'Date_of_interruption' => $this->Date_of_interruption,
             'Reason' => $this->Reason,
             'region_id' => $this->region_id,
-            'driver_id' => $this->driver_id,
+
         ]);
 
         $this->resetForm();
@@ -104,7 +120,17 @@ class Retreats extends Component
 
     private function resetForm()
     {
-        $this->reset(['retreatId', 'student_id', 'Grade', 'Division', 'Date_of_interruption', 'Reason', 'region_id', 'driver_id', 'editMode', 'showForm']);
+        $this->reset([
+            'retreatId',
+            'student_id',
+            'Grade',
+            'Division',
+            'Date_of_interruption',
+            'Reason',
+            'region_id',
+            'editMode',
+            'showForm'
+        ]);
     }
 
     public function render()
@@ -113,15 +139,15 @@ class Retreats extends Component
         $this->drivers = Driver::all();
         $this->regions = Region::all();
 
-        $this->retreats = Retreat::with(['student', 'driver', 'region'])
+        $this->retreats = Retreat::with(['student','region'])
             ->when($this->search, function ($query) {
                 $query->whereHas('student', function ($q) {
                     $q->where('Name', 'like', "%{$this->search}%");
                 })
-                ->orWhere('Grade', 'like', "%{$this->search}%")
-                ->orWhereHas('driver', function ($q) {
-                    $q->where('Name', 'like', "%{$this->search}%");
-                });
+                    ->orWhere('Grade', 'like', "%{$this->search}%")
+                    ->orWhereHas('driver', function ($q) {
+                        $q->where('Name', 'like', "%{$this->search}%");
+                    });
             })
             ->orderBy('Date_of_interruption', 'desc')
             ->get();

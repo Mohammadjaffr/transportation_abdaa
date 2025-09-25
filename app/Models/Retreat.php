@@ -16,7 +16,6 @@ class Retreat extends Model
         'Date_of_interruption',
         'Reason',
         'region_id',
-        'driver_id'
     ];
 
     public function student()
@@ -24,10 +23,7 @@ class Retreat extends Model
         return $this->belongsTo(Student::class);
     }
 
-    public function driver()
-    {
-        return $this->belongsTo(Driver::class);
-    }
+    
 
     public function region()
     {

@@ -33,22 +33,23 @@ class DistributionStu extends Component
         }
     }
 
-    public function updateDistribution($studentId, $driverId, $regionId,$positionId)
+    public function updateDistribution($studentId, $driverId = null, $regionId = null, $positionId = null)
     {
         $student = Student::find($studentId);
         if ($student) {
-            if ($driverId !== '') {
+            if (!empty($driverId)) {
                 $student->driver_id = $driverId;
             }
-            if ($regionId !== '') {
+            if (!empty($regionId)) {
                 $student->region_id = $regionId;
             }
-            if($positionId !== ''){
+            if (!empty($positionId)) {
                 $student->Stu_position = $positionId;
             }
             $student->save();
         }
     }
+
 
     public function bulkAssign()
     {
@@ -85,11 +86,11 @@ class DistributionStu extends Component
             $query->where('Name', 'like', "%{$this->search}%");
         }
 
-      if ($this->regionFilter) {
-        $childRegions = Region::where('parent_id', $this->regionFilter)->pluck('id');
-        
-        $query->whereIn('region_id', $childRegions);
-    }
+        if ($this->regionFilter) {
+            $childRegions = Region::where('parent_id', $this->regionFilter)->pluck('id');
+
+            $query->whereIn('region_id', $childRegions);
+        }
 
         if ($this->driverFilter) {
             $query->where('driver_id', $this->driverFilter);
@@ -101,7 +102,7 @@ class DistributionStu extends Component
 
         $this->students = $query->get();
         $this->drivers = Driver::all();
-       $this->regions =  Region::whereNull('parent_id')->get();
+        $this->regions =  Region::whereNull('parent_id')->get();
         $this->stu_postion = Student::distinct()->pluck('Stu_position')->toArray();
 
         return view('livewire.distribution-stu');

@@ -136,7 +136,7 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">الطالب</label>
-                                <select wire:model="student_id" class="form-control">
+                                <select wire:model.live="student_id" class="form-control">
                                     <option value="">-- اختر الطالب --</option>
                                     @foreach ($students as $stu)
                                         <option value="{{ $stu->id }}">{{ $stu->Name }}</option>
@@ -148,19 +148,22 @@
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">السائق</label>
-                                <select wire:model="driver_id" class="form-control">
+                                <select wire:model="driver_id" class="form-control" disabled>
                                     <option value="">-- اختر السائق --</option>
                                     @foreach ($drivers as $drv)
-                                        <option value="{{ $drv->id }}">{{ $drv->Name }}</option>
+                                        <option value="{{ $drv->id }}" @selected($driver_id == $drv->id)>
+                                            {{ $drv->Name }}
+                                        </option>
                                     @endforeach
                                 </select>
                                 @error('driver_id')
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
+
                             <div class="col-md-6">
                                 <label class="form-label">المنطقة</label>
-                                <select wire:model="region_id" class="form-control">
+                                <select wire:model="region_id" class="form-control" disabled>
                                     <option value="">-- اختر المنطقة --</option>
                                     @foreach ($regions as $reg)
                                         <option value="{{ $reg->id }}">{{ $reg->Name }}</option>

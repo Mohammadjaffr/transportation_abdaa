@@ -20,76 +20,70 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
     public function model(array $row)
     {
         return new Student([
-            'Name'         => $row['name'],
-            'Grade'        => $row['grad'],
-            'Sex'          => $row['sex'],
-            'Phone'        => $row['phone'],
-            'wing_id'      => Wing::where('Name', trim($row['wing'] ?? ''))->value('id'),
-            'Division'     => $row['division'] ?? null,
-            'region_id'    => Region::where('Name', trim($row['region'] ?? ''))->value('id'),
-            'Stu_position' => $row['stu_position'],
-            'teacher_id'   => Teacher::where('Name', trim($row['teacher'] ?? ''))->value('id'),
+            'Name'         => trim($row['alasm'] ?? ''),
+            'Grade'        => trim($row['alsf'] ?? ''),
+            'Sex'          => trim($row['algns'] ?? ''),
+            'Phone'        => trim($row['alhatf'] ?? ''),
+            'wing_id'      => Wing::where('Name', trim($row['algnah'] ?? ''))->value('id'),
+            'Division'     => trim($row['alshaab'] ?? ''),
+            'region_id'    => Region::where('Name', trim($row['almntk'] ?? ''))->value('id'),
+            'Stu_position' => trim($row['almokf'] ?? ''),
+            'teacher_id'   => Teacher::where('Name', trim($row['almaalm'] ?? ''))->value('id'),
         ]);
     }
 
-   public function rules(): array
-{
-    return [
-        'name'         => ['required','string'],
-        'grad'         => ['required','string'],
-        'sex'          => ['required','string', Rule::in(['ذكر','أنثى'])],   
-        'phone'        => ['required'],
-        'stu_position' => ['required','string'],
+    public function rules(): array
+    {
+        return [
+            'alasm'     => ['required','string'],
+            'alsf'      => ['required','string'],
+            'algns'     => ['required','string', Rule::in(['ذكر','أنثى'])],
+            'alhatf'    => ['required'],
+            'almokf'    => ['required','string'],
 
-        'wing'   => ['required', Rule::exists('wings','Name')],
-        'region' => ['nullable', Rule::exists('regions','Name')],
-        'teacher'=> ['nullable', Rule::exists('teachers','Name')],
+            'algnah'    => ['required', Rule::exists('wings','Name')],
+            'almntk'    => ['nullable', Rule::exists('regions','Name')],
+            'almaalm'   => ['nullable', Rule::exists('teachers','Name')],
 
-        'division'     => ['required','string', Rule::in(['أ','ب','ج'])],   
-    ];
-}
-
+            'alshaab'   => ['required','string', Rule::in(['أ','ب','ج'])],
+        ];
+    }
 
     public function customValidationAttributes()
     {
         return [
-        'name.required'         => 'الاسم مطلوب',
-        'grad.required'         => 'الصف مطلوب',
-        'sex.required'          => 'النوع مطلوب',
-        'sex.in'                => 'النوع يجب أن يكون إما "ذكر" أو "أنثى"',
-        'phone.required'        => 'الهاتف مطلوب',
-        'stu_position.required' => 'الموقف مطلوب',
-
-        'wing.required'         => 'الجناح مطلوب',
-        'wing.exists'           => 'اسم الجناح غير صحيح',
-        'region.exists'         => 'اسم المنطقة غير صحيح',
-        'teacher.exists'        => 'اسم المعلم غير صحيح',
-
-        'division.required'     => 'الشعبة مطلوبة',
-        'division.in'           => 'الشعبة يجب أن تكون إما "أ" أو "ب" أو "ج"',
-    ];
+            'alasm'     => 'الاسم',
+            'alsf'      => 'الصف',
+            'algns'     => 'الجنس',
+            'alhatf'    => 'الهاتف',
+            'almokf'    => 'الموقف',
+            'algnah'    => 'الجناح',
+            'almntk'    => 'المنطقة',
+            'almaalm'   => 'المعلم',
+            'alshaab'   => 'الشعبة',
+        ];
     }
 
     public function customValidationMessages()
     {
-          return [
-        'name.required'         => 'الاسم مطلوب',
-        'grad.required'         => 'الصف مطلوب',
+        return [
+            'alasm.required'     => 'الاسم مطلوب',
+            'alsf.required'      => 'الصف مطلوب',
 
-        'sex.required'          => 'النوع مطلوب',
-        'sex.in'                => 'النوع يجب أن يكون إما "ذكر" أو "أنثى". (القيمة المدخلة: :input)',
+            'algns.required'     => 'الجنس مطلوب',
+            'algns.in'           => 'الجنس يجب أن يكون إما "ذكر" أو "أنثى". (القيمة المدخلة: :input)',
 
-        'phone.required'        => 'الهاتف مطلوب',
-        'stu_position.required' => 'الموقف مطلوب',
+            'alhatf.required'    => 'الهاتف مطلوب',
+            'almokf.required'    => 'الموقف مطلوب',
 
-        'wing.required'         => 'الجناح مطلوب',
-        'wing.exists'           => 'اسم الجناح غير صحيح',
+            'algnah.required'    => 'الجناح مطلوب',
+            'algnah.exists'      => 'اسم الجناح غير صحيح',
 
-        'region.exists'         => 'اسم المنطقة غير صحيح',
-        'teacher.exists'        => 'اسم المعلم غير صحيح',
+            'almntk.exists'      => 'اسم المنطقة غير صحيح',
+            'almaalm.exists'     => 'اسم المعلم غير صحيح',
 
-        'division.required'     => 'الشعبة مطلوبة',
-        'division.in'           => 'الشعبة يجب أن تكون إما "أ" أو "ب" أو "ج". (القيمة المدخلة: :input)',
-    ];
+            'alshaab.required'   => 'الشعبة مطلوبة',
+            'alshaab.in'         => 'الشعبة يجب أن تكون إما "أ" أو "ب" أو "ج". (القيمة المدخلة: :input)',
+        ];
     }
 }

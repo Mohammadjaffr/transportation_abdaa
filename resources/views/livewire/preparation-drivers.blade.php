@@ -135,7 +135,7 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">السائق</label>
-                                <select wire:model="driver_id" class="form-control">
+                                <select wire:model.live="driver_id" class="form-control">
                                     <option value="">-- اختر السائق --</option>
                                     @foreach ($drivers as $drv)
                                         <option value="{{ $drv->id }}">{{ $drv->Name }}</option>
@@ -148,7 +148,7 @@
 
                             <div class="col-md-6">
                                 <label class="form-label">المنطقة</label>
-                                <select wire:model="region_id" class="form-control">
+                                <select wire:model="region_id" class="form-control" disabled>
                                     <option value="">-- اختر المنطقة --</option>
                                     @foreach ($regions as $reg)
                                         <option value="{{ $reg->id }}">{{ $reg->Name }}</option>
@@ -166,14 +166,6 @@
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
                             </div>
-{{-- 
-                            <div class="form-switch {{ $Atend ? 'switch-active' : 'switch-banned' }}">
-                                <input type="checkbox" id="atendSwitch" wire:model="Atend">
-                                <label for="atendSwitch"></label>
-                            </div>
-                            <span class="ms-2 fw-semibold {{ $Atend ? 'text-success' : 'text-danger' }}">
-                                {{ $Atend ? 'حاضر' : 'غائب' }}
-                            </span> --}}
 
 
 

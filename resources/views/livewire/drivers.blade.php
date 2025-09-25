@@ -72,7 +72,7 @@
                             {{-- نوع الباص --}}
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold">نوع الباص</label>
-                                     <select wire:model="fields.Bus_type" class="form-control border-5  @error('fields.Bus_type') is-invalid @enderror">
+                                     <select wire:model="fields.Bus_type" class="form-control border-3  @error('fields.Bus_type') is-invalid @enderror">
                                             <option value="">-- اختر نوع الباص --</option>
                                             <option value="هايس">هايس</option>
                                             <option value="كوستر">كوستر</option>

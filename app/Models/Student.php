@@ -43,5 +43,9 @@ class Student extends Model
         return $this->belongsTo(Teacher::class, 'teacher_id');
  
    }
-   
+  public function preparations()
+{
+    return $this->hasMany(PreparationStu::class, 'student_id');
+}
+
 }
