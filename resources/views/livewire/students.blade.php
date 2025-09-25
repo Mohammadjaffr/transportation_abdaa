@@ -338,18 +338,7 @@
                             <tr>
                                 <td>{{ $student->id }}</td>
 
-                                {{-- <td class="text-center">
-
-                                    @if ($student->Picture)
-                                        <img src="{{ url($student->Picture) }}" alt="{{ $student->Name }}"
-                                            class="img-thumbnail" width="80" height="80">
-                                    @else
-                                        <div class="rounded-circle d-inline-flex align-items-center justify-content-center bg-light"
-                                            style="width: 80px; height: 80px;">
-                                            <i class="fas fa-university text-muted fa-lg"></i>
-                                        </div>
-                                    @endif
-                                </td> --}}
+                              
                                 <td> {{ $student->Name }}
                                 </td>
                                 <td>{{ $student->Grade }}</td>

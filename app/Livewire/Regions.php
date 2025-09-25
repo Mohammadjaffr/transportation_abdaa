@@ -42,6 +42,8 @@ class Regions extends Component
     {
         $this->validate([
             'Name' => 'required|string|max:255|unique:regions,Name',
+        ],[
+             'Name.required' => 'يرجى إدخال اسم المنطقة',
         ]);
 
         Region::create([

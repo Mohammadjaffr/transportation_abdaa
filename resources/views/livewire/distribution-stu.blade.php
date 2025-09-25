@@ -4,42 +4,42 @@
     </h3>
 
     {{-- الفلاتر --}}
-     
-       <div class="col-12 col-md-12 mb-2  mb-md-0">
-                    <div class="input-group shadow-sm rounded-pill overflow-hidden border-0 ">
-                        <span class="input-group-text bg-white border-0 rounded-0">
-                            <i class="fas fa-search text-primary"></i>
-                        </span>
-                        <input type="text" class="form-control border-0  py-2 " placeholder="ابحث باسم الطالب ..."
-                            wire:model.debounce.300ms.live="search">
-                    </div>
-                </div>
-            <div class="row m-3">
-                <div class="col-md-4">
-                    <select wire:model.live="regionFilter" class="custom-select">
-                        <option value=""> كل المناطق</option>
-                        @foreach ($regions as $region)
-                            <option value="{{ $region->id }}">{{ $region->Name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <select wire:model.live="driverFilter" class="custom-select">
-                        <option value=""> كل السائقين</option>
-                        @foreach ($drivers as $driver)
-                            <option value="{{ $driver->id }}">{{ $driver->Name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <select wire:model.live="positionFilter" class="custom-select">
-                        <option value=""> كل المواقف</option>
-                        @foreach ($stu_postion as $position)
-                            <option value="{{ $position }}">{{ $position }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                {{-- <div class="col-md-12 mt-3 text-end">
+
+    <div class="col-12 col-md-12 mb-2  mb-md-0">
+        <div class="input-group shadow-sm rounded-pill overflow-hidden border-0 ">
+            <span class="input-group-text bg-white border-0 rounded-0">
+                <i class="fas fa-search text-primary"></i>
+            </span>
+            <input type="text" class="form-control border-0  py-2 " placeholder="ابحث باسم الطالب ..."
+                wire:model.debounce.300ms.live="search">
+        </div>
+    </div>
+    <div class="row m-3">
+        <div class="col-md-4">
+            <select wire:model.live="regionFilter" class="custom-select">
+                <option value=""> كل المناطق</option>
+                @foreach ($regions as $region)
+                    <option value="{{ $region->id }}">{{ $region->Name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select wire:model.live="driverFilter" class="custom-select">
+                <option value=""> كل السائقين</option>
+                @foreach ($drivers as $driver)
+                    <option value="{{ $driver->id }}">{{ $driver->Name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-4">
+            <select wire:model.live="positionFilter" class="custom-select">
+                <option value=""> كل المواقف</option>
+                @foreach ($stu_postion as $position)
+                    <option value="{{ $position }}">{{ $position }}</option>
+                @endforeach
+            </select>
+        </div>
+        {{-- <div class="col-md-12 mt-3 text-end">
                     <button class="btn btn-gradient btn-lg px-4 shadow-sm" wire:click="bulkAssign">
                         <i class="fas fa-users-cog me-2"></i> توزيع المحددين
                     </button>
@@ -56,7 +56,6 @@
                 <table class="table table-hover align-middle mb-0 text-center">
                     <thead class="sticky-top table-header">
                         <tr>
-                            <th><input type="checkbox" wire:model="selectAll"></th>
                             <th>#</th>
                             <th>الاسم</th>
                             <th>الموقف</th>
@@ -68,7 +67,6 @@
                     <tbody>
                         @forelse($students as $student)
                             <tr>
-                                <td><input type="checkbox" value="{{ $student->id }}" wire:model="selectedStudents">
                                 </td>
                                 <td>{{ $student->id }}</td>
                                 <td class="fw-bold">{{ $student->Name }}</td>
@@ -79,58 +77,58 @@
                                 </td>
                                 <td><span class="badge bg-primary">{{ $student->driver?->Name ?? 'غير محدد' }}</span>
                                 </td>
-                           <td>
-    <div class="d-flex gap-2">
+                                <td>
+                                    <div class="d-flex gap-2">
 
-        {{-- اختيار السائق --}}
-        <select class="custom-select"
-            wire:change="updateDistribution(
-                {{ $student->id }},
-                $event.target.value,
-                {{ $student->region_id ?? 'null' }},
-                '{{ $student->Stu_position ?? '' }}'
-            )">
-            <option value="">اختر سائق</option>
-            @foreach ($drivers as $driver)
-                <option value="{{ $driver->id }}" @selected($student->driver_id == $driver->id)>
-                    {{ $driver->Name }}
-                </option>
-            @endforeach
-        </select>
+                                        {{-- اختيار السائق --}}
+                                        <select class="custom-select"
+                                            wire:change="updateDistribution(
+                                                    {{ $student->id }},
+                                                    $event.target.value,
+                                                    {{ $student->region_id ?? 'null' }},
+                                                    '{{ $student->Stu_position ?? '' }}'
+                                                )">
+                                            <option value="">اختر سائق</option>
+                                            @foreach ($drivers as $driver)
+                                                <option value="{{ $driver->id }}" @selected($student->driver_id == $driver->id)>
+                                                    {{ $driver->Name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
 
-        {{-- اختيار المنطقة --}}
-        <select class="custom-select"
-            wire:change="updateDistribution(
-                {{ $student->id }},
-                {{ $student->driver_id ?? 'null' }},
-                $event.target.value,
-                '{{ $student->Stu_position ?? '' }}'
-            )">
-            <option value="">اختر منطقة</option>
-            @foreach ($regions as $region)
-                <option value="{{ $region->id }}" @selected($student->region_id == $region->id)>
-                    {{ $region->Name }}
-                </option>
-            @endforeach
-        </select>
+                                        {{-- اختيار المنطقة --}}
+                                        <select class="custom-select"
+                                            wire:change="updateDistribution(
+                                                            {{ $student->id }},
+                                                            {{ $student->driver_id ?? 'null' }},
+                                                            $event.target.value,
+                                                            '{{ $student->Stu_position ?? '' }}'
+                                                        )">
+                                            <option value="">اختر منطقة</option>
+                                            @foreach ($regions as $region)
+                                                <option value="{{ $region->id }}" @selected($student->region_id == $region->id)>
+                                                    {{ $region->Name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
 
-        {{-- اختيار الموقف --}}
-        <select class="custom-select"
-        wire:change="updateDistribution(
-            {{ $student->id }},
-            {{ $student->driver_id ?? 'null' }},
-            {{ $student->region_id ?? 'null' }},
-            $event.target.value
-        )">
-        <option value="">اختر الموقف</option>
-        @foreach ($stu_postion as $position)
-            <option value="{{ $position }}" @selected($student->Stu_position == $position)>
-                {{ $position }}
-            </option>
-        @endforeach
-    </select>
-    </div>
-</td>
+                                        {{-- اختيار الموقف --}}
+                                        <select class="custom-select"
+                                            wire:change="updateDistribution(
+                                                {{ $student->id }},
+                                                {{ $student->driver_id ?? 'null' }},
+                                                {{ $student->region_id ?? 'null' }},
+                                                $event.target.value
+                                            )">
+                                            <option value="">اختر الموقف</option>
+                                            @foreach ($stu_postion as $position)
+                                                <option value="{{ $position }}" @selected($student->Stu_position == $position)>
+                                                    {{ $position }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </td>
 
                             </tr>
                         @empty

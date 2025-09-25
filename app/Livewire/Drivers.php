@@ -43,6 +43,7 @@ class Drivers extends Component
     public $showForm = false;
 
     protected $queryString = ['search'];
+    
 
     protected function rules()
     {

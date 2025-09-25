@@ -122,12 +122,11 @@
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover table-striped align-middle mb-0">
+                <table class="table table-hover table-striped align-middle text-center mb-0">
                     <thead class="table-success">
                         <tr>
                             <th>الطالب</th>
                             <th>الصف</th>
-                            <th>السائق</th>
                             <th>المنطقة</th>
                             <th>تاريخ الانسحاب</th>
                             <th>السبب</th>
@@ -140,7 +139,6 @@
                             <tr>
                                 <td>{{ $retreat->student?->Name ?? '-' }}</td>
                                 <td>{{ $retreat->Grade }}</td>
-                                <td>{{ $retreat->driver?->Name ?? '-' }}</td>
                                 <td>{{ $retreat->region?->Name ?? '-' }}</td>
                                 <td>{{ $retreat->Date_of_interruption }}</td>
                                 <td>{{ $retreat->Reason }}</td>

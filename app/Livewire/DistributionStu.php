@@ -22,16 +22,7 @@ class DistributionStu extends Component
     public $selectedStudents = [];
     public $selectedRegion = '';
     public $selectedDriver = '';
-    public $selectAll = false;
 
-    public function updatedSelectAll($value)
-    {
-        if ($value) {
-            $this->selectedStudents = $this->students->pluck('id')->toArray();
-        } else {
-            $this->selectedStudents = [];
-        }
-    }
 
     public function updateDistribution($studentId, $driverId = null, $regionId = null, $positionId = null)
     {
@@ -69,7 +60,6 @@ class DistributionStu extends Component
             }
 
             $this->selectedStudents = [];
-            $this->selectAll = false;
 
             $this->dispatch('show-toast', [
                 'type' => 'success',

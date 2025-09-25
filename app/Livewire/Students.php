@@ -46,6 +46,16 @@ class Students extends Component
         'region_id' => 'required|exists:regions,id',
         'teacher_id' => 'nullable|exists:teachers,id',
     ];
+    protected $messages = [
+        'name.required' => 'يرجى إدخال اسم الطالب',
+        'grade.required' => 'يرجى إدخال الصف',
+        'sex.required' => 'يرجى إدخال النوع',
+        'phone.required' => 'يرجى إدخال رقم الهاتف',
+        'child_region_id.required' => 'يرجى إدخال المنطقة',
+        'wing_id.required' => 'يرجى إدخال الجناح',
+        'division.required' => 'يرجى إدخال الشعبة',
+        'region_id.required' => 'يرجى إدخال المنطقة',
+    ];
 
     public function mount()
     {
@@ -222,7 +232,7 @@ class Students extends Component
     {
         $students = Student::with(['wing', 'region', 'teacher'])
             ->when($this->search, function ($query) {
-                $query->where('Name', 'like', '%' . $this->search . '%')
+                $query->where('name', 'like', '%' . $this->search . '%')
                     ->orWhere('id', 'like', '%' . $this->search . '%');
             })
             ->orderBy('id', 'desc')

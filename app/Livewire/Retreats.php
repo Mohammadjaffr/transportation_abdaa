@@ -30,9 +30,30 @@ class Retreats extends Component
         'region_id' => 'required|exists:regions,id',
     ];
 
-    /**
-     * ✅ يتم استدعاؤه تلقائياً عند تغيير الطالب
-     */
+    protected $messages = [
+        'student_id.required' => 'الطالب مطلوب',
+        'student_id.exists'   => 'الطالب غير موجود في السجلات',
+
+        'Grade.required' => 'الصف مطلوب',
+        'Grade.string'   => 'الصف يجب أن يكون نصاً',
+        'Grade.max'      => 'الصف يجب ألا يتجاوز 20 حرفاً',
+
+        'Division.string' => 'الشعبة يجب أن تكون نصاً',
+        'Division.max'    => 'الشعبة يجب ألا تتجاوز 20 حرفاً',
+
+        'Date_of_interruption.required' => 'تاريخ الانسحاب مطلوب',
+        'Date_of_interruption.date'     => 'تاريخ الانسحاب يجب أن يكون تاريخاً صحيحاً',
+
+        'Reason.required' => 'سبب الانسحاب مطلوب',
+        'Reason.string'   => 'سبب الانسحاب يجب أن يكون نصاً',
+        'Reason.max'      => 'سبب الانسحاب يجب ألا يتجاوز 200 حرفاً',
+
+        'region_id.required' => 'المنطقة مطلوبة',
+        'region_id.exists'   => 'المنطقة غير موجودة في السجلات',
+    ];
+
+
+  
     public function updatedStudentId($value)
     {
         if ($value) {
@@ -42,7 +63,6 @@ class Retreats extends Component
                 $this->Grade     = $student->Grade;
                 $this->region_id = $student->region_id;
                 $this->Division  = $student->Division;
-                
             }
         }
     }
@@ -58,7 +78,6 @@ class Retreats extends Component
             'Date_of_interruption' => $this->Date_of_interruption,
             'Reason' => $this->Reason,
             'region_id' => $this->region_id,
-
         ]);
 
         $this->resetForm();
@@ -135,11 +154,16 @@ class Retreats extends Component
 
     public function render()
     {
-        $this->students = Student::all();
+        // $this->students = Student::all();
+        $this->students = Student::whereNotNull('region_id')
+            ->whereNotNull('Grade')
+            ->whereDoesntHave('retreats')
+            ->get();
+
         $this->drivers = Driver::all();
         $this->regions = Region::all();
 
-        $this->retreats = Retreat::with(['student','region'])
+        $this->retreats = Retreat::with(['student', 'region'])
             ->when($this->search, function ($query) {
                 $query->whereHas('student', function ($q) {
                     $q->where('Name', 'like', "%{$this->search}%");
