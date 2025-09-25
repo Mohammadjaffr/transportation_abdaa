@@ -6,7 +6,8 @@ use Livewire\Component;
 use App\Models\PreparationDriver;
 use App\Models\Driver;
 use App\Models\Region;
-
+use App\Exports\PreparationDriverStuExport;
+use Maatwebsite\Excel\Facades\Excel;
 class PreparationDrivers extends Component
 {
     public  $drivers, $regions;
@@ -16,6 +17,10 @@ class PreparationDrivers extends Component
     public $showForm = false;
     public $deleteId = null;
 
+public function export()
+{
+    return Excel::download(new PreparationDriverStuExport, 'drivers_preparations.xlsx');
+}
     protected $rules = [
         'Atend' => 'required|boolean',
         'Month' => 'required|date',

@@ -115,14 +115,16 @@
                 border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             }
         </style>
-        {{-- Title & Add Button --}}
+            <h3 class="fw-bold text-primary text-center">تحضير الطلاب</h3>
         <div class="d-flex justify-content-between align-items-center mb-4">
             @if (!$showForm)
                 <button wire:click="$set('showForm', true)" class="btn btn-primary add-btn">
                     <i class="fas fa-plus-circle me-1"></i> إضافة سجل جديد
                 </button>
+                <a wire:click.prevent="export" href="#" class="btn btn-outline-success">
+                    <i class="fas fa-file-excel"></i> تصدير Excel
+                </a>
             @endif
-            <h3 class="fw-bold text-primary">تحضير الطلاب</h3>
         </div>
 
         {{-- Form --}}

@@ -115,13 +115,20 @@
         }
     </style>
     <div class="container py-4">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3 class="fw-bold text-primary text-center mb-0">تحضير السائقين</h3>
+
+        <div class="d-flex justify-content-between  mb-4">
             @if (!$showForm)
-                <button wire:click="$set('showForm', true)" class="btn btn-primary add-btn">
-                    <i class="fas fa-plus-circle me-1"></i> إضافة سجل جديد
-                </button>
+                <div class="d-flex gap-2">
+                    <button wire:click="$set('showForm', true)" class="btn btn-primary add-btn">
+                        <i class="fas fa-plus-circle me-1"></i> إضافة سجل جديد
+                    </button>
+                    
+                </div>
             @endif
-            <h3 class="fw-bold text-primary">تحضير السائقين</h3>
+            <button wire:click="export" class="btn btn-outline-success">
+                        <i class="fas fa-file-excel"></i> تصدير Excel
+                    </button>
         </div>
 
         {{-- Form --}}
@@ -249,7 +256,7 @@
                             @endforelse
                         </tbody>
                     </table>
-                        <div class="mt-3 d-flex justify-content-center">
+                    <div class="mt-3 d-flex justify-content-center">
                         {{ $preparations->links('pagination::bootstrap-5') }}
                     </div>
                 </div>

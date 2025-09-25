@@ -7,7 +7,8 @@ use App\Models\PreparationStu;
 use App\Models\Driver;
 use App\Models\Region;
 use App\Models\Student;
-
+use App\Exports\PreparationStuExport;
+use Maatwebsite\Excel\Facades\Excel;
 class PreparationStus extends Component
 {
     public  $drivers, $regions, $students;
@@ -17,6 +18,10 @@ class PreparationStus extends Component
     public $showForm = false;
     public $deleteId = null;
 
+    public function export()
+{
+    return Excel::download(new PreparationStuExport, 'preparations.xlsx');
+}
     protected $rules = [
         'Atend' => 'required|boolean',
         'Year' => 'required|date',
