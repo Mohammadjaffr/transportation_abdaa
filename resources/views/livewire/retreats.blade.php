@@ -45,7 +45,7 @@
                             @enderror
                         </div>
 
-                      
+
 
                         {{-- المنطقة --}}
                         <div class="col-md-6">
@@ -161,6 +161,9 @@
                         @endforelse
                     </tbody>
                 </table>
+                <div class="mt-3 d-flex justify-content-center">
+                    {{ $retreats->links('pagination::bootstrap-5') }}
+                </div>
             </div>
         </div>
     </div>

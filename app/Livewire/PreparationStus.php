@@ -10,7 +10,7 @@ use App\Models\Student;
 
 class PreparationStus extends Component
 {
-    public $preparations, $drivers, $regions, $students;
+    public  $drivers, $regions, $students;
     public $Atend = true, $Year, $driver_id, $region_id, $student_id;
     public $editMode = false, $selectedId, $Grade, $Division;
     public $search = '';
@@ -68,12 +68,7 @@ class PreparationStus extends Component
     }
     public function loadPreparations()
     {
-        $this->preparations = PreparationStu::with(['driver', 'region', 'student'])
-            ->when($this->search, function ($q) {
-                $q->whereHas('student', fn($sq) => $sq->where('name', 'like', '%' . $this->search . '%'))
-                    ->orWhere('Year', 'like', '%' . $this->search . '%');
-            })
-            ->get();
+       
     }
     public function updatedStudentId($value)
     {
@@ -170,12 +165,18 @@ class PreparationStus extends Component
     {
         $this->loadPreparations();
 
-        $this->students = Student::whereNotNull('driver_id')
+        $students = Student::whereNotNull('driver_id')
             ->whereDoesntHave('preparations', function ($q) {
                 $q->whereDate('Year', $this->Year);
             })
             ->get();
+             $preparations = PreparationStu::with(['driver', 'region', 'student'])
+            ->when($this->search, function ($q) {
+                $q->whereHas('student', fn($sq) => $sq->where('name', 'like', '%' . $this->search . '%'))
+                    ->orWhere('Year', 'like', '%' . $this->search . '%');
+            })
+            ->paginate(10);
 
-        return view('livewire.preparation-stus');
+        return view('livewire.preparation-stus',compact('preparations'));
     }
 }

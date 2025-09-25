@@ -4,13 +4,15 @@ namespace App\Livewire;
 
 use App\Models\Region;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 use function Ramsey\Uuid\v1;
 
 class Regions extends Component
 {
+      use WithPagination;
 
-    public $regions;
+    // public $regions;
     public $parent_regions;
     public $Name, $parent_id, $region_id;
     public $isEdit = false;
@@ -30,12 +32,7 @@ class Regions extends Component
     public function loadRegions()
     {
         $this->parent_regions= Region::whereNull('parent_id')->get();
-        $this->regions = Region::with('parent')
-            ->when($this->search, function ($query) {
-                $query->where('Name', 'like', '%' . $this->search . '%');
-            })
-            ->orderBy('id', 'asc')
-            ->get();
+      
     }
 
     public function store()
@@ -128,8 +125,14 @@ class Regions extends Component
 
     public function render()
     {
+          $regions = Region::with('parent')
+            ->when($this->search, function ($query) {
+                $query->where('Name', 'like', '%' . $this->search . '%');
+            })
+            ->orderBy('id', 'asc')
+            ->paginate(perPage: 10);
         $parents = Region::with('parent')->get();
         $parent_regions = Region::whereNull('parent_id')->get();
-        return view('livewire.regions', compact('parents', 'parent_regions'));
+        return view('livewire.regions', compact('parents', 'parent_regions','regions'));
     }
 }

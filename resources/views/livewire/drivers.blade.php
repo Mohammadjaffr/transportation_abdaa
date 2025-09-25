@@ -25,12 +25,12 @@
 
                             {{-- الحقول الأساسية --}}
                             @foreach ([
-                                'Name' => 'الاسم',
-                                'IDNo' => 'رقم البطاقة',
-                                'Phone' => 'الهاتف',
-                                'LicenseNo' => 'رقم الرخصة',
-                                'Ownership' => 'الملكية',
-                            ] as $field => $label)
+        'Name' => 'الاسم',
+        'IDNo' => 'رقم البطاقة',
+        'Phone' => 'الهاتف',
+        'LicenseNo' => 'رقم الرخصة',
+        'Ownership' => 'الملكية',
+    ] as $field => $label)
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label">{{ $label }}</label>
 
@@ -38,12 +38,9 @@
                                         $type = $field === 'Phone' ? 'number' : 'text';
                                     @endphp
 
-                                    <input
-                                        type="{{ $type }}"
-                                        wire:model="fields.{{ $field }}"
+                                    <input type="{{ $type }}" wire:model="fields.{{ $field }}"
                                         class="form-control @error('fields.' . $field) is-invalid @enderror"
-                                        {{ $field == 'IDNo' && $editMode  }}
-                                    >
+                                        {{ $field == 'IDNo' && $editMode }}>
 
                                     @error('fields.' . $field)
                                         <span class="text-danger small">{{ $message }}</span>
@@ -72,11 +69,12 @@
                             {{-- نوع الباص --}}
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold">نوع الباص</label>
-                                     <select wire:model="fields.Bus_type" class="form-control border-  @error('fields.Bus_type') is-invalid @enderror">
-                                            <option value="">-- اختر نوع الباص --</option>
-                                            <option value="هايس">هايس</option>
-                                            <option value="كوستر">كوستر</option>
-                                        </select>
+                                <select wire:model="fields.Bus_type"
+                                    class="form-control border-  @error('fields.Bus_type') is-invalid @enderror">
+                                    <option value="">-- اختر نوع الباص --</option>
+                                    <option value="هايس">هايس</option>
+                                    <option value="كوستر">كوستر</option>
+                                </select>
                                 @error('fields.Bus_type')
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
@@ -84,11 +82,8 @@
                             {{-- عدد الركاب --}}
                             <div class="col-md-6 mb-3">
                                 <label class="form-label fw-bold">عدد الركاب</label>
-                                <input
-                                    type="text"
-                                    wire:model="fields.No_Passengers"
-                                    class="form-control @error('fields.No_Passengers') is-invalid @enderror"
-                                >
+                                <input type="text" wire:model="fields.No_Passengers"
+                                    class="form-control @error('fields.No_Passengers') is-invalid @enderror">
                                 @error('fields.No_Passengers')
                                     <span class="text-danger small">{{ $message }}</span>
                                 @enderror
@@ -117,7 +112,8 @@
                             @foreach (['CheckUp' => 'الفحص الطبي', 'Behavior' => 'السلوك', 'Form' => 'الاستمارة', 'Fitnes' => 'لائق'] as $field => $label)
                                 <div class="col-md-6 my-1">
                                     <label class="form-label fw-bold">{{ $label }}</label>
-                                    <div class="input-group input-group-sm shadow-sm rounded-pill overflow-hidden my-1 py-2">
+                                    <div
+                                        class="input-group input-group-sm shadow-sm rounded-pill overflow-hidden my-1 py-2">
                                         <span class="input-group-text bg-white border-0">
                                             <i class="fas fa-filter text-primary"></i>
                                         </span>
@@ -151,119 +147,124 @@
                 </div>
                 </form>
             </div>
+    </div>
+    @endif
+
+    {{-- البحث --}}
+    <div class="col-md-12 mb-3">
+        <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden">
+            <span class="input-group-text bg-white border-0">
+                <i class="fas fa-search text-primary"></i>
+            </span>
+            <input type="text" wire:model.debounce.300ms.live="search" class="form-control border-0 py-2"
+                placeholder="ابحث باسم السائق او رقم البطاقة">
         </div>
-        @endif
+    </div>
 
-        {{-- البحث --}}
-        <div class="col-md-12 mb-3">
-            <div class="input-group input-group-lg shadow-sm rounded-pill overflow-hidden">
-                <span class="input-group-text bg-white border-0">
-                    <i class="fas fa-search text-primary"></i>
-                </span>
-                <input type="text" wire:model.debounce.300ms.live="search" class="form-control border-0 py-2"
-                    placeholder="ابحث باسم السائق او رقم البطاقة">
-            </div>
+    {{-- جدول السائقين --}}
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">إدارة السائقين</h5>
         </div>
 
-        {{-- جدول السائقين --}}
-        <div class="card shadow-lg border-0 rounded-3">
-            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">إدارة السائقين</h5>
-            </div>
-
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover align-middle mb-0">
-                        <thead class="table-success text-center">
-                            <tr>
-                                <th>رقم البطاقة</th>
-                                <th>الاسم</th>
-                                <th>الهاتف</th>
-                                <th>رقم الرخصة</th>
-                                <th>الملكية</th>
-                                <th>نوع الباص</th>
-                                <th>عدد الركاب</th>
-                                <th>الجناح</th>
-                                <th>المنطقة</th>
-                                <th>الاستمارة</th>
-                                <th>الفحص الطبي</th>
-                                <th>السلوك</th>
-                                <th>لائق</th>
-                                <th>الإجراءات</th>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle mb-0">
+                    <thead class="table-success text-center">
+                        <tr>
+                            <th>رقم البطاقة</th>
+                            <th>الاسم</th>
+                            <th>الهاتف</th>
+                            <th>رقم الرخصة</th>
+                            <th>الملكية</th>
+                            <th>نوع الباص</th>
+                            <th>عدد الركاب</th>
+                            <th>الجناح</th>
+                            <th>المنطقة</th>
+                            <th>الاستمارة</th>
+                            <th>الفحص الطبي</th>
+                            <th>السلوك</th>
+                            <th>لائق</th>
+                            <th>الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($drivers as $driver)
+                            <tr class="text-center">
+                                <td><span class="badge px-3 py-2">{{ $driver->IDNo }}</span></td>
+                                <td>{{ $driver->Name }}</td>
+                                <td>{{ $driver->Phone }}</td>
+                                <td>{{ $driver->LicenseNo }}</td>
+                                <td>{{ $driver->Ownership ?? '-' }}</td>
+                                <td>{{ $driver->Bus_type ?? '-' }}</td>
+                                <td>{{ $driver->No_Passengers ?? '-' }}</td>
+                                <td>{{ $driver->Wing->Name ?? '-' }}</td>
+                                <td>{{ $driver->Region->Name ?? '-' }}</td>
+                                <td>
+                                    @if ($driver->Form === 1)
+                                        <span class="badge bg-success">يوجد</span>
+                                    @elseif($driver->Form === 0)
+                                        <span class="badge bg-danger">لايوجد</span>
+                                    @else
+                                        <span class="badge bg-secondary">-</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($driver->CheckUp === 1)
+                                        <span class="badge bg-success">يوجد</span>
+                                    @elseif($driver->CheckUp === 0)
+                                        <span class="badge bg-danger">لايوجد</span>
+                                    @else
+                                        <span class="badge bg-secondary">-</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($driver->Behavior === 1)
+                                        <span class="badge bg-success">جيد</span>
+                                    @elseif($driver->Behavior === 0)
+                                        <span class="badge bg-danger">سيء</span>
+                                    @else
+                                        <span class="badge bg-secondary">-</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($driver->Fitnes === 1)
+                                        <span class="badge bg-success">لائق</span>
+                                    @elseif($driver->Fitnes === 0)
+                                        <span class="badge bg-danger">غير لائق</span>
+                                    @else
+                                        <span class="badge bg-secondary">-</span>
+                                    @endif
+                                </td>
+                                <td class="d-flex justify-content-center gap-2 px-5">
+                                    <button wire:click="editDriver({{ $driver->id }})"
+                                        class="btn btn-outline-success btn-sm rounded-pill px-4 mr-2" title="تعديل">
+                                        <i class="fas fa-edit"></i> تعديل
+                                    </button>
+                                    <button wire:click="confirmDelete({{ $driver->id }})"
+                                        class="btn btn-outline-danger btn-sm rounded-pill px-4" title="حذف">
+                                        <i class="fas fa-trash-alt"></i> حذف
+                                    </button>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($drivers as $driver)
-                                <tr class="text-center">
-                                    <td><span class="badge px-3 py-2">{{ $driver->IDNo }}</span></td>
-                                    <td>{{ $driver->Name }}</td>
-                                    <td>{{ $driver->Phone }}</td>
-                                    <td>{{ $driver->LicenseNo }}</td>
-                                    <td>{{ $driver->Ownership ?? '-' }}</td>
-                                    <td>{{ $driver->Bus_type ?? '-' }}</td>
-                                    <td>{{ $driver->No_Passengers ?? '-' }}</td>
-                                    <td>{{ $driver->Wing->Name ?? '-' }}</td>
-                                    <td>{{ $driver->Region->Name ?? '-' }}</td>
-                                    <td>
-                                        @if ($driver->Form === 1)
-                                            <span class="badge bg-success">يوجد</span>
-                                        @elseif($driver->Form === 0)
-                                            <span class="badge bg-danger">لايوجد</span>
-                                        @else
-                                            <span class="badge bg-secondary">-</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($driver->CheckUp === 1)
-                                            <span class="badge bg-success">يوجد</span>
-                                        @elseif($driver->CheckUp === 0)
-                                            <span class="badge bg-danger">لايوجد</span>
-                                        @else
-                                            <span class="badge bg-secondary">-</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($driver->Behavior === 1)
-                                            <span class="badge bg-success">جيد</span>
-                                        @elseif($driver->Behavior === 0)
-                                            <span class="badge bg-danger">سيء</span>
-                                        @else
-                                            <span class="badge bg-secondary">-</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($driver->Fitnes === 1)
-                                            <span class="badge bg-success">لائق</span>
-                                        @elseif($driver->Fitnes === 0)
-                                            <span class="badge bg-danger">غير لائق</span>
-                                        @else
-                                            <span class="badge bg-secondary">-</span>
-                                        @endif
-                                    </td>
-                                    <td class="d-flex justify-content-center gap-2 px-5">
-                                        <button wire:click="editDriver({{ $driver->id }})"
-                                            class="btn btn-outline-success btn-sm rounded-pill px-4 mr-2" title="تعديل">
-                                            <i class="fas fa-edit"></i> تعديل
-                                        </button>
-                                        <button wire:click="confirmDelete({{ $driver->id }})"
-                                            class="btn btn-outline-danger btn-sm rounded-pill px-4" title="حذف">
-                                            <i class="fas fa-trash-alt"></i> حذف
-                                        </button>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="12" class="text-center text-muted py-4">
-                                        <i class="fas fa-user-times fa-2x mb-2 text-secondary"></i>
-                                        <p class="mb-0">لا يوجد سائقين مسجلين</p>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                        @empty
+                            <tr>
+                                <td colspan="14" class="text-center text-muted py-4">
+                                    <i class="fas fa-user-times fa-2x mb-2 text-secondary"></i>
+                                    <p class="mb-0">لا يوجد سائقين مسجلين</p>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+
+                {{-- روابط الباجينيشن --}}
+                <div class="mt-3 d-flex justify-content-center">
+                    {{ $drivers->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>
+
 
         {{-- نافذة الحذف --}}
         @if ($deleteId)

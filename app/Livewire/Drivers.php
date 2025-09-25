@@ -9,11 +9,18 @@ use App\Models\Wing;
 use App\Models\Region;
 use Livewire\WithFileUploads;
 use App\Services\ImageService;
+use Livewire\WithPagination;
 
 class Drivers extends Component
 {
     use WithFileUploads;
-    public $drivers;
+     use WithPagination;
+
+     public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+    // public $drivers;
     public $buses;
     public $wings;
     public $regions;
@@ -24,7 +31,6 @@ class Drivers extends Component
         'LicenseNo' => '',
         'Ownership' => '',
         'wing_id' => '',
-        // 'bus_id' => '',
         'CheckUp' => '',
         'Behavior' => '',
         'Form' => '',
@@ -43,7 +49,7 @@ class Drivers extends Component
     public $showForm = false;
 
     protected $queryString = ['search'];
-    
+
 
     protected function rules()
     {
@@ -67,7 +73,7 @@ class Drivers extends Component
             ]
             : [
                 'fields.Name' => 'required|string|max:50',
-                'fields.IDNo' => 'required|string|max:11|unique:drivers,IDNo',  
+                'fields.IDNo' => 'required|string|max:11|unique:drivers,IDNo',
                 'fields.Bus_type' => 'required|string|max:10',
                 'fields.No_Passengers' => 'required|string|max:10',
                 'fields.Phone' => 'required|digits:9|unique:drivers,Phone',
@@ -83,79 +89,79 @@ class Drivers extends Component
     }
 
     protected $messages = [
-    'fields.Name.required'      => 'اسم السائق مطلوب',
-    'fields.Name.max'           => 'اسم السائق يجب ألا يتجاوز 50 حرف',
-    
-    'fields.IDNo.required'      => 'رقم الهوية مطلوب',
-    'fields.IDNo.unique'        => 'رقم الهوية مستخدم من قبل',
-    'fields.IDNo.max'           => 'رقم الهوية يجب ألا يتجاوز 11 ارقام',
-    
-    'fields.Phone.required'     => 'رقم الهاتف مطلوب',
-    'fields.Phone.digits'       => 'رقم الهاتف يجب أن يكون 9 أرقام',
-    'fields.Phone.unique'       => 'رقم الهاتف مستخدم من قبل',
-    
-    'fields.Bus_type.required'  => 'نوع الباص مطلوب',
-    'fields.Bus_type.max'       => 'نوع الباص يجب ألا يتجاوز 10 حرف',
-    
-    'fields.No_Passengers.required' => 'عدد الركاب مطلوب',
-    'fields.No_Passengers.max'      => 'عدد الركاب يجب ألا يتجاوز 10 رقم',
-    
-    'fields.LicenseNo.required' => 'رقم الرخصة مطلوب',
-    'fields.LicenseNo.unique'   => 'رقم الرخصة مستخدم من قبل',
-    'fields.LicenseNo.max'      => 'رقم الرخصة يجب ألا يتجاوز 10 ارقام',
-    
-    'fields.Ownership.required' => 'حقل الملكية مطلوب',
-    'fields.Ownership.max'      => 'الملكية يجب ألا تتجاوز 20 ارقام',
+        'fields.Name.required'      => 'اسم السائق مطلوب',
+        'fields.Name.max'           => 'اسم السائق يجب ألا يتجاوز 50 حرف',
 
-    'fields.wing_id.required'   => 'الجناح مطلوب',
-    'fields.wing_id.exists'     => 'الجناح المحدد غير صحيح',
+        'fields.IDNo.required'      => 'رقم الهوية مطلوب',
+        'fields.IDNo.unique'        => 'رقم الهوية مستخدم من قبل',
+        'fields.IDNo.max'           => 'رقم الهوية يجب ألا يتجاوز 11 ارقام',
 
-    'fields.region_id.required' => 'المنطقة مطلوبة',
-    'fields.region_id.exists'   => 'رقم المنطقة غير صحيح',
+        'fields.Phone.required'     => 'رقم الهاتف مطلوب',
+        'fields.Phone.digits'       => 'رقم الهاتف يجب أن يكون 9 أرقام',
+        'fields.Phone.unique'       => 'رقم الهاتف مستخدم من قبل',
 
-    'fields.CheckUp.required'   => 'حقل الفحص الطبي مطلوب',
-    'fields.CheckUp.boolean'    => 'قيمة الفحص الطبي يجب أن تكون نعم أو لا',
+        'fields.Bus_type.required'  => 'نوع الباص مطلوب',
+        'fields.Bus_type.max'       => 'نوع الباص يجب ألا يتجاوز 10 حرف',
 
-    'fields.Behavior.required'  => 'حقل السلوك مطلوب',
-    'fields.Behavior.boolean'   => 'قيمة السلوك يجب أن تكون نعم أو لا',
+        'fields.No_Passengers.required' => 'عدد الركاب مطلوب',
+        'fields.No_Passengers.max'      => 'عدد الركاب يجب ألا يتجاوز 10 رقم',
 
-    'fields.Form.required'      => 'حقل الاستمارة مطلوب',
-    'fields.Form.boolean'       => 'قيمة الاستمارة يجب أن تكون نعم أو لا',
+        'fields.LicenseNo.required' => 'رقم الرخصة مطلوب',
+        'fields.LicenseNo.unique'   => 'رقم الرخصة مستخدم من قبل',
+        'fields.LicenseNo.max'      => 'رقم الرخصة يجب ألا يتجاوز 10 ارقام',
 
-    'fields.Fitnes.required'    => 'حقل اللياقة مطلوب',
-    'fields.Fitnes.boolean'     => 'قيمة اللياقة يجب أن تكون نعم أو لا',
+        'fields.Ownership.required' => 'حقل الملكية مطلوب',
+        'fields.Ownership.max'      => 'الملكية يجب ألا تتجاوز 20 ارقام',
 
-    'primary_image.required'    => 'صورة السائق مطلوبة',
-    'primary_image.image'       => 'الملف المرفوع يجب أن يكون صورة',
-    'primary_image.mimes'       => 'الصورة يجب أن تكون من نوع jpeg أو png أو jpg أو gif أو svg',
-    'primary_image.max'         => 'حجم الصورة يجب ألا يتجاوز 2 ميجابايت',
-];
+        'fields.wing_id.required'   => 'الجناح مطلوب',
+        'fields.wing_id.exists'     => 'الجناح المحدد غير صحيح',
+
+        'fields.region_id.required' => 'المنطقة مطلوبة',
+        'fields.region_id.exists'   => 'رقم المنطقة غير صحيح',
+
+        'fields.CheckUp.required'   => 'حقل الفحص الطبي مطلوب',
+        'fields.CheckUp.boolean'    => 'قيمة الفحص الطبي يجب أن تكون نعم أو لا',
+
+        'fields.Behavior.required'  => 'حقل السلوك مطلوب',
+        'fields.Behavior.boolean'   => 'قيمة السلوك يجب أن تكون نعم أو لا',
+
+        'fields.Form.required'      => 'حقل الاستمارة مطلوب',
+        'fields.Form.boolean'       => 'قيمة الاستمارة يجب أن تكون نعم أو لا',
+
+        'fields.Fitnes.required'    => 'حقل اللياقة مطلوب',
+        'fields.Fitnes.boolean'     => 'قيمة اللياقة يجب أن تكون نعم أو لا',
+
+        'primary_image.required'    => 'صورة السائق مطلوبة',
+        'primary_image.image'       => 'الملف المرفوع يجب أن يكون صورة',
+        'primary_image.mimes'       => 'الصورة يجب أن تكون من نوع jpeg أو png أو jpg أو gif أو svg',
+        'primary_image.max'         => 'حجم الصورة يجب ألا يتجاوز 2 ميجابايت',
+    ];
 
 
     public function mount()
     {
-        $this->loadDrivers();
+       
         $this->buses = Bus::all();
         $this->wings = Wing::all();
         // $this->regions = Region::all();
-       $this->regions =  Region::whereNull('parent_id')->get();
+        $this->regions =  Region::whereNull('parent_id')->get();
     }
 
-    public function updatedSearch()
-    {
-        $this->loadDrivers();
-    }
+    // public function updatedSearch()
+    // {
+    //     $this->loadDrivers();
+    // }
 
-    public function loadDrivers()
-    {
-        $this->drivers = Driver::with(['bus', 'wing'])
-            ->when($this->search, function ($query) {
-                $query->where('Name', 'like', "%{$this->search}%")
-                    ->orWhere('IDNo', 'like', "%{$this->search}%");
-            })
-            ->orderBy('Name', 'desc')
-            ->get();
-    }
+    // public function loadDrivers()
+    // {
+    //     Driver::with(['bus', 'wing'])
+    //         ->when($this->search, function ($query) {
+    //             $query->where('Name', 'like', "%{$this->search}%")
+    //                 ->orWhere('IDNo', 'like', "%{$this->search}%");
+    //         })
+    //         ->orderBy('Name', 'desc')
+    //         ->paginate(2);
+    // }
 
     public function createDriver()
     {
@@ -174,7 +180,7 @@ class Drivers extends Component
         Driver::create($data);
 
         $this->resetForm();
-        $this->loadDrivers();
+        // $this->loadDrivers();
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم إضافة السائق بنجاح']);
     }
 
@@ -207,7 +213,7 @@ class Drivers extends Component
         $this->selectedDriver->update($data);
 
         $this->resetForm();
-        $this->loadDrivers();
+        // $this->loadDrivers();
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تحديث السائق بنجاح']);
     }
 
@@ -222,7 +228,7 @@ class Drivers extends Component
     public function deleteDriver()
     {
         Driver::findOrFail($this->deleteId)->delete();
-        $this->loadDrivers();
+        // $this->loadDrivers();
         $this->deleteId = null;
         $this->deleteDriverName = null;
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم حذف السائق بنجاح']);
@@ -252,6 +258,13 @@ class Drivers extends Component
 
     public function render()
     {
-        return view('livewire.drivers');
+        $drivers = Driver::with(['bus', 'wing'])
+            ->when($this->search, function ($query) {
+                $query->where('Name', 'like', "%{$this->search}%")
+                    ->orWhere('IDNo', 'like', "%{$this->search}%");
+            })
+            ->orderBy('Name', 'desc')
+            ->paginate(10);
+        return view('livewire.drivers',compact('drivers'));
     }
 }

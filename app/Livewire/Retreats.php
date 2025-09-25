@@ -7,10 +7,12 @@ use App\Models\Retreat;
 use App\Models\Student;
 use App\Models\Driver;
 use App\Models\Region;
+use Livewire\WithPagination;
 
 class Retreats extends Component
 {
-    public $retreats, $students, $drivers, $regions;
+    use WithPagination;
+    public  $students, $drivers, $regions;
 
     public $retreatId;
     public $student_id, $Grade, $Division, $Date_of_interruption, $Reason, $region_id;
@@ -163,7 +165,7 @@ class Retreats extends Component
         $this->drivers = Driver::all();
         $this->regions = Region::all();
 
-        $this->retreats = Retreat::with(['student', 'region'])
+        $retreats = Retreat::with(['student', 'region'])
             ->when($this->search, function ($query) {
                 $query->whereHas('student', function ($q) {
                     $q->where('Name', 'like', "%{$this->search}%");
@@ -174,8 +176,8 @@ class Retreats extends Component
                     });
             })
             ->orderBy('Date_of_interruption', 'desc')
-            ->get();
+            ->paginate(perPage: 10);
 
-        return view('livewire.retreats');
+        return view('livewire.retreats',compact('retreats'));
     }
 }

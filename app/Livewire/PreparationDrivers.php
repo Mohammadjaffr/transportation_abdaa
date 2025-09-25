@@ -9,7 +9,7 @@ use App\Models\Region;
 
 class PreparationDrivers extends Component
 {
-    public $preparations, $drivers, $regions;
+    public  $drivers, $regions;
     public $Atend = false, $Month, $driver_id, $region_id;
     public $editMode = false, $selectedId;
     public $search = '';
@@ -64,12 +64,7 @@ class PreparationDrivers extends Component
 
     public function loadPreparations()
     {
-        $this->preparations = PreparationDriver::with(['driver', 'region'])
-            ->when($this->search, function ($q) {
-                $q->whereHas('driver', fn($dq) => $dq->where('Name', 'like', '%' . $this->search . '%'))
-                  ->orWhere('Month', 'like', '%' . $this->search . '%');
-            })
-            ->get();
+     
     }
 
     public function createPreparation()
@@ -168,7 +163,12 @@ class PreparationDrivers extends Component
 
     public function render()
     {
-        $this->loadPreparations();
-        return view('livewire.preparation-drivers');
+           $preparations = PreparationDriver::with(['driver', 'region'])
+            ->when($this->search, function ($q) {
+                $q->whereHas('driver', fn($dq) => $dq->where('Name', 'like', '%' . $this->search . '%'))
+                  ->orWhere('Month', 'like', '%' . $this->search . '%');
+            })
+            ->paginate(10);
+        return view('livewire.preparation-drivers',compact('preparations'));
     }
 }
