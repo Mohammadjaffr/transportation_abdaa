@@ -78,9 +78,24 @@
                                 <td><span class="badge bg-primary">{{ $student->driver?->Name ?? 'غير محدد' }}</span>
                                 </td>
                                 <td>
+                                    <div class="d-flex justify-content-around">
+                                        <div class="m-1">
+                                            السائق
+                                        </div>
+                                        <div class="m-1">
+                                            المنطقة
+                                        </div>
+                                        <div class="m-1">
+                                            الموقف
+                                        </div>
+                                        
+                                    </div>
+                                   
+                                        
                                     <div class="d-flex gap-2">
 
                                         {{-- اختيار السائق --}}
+                                        
                                         <select class="custom-select"
                                             wire:change="updateDistribution(
                                                     {{ $student->id }},
