@@ -8,6 +8,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    {{-- SEO Meta Tags --}}
+    <meta name="description" content="نظام إدارة المواصلات لمدرسة الإبداع الأهلية، يتيح متابعة وتنظيم حركة الحافلات، السائقين والطلاب بكل سهولة وفعالية.">
+    <meta name="keywords" content="مدرسة الإبداع الأهلية, نظام المواصلات, إدارة الحافلات, متابعة الطلاب, النقل المدرسي, Laravel, AdminLTE">
+    <meta name="author" content="مدرسة الإبداع الأهلية">
+
+    {{-- Open Graph Meta (مفيد عند مشاركة الرابط على السوشيال ميديا) --}}
+    <meta property="og:title" content="مدرسة الإبداع الأهلية - نظام إدارة المواصلات">
+    <meta property="og:description" content="منصة ذكية لإدارة وتنظيم حركة المواصلات الخاصة بمدرسة الإبداع الأهلية.">
+    <meta property="og:image" content="{{ asset('favicons/favicon-96x96.png') }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta name="twitter:card" content="summary_large_image">
 
     {{-- Custom Meta Tags --}}
     @yield('meta_tags')
