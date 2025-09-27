@@ -9,11 +9,13 @@ use App\Models\Region;
 use App\Exports\PreparationDriverStuExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\AdminLoggerService;
+use Livewire\WithPagination;
 
 class PreparationDrivers extends Component
 {
+    use WithPagination;
     public  $drivers, $regions;
-    public $Atend = false, $Month, $driver_id, $region_id;
+    public $Atend = false, $Month, $driver_id, $region_id,$deleteName;
     public $editMode = false, $selectedId;
     public $search = '';
     public $showForm = false;
@@ -140,6 +142,7 @@ class PreparationDrivers extends Component
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
+        $this->deleteName = PreparationDriver::find($id)->driver->Name;
     }
 
     public function deletePreparation()

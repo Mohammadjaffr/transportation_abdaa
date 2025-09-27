@@ -24,7 +24,7 @@ class Students extends Component
     protected $paginationTheme = 'bootstrap';
     public  $wings, $regions, $teachers;
     public $name, $grade, $sex, $phone,
-        $stu_position, $wing_id, $division, $region_id, $teacher_id;
+        $stu_position, $wing_id, $division, $region_id, $teacher_id, $deleteName;
     public $editMode = false, $selectedStudentId, $editId = null;
     public $primary_image;
     public $showForm = false;
@@ -200,7 +200,9 @@ class Students extends Component
 
     public function confirmDelete($studentId)
     {
+        $student = Student::find($studentId);
         $this->deleteId = $studentId;
+        $this->deleteName = $student->Name;
     }
 
     public function deleteStudent()

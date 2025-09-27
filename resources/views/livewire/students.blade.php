@@ -11,15 +11,18 @@
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             @if (!$showForm && !$showImportForm)
-                <button wire:click="$set('showForm', true)" class="btn btn-primary add-btn w-sm-100 mb-3 rounded-pill shadow-sm">
+                <button wire:click="$set('showForm', true)"
+                    class="btn btn-primary add-btn w-sm-100 mb-3 rounded-pill shadow-sm">
                     <i class="fas fa-plus-circle me-1"></i> إضافة طالب جديد
                 </button>
                 <div>
-                    <button wire:click="$set('showImportForm', true)" class="btn btn-success w-sm-100 mb-3 rounded-pill shadow-sm">
+                    <button wire:click="$set('showImportForm', true)"
+                        class="btn btn-success w-sm-100 mb-3 rounded-pill shadow-sm">
                         <i class="fas fa-file-excel me-1"></i> استيراد Excel
                     </button>
 
-                    <button wire:click="exportExcel" class="btn btn-outline-success w-sm-100 mb-3 rounded-pill shadow-sm">
+                    <button wire:click="exportExcel"
+                        class="btn btn-outline-success w-sm-100 mb-3 rounded-pill shadow-sm">
                         <i class="fas fa-download me-1"></i> تصدير Excel
                     </button>
                 </div>
@@ -316,7 +319,7 @@
         </div>
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover table-striped align-middle mb-0 text-center">
+                <table class="table table-bordered table-hover align-middle mb-0">
                     <thead class="table-success">
                         <tr>
                             <th>#</th>
@@ -338,7 +341,7 @@
                             <tr>
                                 <td>{{ $student->id }}</td>
 
-                              
+
                                 <td> {{ $student->Name }}
                                 </td>
                                 <td>{{ $student->Grade }}</td>
@@ -371,16 +374,16 @@
                         @endforelse
                     </tbody>
                 </table>
-                <div class="card-footer">
-                    {{ $students->links() }}
+                <div class="card-footer d-flex justify-content-center">
+                    {{ $students->links('pagination::bootstrap-5') }}
                 </div>
+
 
             </div>
         </div>
 
     </div>
 
-    {{-- Delete Modal --}}
     @if ($deleteId)
         <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
             <div class="modal-dialog modal-dialog-centered">
@@ -392,6 +395,7 @@
                     </div>
                     <div class="modal-body">
                         <p>هل أنت متأكد أنك تريد حذف هذا الطالب؟</p>
+                        <p class="fw-bold text-danger">" الاسم: {{ $deleteName }} "</p>
                     </div>
                     <div class="modal-footer justify-content-start">
                         <button type="button" class="btn btn-secondary rounded-pill"

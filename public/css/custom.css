@@ -44,3 +44,17 @@ body {
     color: #18974d !important;
     border-color: #18974d !important;
 }
+.pagination .page-item.active .page-link {
+    background-color: #28a745 !important; /* أخضر */
+    border-color: #28a745 !important;
+    color: #fff !important;
+}
+
+.pagination .page-link {
+    color: #28a745; /* النصوص */
+}
+
+.pagination .page-link:hover {
+    background-color: #e9fbe7; /* خلفية خفيفة عند المرور */
+    color: #28a745;
+}

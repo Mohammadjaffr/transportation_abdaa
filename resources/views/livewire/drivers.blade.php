@@ -236,13 +236,13 @@
                                         <span class="badge bg-secondary">-</span>
                                     @endif
                                 </td>
-                                <td class="d-flex justify-content-center gap-2 px-5">
+                                <td class="d-flex gap-2 justify-content-center">
                                     <button wire:click="editDriver({{ $driver->id }})"
-                                        class="btn btn-outline-success btn-sm rounded-pill px-4 mr-2" title="تعديل">
+                                        class="btn btn-outline-success btn-sm rounded-pill mr-2" title="تعديل">
                                         <i class="fas fa-edit"></i> تعديل
                                     </button>
                                     <button wire:click="confirmDelete({{ $driver->id }})"
-                                        class="btn btn-outline-danger btn-sm rounded-pill px-4" title="حذف">
+                                        class="btn btn-outline-danger btn-sm rounded-pill" title="حذف">
                                         <i class="fas fa-trash-alt"></i> حذف
                                     </button>
                                 </td>
@@ -258,15 +258,13 @@
                     </tbody>
                 </table>
 
-                {{-- روابط الباجينيشن --}}
-                <div class="mt-3 d-flex justify-content-center">
+                <div class="card-footer d-flex justify-content-center">
                     {{ $drivers->links('pagination::bootstrap-5') }}
                 </div>
             </div>
         </div>
 
 
-        {{-- نافذة الحذف --}}
         @if ($deleteId)
             <div class="modal fade show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
                 <div class="modal-dialog modal-dialog-centered">

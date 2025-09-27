@@ -161,7 +161,8 @@
                         @endforelse
                     </tbody>
                 </table>
-                <div class="mt-3 d-flex justify-content-center">
+                
+                 <div class="card-footer d-flex justify-content-center">
                     {{ $retreats->links('pagination::bootstrap-5') }}
                 </div>
             </div>

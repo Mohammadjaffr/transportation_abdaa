@@ -52,7 +52,7 @@
             <h5 class="mb-0"><i class="fas fa-list me-2"></i> قائمة الطلاب</h5>
         </div>
         <div class="card-body p-0">
-            <div class="table-responsive" style="max-height: 500px;">
+            <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0 text-center">
                     <thead class="sticky-top table-header">
                         <tr>
@@ -156,6 +156,9 @@
                         @endforelse
                     </tbody>
                 </table>
+                  <div class="card-footer d-flex justify-content-center">
+                    {{ $students->links('pagination::bootstrap-5') }}
+                </div>
             </div>
         </div>
     </div>

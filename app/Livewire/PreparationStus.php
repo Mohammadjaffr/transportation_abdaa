@@ -10,11 +10,13 @@ use App\Models\Student;
 use App\Exports\PreparationStuExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Services\AdminLoggerService;
+use Livewire\WithPagination;
 
 class PreparationStus extends Component
 {
+    use WithPagination;
     public  $drivers, $regions, $students;
-    public $Atend = true, $Year, $driver_id, $region_id, $student_id;
+    public $Atend = true, $Year, $driver_id, $region_id, $student_id,$deleteName;
     public $editMode = false, $selectedId, $Grade, $Division;
     public $search = '';
     public $showForm = false;
@@ -144,6 +146,7 @@ class PreparationStus extends Component
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
+        $this->deleteName = PreparationStu::find($id)->student->Name;
     }
 
     public function deletePreparation()

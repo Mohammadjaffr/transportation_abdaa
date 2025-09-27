@@ -115,7 +115,7 @@
         }
     </style>
     <div class="container py-4">
-                    <h3 class="fw-bold text-primary text-center mb-0">تحضير السائقين</h3>
+        <h3 class="fw-bold text-primary text-center mb-0">تحضير السائقين</h3>
 
         <div class="d-flex justify-content-between  mb-4">
             @if (!$showForm)
@@ -123,12 +123,12 @@
                     <button wire:click="$set('showForm', true)" class="btn btn-primary add-btn">
                         <i class="fas fa-plus-circle me-1"></i> إضافة سجل جديد
                     </button>
-                    
+
                 </div>
             @endif
             <button wire:click="export" class="btn btn-outline-success">
-                        <i class="fas fa-file-excel"></i> تصدير Excel
-                    </button>
+                <i class="fas fa-file-excel"></i> تصدير Excel
+            </button>
         </div>
 
         {{-- Form --}}
@@ -256,7 +256,7 @@
                             @endforelse
                         </tbody>
                     </table>
-                    <div class="mt-3 d-flex justify-content-center">
+                   <div class="card-footer d-flex justify-content-center">
                         {{ $preparations->links('pagination::bootstrap-5') }}
                     </div>
                 </div>
@@ -273,7 +273,8 @@
                                     wire:click="$set('deleteId', null)"></button>
                             </div>
                             <div class="modal-body">
-                                هل أنت متأكد من حذف هذا السجل؟
+                                <p>هل أنت متأكد أنك تريد حذف هذا السائق؟</p>
+                                <p class="fw-bold text-danger">" الاسم: {{ $deleteName }} "</p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" wire:click="$set('deleteId', null)"

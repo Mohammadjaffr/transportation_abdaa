@@ -115,7 +115,7 @@
                 border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             }
         </style>
-            <h3 class="fw-bold text-primary text-center">تحضير الطلاب</h3>
+        <h3 class="fw-bold text-primary text-center">تحضير الطلاب</h3>
         <div class="d-flex justify-content-between align-items-center mb-4">
             @if (!$showForm)
                 <button wire:click="$set('showForm', true)" class="btn btn-primary add-btn">
@@ -271,10 +271,10 @@
                             @endforelse
                         </tbody>
                     </table>
-                    <div class="mt-3 d-flex justify-content-center">
+                    
+                    <div class="card-footer d-flex justify-content-center">
                         {{ $preparations->links('pagination::bootstrap-5') }}
                     </div>
-
                 </div>
             </div>
 
@@ -289,7 +289,8 @@
                                     wire:click="$set('deleteId', null)"></button>
                             </div>
                             <div class="modal-body">
-                                هل أنت متأكد من حذف هذا السجل؟
+                                <p>هل أنت متأكد أنك تريد حذف هذا الطالب؟</p>
+                                <p class="fw-bold text-danger">" الاسم: {{ $deleteName }} "</p>
                             </div>
                             <div class="modal-footer">
                                 <button type="button" wire:click="$set('deleteId', null)"

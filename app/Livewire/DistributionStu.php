@@ -6,10 +6,13 @@ use Livewire\Component;
 use App\Models\Student;
 use App\Models\Driver;
 use App\Models\Region;
+use Livewire\WithPagination;
 
 class DistributionStu extends Component
 {
-    public $students;
+    use WithPagination;
+    public $paginationTheme = 'bootstrap-5';
+    // public $students;
     public $drivers;
     public $regions;
     public $stu_postion;
@@ -78,7 +81,6 @@ class DistributionStu extends Component
 
         if ($this->regionFilter) {
             $childRegions = Region::where('parent_id', $this->regionFilter)->pluck('id');
-
             $query->whereIn('region_id', $childRegions);
         }
 
@@ -90,11 +92,14 @@ class DistributionStu extends Component
             $query->where('Stu_position', 'like', "%{$this->positionFilter}%");
         }
 
-        $this->students = $query->get();
+        $students = $query->paginate(10); 
+
         $this->drivers = Driver::all();
-        $this->regions =  Region::whereNull('parent_id')->get();
+        $this->regions = Region::whereNull('parent_id')->get();
         $this->stu_postion = Student::distinct()->pluck('Stu_position')->toArray();
 
-        return view('livewire.distribution-stu');
+        return view('livewire.distribution-stu', [
+            'students' => $students, 
+        ]);
     }
 }
