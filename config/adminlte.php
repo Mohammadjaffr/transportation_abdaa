@@ -338,6 +338,11 @@ return [
             'icon' => 'fas fa-fw fa-route',
         ],
         [
+            'text' => 'ادارة السجلات',
+            'url' => 'adminlogs',
+            'icon' => 'fas fa-fw fa-file-alt',
+        ],
+        [
             'text' => 'ادارة السائقين',
             'url' => 'drivers',
             'icon' => 'fas fa-fw fa-user',

@@ -8,6 +8,8 @@ use App\Models\Driver;
 use App\Models\Region;
 use App\Exports\PreparationDriverStuExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Services\AdminLoggerService;
+
 class PreparationDrivers extends Component
 {
     public  $drivers, $regions;
@@ -17,10 +19,10 @@ class PreparationDrivers extends Component
     public $showForm = false;
     public $deleteId = null;
 
-public function export()
-{
-    return Excel::download(new PreparationDriverStuExport, 'drivers_preparations.xlsx');
-}
+    public function export()
+    {
+        return Excel::download(new PreparationDriverStuExport, 'drivers_preparations.xlsx');
+    }
     protected $rules = [
         'Atend' => 'required|boolean',
         'Month' => 'required|date',
@@ -67,10 +69,7 @@ public function export()
         }
     }
 
-    public function loadPreparations()
-    {
-     
-    }
+    public function loadPreparations() {}
 
     public function createPreparation()
     {
@@ -82,6 +81,7 @@ public function export()
             'driver_id' => $this->driver_id,
             'region_id' => $this->region_id,
         ]);
+        AdminLoggerService::log('اضافة حضور السائق', 'PreparationDriver', "اضافة حضور السائق: {$this->driver->Name}");
 
         $this->resetForm();
         $this->refreshDrivers();   // يحدث السائقين بعد الإضافة
@@ -113,6 +113,7 @@ public function export()
             'driver_id' => $this->driver_id,
             'region_id' => $this->region_id,
         ]);
+        AdminLoggerService::log('تحديث حضور السائق', 'PreparationDriver', "تحديث حضور السائق: {$this->driver->Name}");
 
         $this->resetForm();
         $this->refreshDrivers();
@@ -126,6 +127,8 @@ public function export()
         if ($prep) {
             $prep->Atend = !$prep->Atend;
             $prep->save();
+            AdminLoggerService::log('تحديث حالة حضور السائق', 'PreparationDriver', "تحديث حالة حضور السائق: {$this->driver->Name}");
+
             $this->dispatch('show-toast', [
                 'type' => 'success',
                 'message' => 'تم تحديث حالة الحضور للسائق'
@@ -143,6 +146,8 @@ public function export()
     {
         if ($this->deleteId) {
             PreparationDriver::find($this->deleteId)->delete();
+            AdminLoggerService::log('حذف حضور السائق', 'PreparationDriver', "حذف حضور السائق: {$this->driver->Name}");
+
             $this->deleteId = null;
             $this->refreshDrivers();
             $this->loadPreparations();
@@ -168,12 +173,12 @@ public function export()
 
     public function render()
     {
-           $preparations = PreparationDriver::with(['driver', 'region'])
+        $preparations = PreparationDriver::with(['driver', 'region'])
             ->when($this->search, function ($q) {
                 $q->whereHas('driver', fn($dq) => $dq->where('Name', 'like', '%' . $this->search . '%'))
-                  ->orWhere('Month', 'like', '%' . $this->search . '%');
+                    ->orWhere('Month', 'like', '%' . $this->search . '%');
             })
             ->paginate(10);
-        return view('livewire.preparation-drivers',compact('preparations'));
+        return view('livewire.preparation-drivers', compact('preparations'));
     }
 }

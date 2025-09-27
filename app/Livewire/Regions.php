@@ -5,12 +5,13 @@ namespace App\Livewire;
 use App\Models\Region;
 use Livewire\Component;
 use Livewire\WithPagination;
+use App\Services\AdminLoggerService;
 
 use function Ramsey\Uuid\v1;
 
 class Regions extends Component
 {
-      use WithPagination;
+    use WithPagination;
 
     // public $regions;
     public $parent_regions;
@@ -31,22 +32,23 @@ class Regions extends Component
     }
     public function loadRegions()
     {
-        $this->parent_regions= Region::whereNull('parent_id')->get();
-      
+        $this->parent_regions = Region::whereNull('parent_id')->get();
     }
 
     public function store()
     {
         $this->validate([
             'Name' => 'required|string|max:255|unique:regions,Name',
-        ],[
-             'Name.required' => 'يرجى إدخال اسم المنطقة',
+        ], [
+            'Name.required' => 'يرجى إدخال اسم المنطقة',
         ]);
 
         Region::create([
             'Name' => $this->Name,
             'parent_id' => $this->parent_id,
         ]);
+        AdminLoggerService::log('اضافة منطقه', 'Region', "اضافة منطقه: {$this->Name}");
+
         $this->resetForm();
         $this->loadRegions();
         $this->dispatch('show-toast', [
@@ -77,6 +79,8 @@ class Regions extends Component
             'Name' => $this->Name,
             'parent_id' => $this->parent_id,
         ]);
+        AdminLoggerService::log('تعديل منطقه', 'Region', "تعديل منطقه: {$this->Name}");
+
         $this->resetForm();
         $this->loadRegions();
         $this->dispatch('show-toast', [
@@ -98,6 +102,8 @@ class Regions extends Component
             'type' => 'success',
             'message' => 'تم حذف المنطقه بنجاح'
         ]);
+        AdminLoggerService::log('حذف منطقه', 'Region', "حذف منطقه: {$this->deleteName}");
+
         $this->deleteId = null;
         $this->deleteName = null;
 
@@ -125,7 +131,7 @@ class Regions extends Component
 
     public function render()
     {
-          $regions = Region::with('parent')
+        $regions = Region::with('parent')
             ->when($this->search, function ($query) {
                 $query->where('Name', 'like', '%' . $this->search . '%');
             })
@@ -133,6 +139,6 @@ class Regions extends Component
             ->paginate(perPage: 10);
         $parents = Region::with('parent')->get();
         $parent_regions = Region::whereNull('parent_id')->get();
-        return view('livewire.regions', compact('parents', 'parent_regions','regions'));
+        return view('livewire.regions', compact('parents', 'parent_regions', 'regions'));
     }
 }

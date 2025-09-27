@@ -51,4 +51,7 @@ class Dashboard extends Controller
         {
             return view('distribution-stu.index');
         }
+        public function adminlog(){
+        return view('adminlogs.index');
+    }
 }

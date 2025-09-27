@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\Driver;
 use App\Models\Region;
 use Livewire\WithPagination;
+use App\Services\AdminLoggerService;
 
 class Retreats extends Component
 {
@@ -55,7 +56,7 @@ class Retreats extends Component
     ];
 
 
-  
+
     public function updatedStudentId($value)
     {
         if ($value) {
@@ -81,6 +82,9 @@ class Retreats extends Component
             'Reason' => $this->Reason,
             'region_id' => $this->region_id,
         ]);
+        AdminLoggerService::log('إنشاء منسحب', 'Retreat', "إنشاء منسحب: {$this->name}");
+
+
 
         $this->resetForm();
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تسجيل المنسحب بنجاح']);
@@ -115,6 +119,9 @@ class Retreats extends Component
             'region_id' => $this->region_id,
 
         ]);
+        AdminLoggerService::log('تحديث منسحب', 'Retreat', "تحديث منسحب: {$this->selectedRetreat->name}");
+
+
 
         $this->resetForm();
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تحديث بيانات المنسحب بنجاح']);
@@ -130,6 +137,8 @@ class Retreats extends Component
     public function deleteRetreat()
     {
         Retreat::destroy($this->deleteId);
+        AdminLoggerService::log('حذف منسحب', 'Retreat', "حذف منسحب: {$this->deleteRetreatName}");
+
         $this->reset(['deleteId', 'deleteRetreatName']);
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم حذف المنسحب بنجاح']);
     }
@@ -178,6 +187,6 @@ class Retreats extends Component
             ->orderBy('Date_of_interruption', 'desc')
             ->paginate(perPage: 10);
 
-        return view('livewire.retreats',compact('retreats'));
+        return view('livewire.retreats', compact('retreats'));
     }
 }

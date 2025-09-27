@@ -10,13 +10,15 @@ use App\Models\Region;
 use Livewire\WithFileUploads;
 use App\Services\ImageService;
 use Livewire\WithPagination;
+use App\Services\AdminLoggerService;
+
 
 class Drivers extends Component
 {
     use WithFileUploads;
-     use WithPagination;
+    use WithPagination;
 
-     public function updatingSearch()
+    public function updatingSearch()
     {
         $this->resetPage();
     }
@@ -140,28 +142,14 @@ class Drivers extends Component
 
     public function mount()
     {
-       
+
         $this->buses = Bus::all();
         $this->wings = Wing::all();
         // $this->regions = Region::all();
         $this->regions =  Region::whereNull('parent_id')->get();
     }
 
-    // public function updatedSearch()
-    // {
-    //     $this->loadDrivers();
-    // }
-
-    // public function loadDrivers()
-    // {
-    //     Driver::with(['bus', 'wing'])
-    //         ->when($this->search, function ($query) {
-    //             $query->where('Name', 'like', "%{$this->search}%")
-    //                 ->orWhere('IDNo', 'like', "%{$this->search}%");
-    //         })
-    //         ->orderBy('Name', 'desc')
-    //         ->paginate(2);
-    // }
+ 
 
     public function createDriver()
     {
@@ -169,20 +157,21 @@ class Drivers extends Component
 
         $data = $this->fields;
 
-        // $imageService = new ImageService();
-        // $primary_image = null;
+        $driver = Driver::create($data);
 
-        // if ($this->primary_image) {
-        //     $primary_image = $imageService->saveImage($this->primary_image, 'images/drivers');
-        //     $data['Picture'] = $primary_image;
-        // }
-
-        Driver::create($data);
+        AdminLoggerService::log(
+            'إضافة السائق',
+            'Driver',
+            "تمت إضافة السائق: {$driver->Name}"
+        );
 
         $this->resetForm();
-        // $this->loadDrivers();
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم إضافة السائق بنجاح']);
+        $this->dispatch('show-toast', [
+            'type' => 'success',
+            'message' => 'تم إضافة السائق بنجاح'
+        ]);
     }
+
 
 
     public function editDriver($id)
@@ -200,22 +189,21 @@ class Drivers extends Component
 
         $data = $this->fields;
 
-        // $imageService = new ImageService();
-        // $primary_image = null;
-
-        // if ($this->primary_image) {
-        //     $primary_image = $imageService->saveImage($this->primary_image, 'images/drivers');
-        //     $data['Picture'] = $primary_image;
-        // } else {
-        //     $data['Picture'] = $this->selectedDriver->Picture;
-        // }
-
         $this->selectedDriver->update($data);
 
+        AdminLoggerService::log(
+            'تحديث السائق',
+            'Driver',
+            "تم تحديث بيانات السائق: {$this->selectedDriver->Name}"
+        );
+
         $this->resetForm();
-        // $this->loadDrivers();
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تحديث السائق بنجاح']);
+        $this->dispatch('show-toast', [
+            'type' => 'success',
+            'message' => 'تم تحديث السائق بنجاح'
+        ]);
     }
+
 
 
     public function confirmDelete($id)
@@ -227,12 +215,26 @@ class Drivers extends Component
 
     public function deleteDriver()
     {
-        Driver::findOrFail($this->deleteId)->delete();
-        // $this->loadDrivers();
+        $driver = Driver::findOrFail($this->deleteId);
+        $driverName = $driver->Name;
+
+        $driver->delete();
+
+        AdminLoggerService::log(
+            'حذف السائق',
+            'Driver',
+            "تم حذف السائق: {$driverName}"
+        );
+
         $this->deleteId = null;
         $this->deleteDriverName = null;
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم حذف السائق بنجاح']);
+
+        $this->dispatch('show-toast', [
+            'type' => 'success',
+            'message' => 'تم حذف السائق بنجاح'
+        ]);
     }
+
 
     public function resetForm()
     {
@@ -265,6 +267,6 @@ class Drivers extends Component
             })
             ->orderBy('Name', 'desc')
             ->paginate(10);
-        return view('livewire.drivers',compact('drivers'));
+        return view('livewire.drivers', compact('drivers'));
     }
 }

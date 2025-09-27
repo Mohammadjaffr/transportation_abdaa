@@ -9,6 +9,8 @@ use App\Models\Region;
 use App\Models\Student;
 use App\Exports\PreparationStuExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Services\AdminLoggerService;
+
 class PreparationStus extends Component
 {
     public  $drivers, $regions, $students;
@@ -19,9 +21,9 @@ class PreparationStus extends Component
     public $deleteId = null;
 
     public function export()
-{
-    return Excel::download(new PreparationStuExport, 'preparations.xlsx');
-}
+    {
+        return Excel::download(new PreparationStuExport, 'preparations.xlsx');
+    }
     protected $rules = [
         'Atend' => 'required|boolean',
         'Year' => 'required|date',
@@ -64,6 +66,8 @@ class PreparationStus extends Component
         if ($prep) {
             $prep->Atend = !$prep->Atend;
             $prep->save();
+            AdminLoggerService::log('تحديث حالة حضور طالب', 'PreparationStu', "تحديث حالة حضور طالب: {$prep->student->Name}");
+
             $this->dispatch('show-toast', [
                 'type' => 'success',
                 'message' => 'تم تحديث حالة الحضور لطالب'
@@ -71,10 +75,7 @@ class PreparationStus extends Component
             $this->loadPreparations();
         }
     }
-    public function loadPreparations()
-    {
-       
-    }
+    public function loadPreparations() {}
     public function updatedStudentId($value)
     {
         if ($value) {
@@ -103,6 +104,8 @@ class PreparationStus extends Component
         $this->students = Student::whereNotNull('driver_id')
             ->whereNotIn('id', $preparedIds)
             ->get();
+        AdminLoggerService::log('اضافة حضور طالب', 'PreparationStu', "اضافة حضور طالب: {$this->student->Name}");
+
         $this->resetForm();
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تسجيل الحضور بنجاح']);
     }
@@ -132,6 +135,8 @@ class PreparationStus extends Component
             'region_id' => $this->region_id,
             'student_id' => $this->student_id,
         ]);
+        AdminLoggerService::log('تحديث حضور طالب', 'PreparationStu', "تحديث حضور طالب: {$prep->student->Name}");
+
         $this->resetForm();
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تحديث سجل الحضور']);
     }
@@ -145,6 +150,8 @@ class PreparationStus extends Component
     {
         if ($this->deleteId) {
             PreparationStu::find($this->deleteId)->delete();
+            AdminLoggerService::log('حذف حضور طالب', 'PreparationStu', "حذف حضور طالب: {$this->student->Name}");
+
             $this->deleteId = null;
             $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم حذف سجل الحضور']);
         }
@@ -175,13 +182,13 @@ class PreparationStus extends Component
                 $q->whereDate('Year', $this->Year);
             })
             ->get();
-             $preparations = PreparationStu::with(['driver', 'region', 'student'])
+        $preparations = PreparationStu::with(['driver', 'region', 'student'])
             ->when($this->search, function ($q) {
                 $q->whereHas('student', fn($sq) => $sq->where('name', 'like', '%' . $this->search . '%'))
                     ->orWhere('Year', 'like', '%' . $this->search . '%');
             })
             ->paginate(10);
 
-        return view('livewire.preparation-stus',compact('preparations'));
+        return view('livewire.preparation-stus', compact('preparations'));
     }
 }

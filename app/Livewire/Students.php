@@ -12,6 +12,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\StudentsImport;
 use App\Exports\StudentsExport;
 use Livewire\WithPagination;
+use App\Services\AdminLoggerService;
 
 
 class Students extends Component
@@ -115,6 +116,7 @@ class Students extends Component
 
             return;
         }
+        AdminLoggerService::log('استيراد ملف   Excle لطلاب', 'Student', "إضافة طلاب جدد: {$this->import}");
 
         $this->reset('excelFile', 'showImportForm');
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم استيراد الطلاب بنجاح']);
@@ -148,6 +150,7 @@ class Students extends Component
             'region_id' => $this->region_id,
             'teacher_id' => $this->teacher_id,
         ]);
+        AdminLoggerService::log('اضافة طالب', 'Student', "إضافة طالب جديد: {$this->name}");
 
         $this->resetForm();
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم إضافة الطالب بنجاح']);
@@ -189,6 +192,7 @@ class Students extends Component
             'region_id' => $this->region_id,
             'teacher_id' => $this->teacher_id ?: null,
         ]);
+        AdminLoggerService::log('تحديث طالب', 'Student', "تحديث طالب: {$this->name}");
 
         $this->resetForm();
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تحديث الطالب بنجاح']);
@@ -203,6 +207,8 @@ class Students extends Component
     {
         if ($this->deleteId) {
             Student::find($this->deleteId)->delete();
+            AdminLoggerService::log('حذف طالب', 'Student', "حذف طالب: {$this->name}");
+
             $this->deleteId = null;
             $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم حذف الطالب بنجاح']);
         }
