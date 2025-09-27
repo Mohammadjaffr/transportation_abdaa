@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{app()->getLocale() == 'ar' ? 'rtl': 'ltr'}}" >
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 
 <head>
 
@@ -9,8 +9,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- SEO Meta Tags --}}
-    <meta name="description" content="نظام إدارة المواصلات لمدرسة الإبداع الأهلية، يتيح متابعة وتنظيم حركة الحافلات، السائقين والطلاب بكل سهولة وفعالية.">
-    <meta name="keywords" content="مدرسة الإبداع الأهلية, نظام المواصلات, إدارة الحافلات, متابعة الطلاب, النقل المدرسي, Laravel, AdminLTE">
+    <meta name="description"
+        content="نظام إدارة المواصلات لمدرسة الإبداع الأهلية، يتيح متابعة وتنظيم حركة الحافلات، السائقين والطلاب بكل سهولة وفعالية.">
+    <meta name="keywords"
+        content="مدرسة الإبداع الأهلية, نظام المواصلات, إدارة الحافلات, متابعة الطلاب, النقل المدرسي, Laravel, AdminLTE">
     <meta name="author" content="مدرسة الإبداع الأهلية">
 
     {{-- Open Graph Meta (مفيد عند مشاركة الرابط على السوشيال ميديا) --}}
@@ -19,6 +21,17 @@
     <meta property="og:image" content="{{ asset('favicons/favicon-96x96.png') }}">
     <meta property="og:url" content="{{ url()->current() }}">
     <meta name="twitter:card" content="summary_large_image">
+
+    {{-- Favicon & App Icons --}}
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicons/favicon.ico') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicons/favicon-16x16.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicons/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicons/favicon-96x96.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('favicons/web-app-manifest-192x192.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicons/apple-touch-icon.png') }}">
+    <link rel="manifest" href="{{ asset('favicons/site.webmanifest') }}">
+    <meta name="msapplication-TileImage" content="{{ asset('favicons/favicon-96x96.png') }}">
+    <meta name="msapplication-TileColor" content="#ffffff">
 
     {{-- Custom Meta Tags --}}
     @yield('meta_tags')
@@ -34,7 +47,7 @@
     @yield('adminlte_css_pre')
 
     {{-- Base Stylesheets (depends on Laravel asset bundling tool) --}}
-    @if(config('adminlte.enabled_laravel_mix', false))
+    @if (config('adminlte.enabled_laravel_mix', false))
         <link rel="stylesheet" href="{{ mix(config('adminlte.laravel_mix_css_path', 'css/app.css')) }}">
     @else
         @switch(config('adminlte.laravel_asset_bundling', false))
@@ -58,13 +71,13 @@
 
                 @if (app()->getLocale() == 'ar')
                     @vite(['resources/css/adminlte-rtl.css'])
-                
-                    @else
+                @else
                     @vite(['resources/css/adminlte.css'])
                 @endif
 
-                @if(config('adminlte.google_fonts.allowed', true))
-                    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+                @if (config('adminlte.google_fonts.allowed', true))
+                    <link rel="stylesheet"
+                        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
                 @endif
         @endswitch
     @endif
@@ -73,8 +86,8 @@
     @include('adminlte::plugins', ['type' => 'css'])
 
     {{-- Livewire Styles --}}
-    @if(config('adminlte.livewire'))
-        @if(intval(app()->version()) >= 7)
+    @if (config('adminlte.livewire'))
+        @if (intval(app()->version()) >= 7)
             @livewireStyles
         @else
             <livewire:styles />
@@ -85,7 +98,7 @@
     @yield('adminlte_css')
 
     {{-- Favicon --}}
-    @if(config('adminlte.use_ico_only'))
+    @if (config('adminlte.use_ico_only'))
         <link rel="shortcut icon" href="{{ asset('favicons/favicon.ico') }}" />
     @elseif(config('adminlte.use_full_favicon'))
         <link rel="shortcut icon" href="{{ asset('favicons/favicon.ico') }}" />
@@ -101,7 +114,8 @@
         <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicons/favicon-16x16.png') }}">
         <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicons/favicon-32x32.png') }}">
         <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('favicons/favicon-96x96.png') }}">
-        <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('favicons/android-icon-192x192.png') }}">
+        <link rel="icon" type="image/png" sizes="192x192"
+            href="{{ asset('favicons/android-icon-192x192.png') }}">
         <link rel="manifest" crossorigin="use-credentials" href="{{ asset('favicons/manifest.json') }}">
         <meta name="msapplication-TileColor" content="#ffffff">
         <meta name="msapplication-TileImage" content="{{ asset('favicons/ms-icon-144x144.png') }}">
@@ -115,7 +129,7 @@
     @yield('body')
 
     {{-- Base Scripts (depends on Laravel asset bundling tool) --}}
-    @if(config('adminlte.enabled_laravel_mix', false))
+    @if (config('adminlte.enabled_laravel_mix', false))
         <script src="{{ mix(config('adminlte.laravel_mix_js_path', 'js/app.js')) }}"></script>
     @else
         @switch(config('adminlte.laravel_asset_bundling', false))
@@ -139,8 +153,8 @@
     @include('adminlte::plugins', ['type' => 'js'])
 
     {{-- Livewire Script --}}
-    @if(config('adminlte.livewire'))
-        @if(intval(app()->version()) >= 7)
+    @if (config('adminlte.livewire'))
+        @if (intval(app()->version()) >= 7)
             @livewireScripts
         @else
             <livewire:scripts />
