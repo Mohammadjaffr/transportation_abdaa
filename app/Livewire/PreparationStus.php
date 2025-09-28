@@ -91,26 +91,38 @@ class PreparationStus extends Component
             }
         }
     }
-    public function createPreparation()
-    {
-        $this->validate();
-        PreparationStu::create([
-            'Atend' => $this->Atend,
-            'Year' => $this->Year,
-            'driver_id' => $this->driver_id,
-            'region_id' => $this->region_id,
-            'student_id' => $this->student_id,
-        ]);
-        $this->loadPreparations();
-        $preparedIds = PreparationStu::pluck('student_id')->toArray();
-        $this->students = Student::whereNotNull('driver_id')
-            ->whereNotIn('id', $preparedIds)
-            ->get();
-        AdminLoggerService::log('اضافة حضور طالب', 'PreparationStu', "اضافة حضور طالب: {$this->student->Name}");
+  public function createPreparation()
+{
+    $this->validate();
 
-        $this->resetForm();
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تسجيل الحضور بنجاح']);
-    }
+    $prep = PreparationStu::create([
+        'Atend'     => $this->Atend,
+        'Year'      => $this->Year,
+        'driver_id' => $this->driver_id,
+        'region_id' => $this->region_id,
+        'student_id'=> $this->student_id,
+    ]);
+
+    $this->loadPreparations();
+
+    $preparedIds = PreparationStu::pluck('student_id')->toArray();
+    $this->students = Student::whereNotNull('driver_id')
+        ->whereNotIn('id', $preparedIds)
+        ->get();
+
+    AdminLoggerService::log(
+        'اضافة حضور طالب',
+        'PreparationStu',
+        "اضافة حضور طالب: {$prep->student->Name}"
+    );
+
+    $this->resetForm();
+    $this->dispatch('show-toast', [
+        'type'    => 'success',
+        'message' => 'تم تسجيل الحضور بنجاح'
+    ]);
+}
+
 
     public function editPreparation($id)
     {
@@ -149,16 +161,36 @@ class PreparationStus extends Component
         $this->deleteName = PreparationStu::find($id)->student->Name;
     }
 
-    public function deletePreparation()
-    {
-        if ($this->deleteId) {
-            PreparationStu::find($this->deleteId)->delete();
-            AdminLoggerService::log('حذف حضور طالب', 'PreparationStu', "حذف حضور طالب: {$this->student->Name}");
+  public function deletePreparation()
+{
+    if ($this->deleteId) {
+        $prep = PreparationStu::find($this->deleteId);
 
-            $this->deleteId = null;
-            $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم حذف سجل الحضور']);
+        if ($prep) {
+            $prep->delete();
+
+            AdminLoggerService::log(
+                'حذف حضور طالب',
+                'PreparationStu',
+                "حذف حضور طالب: {$this->deleteName}"
+            );
+
+            $this->dispatch('show-toast', [
+                'type' => 'success',
+                'message' => 'تم حذف سجل الحضور'
+            ]);
+        } else {
+            $this->dispatch('show-toast', [
+                'type' => 'error',
+                'message' => 'السجل غير موجود أو تم حذفه مسبقاً'
+            ]);
         }
+
+        $this->deleteId = null;
+        $this->deleteName = null;
     }
+}
+
 
     public function cancel()
     {

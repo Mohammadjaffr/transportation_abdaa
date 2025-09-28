@@ -209,7 +209,7 @@ class Students extends Component
     {
         if ($this->deleteId) {
             Student::find($this->deleteId)->delete();
-            AdminLoggerService::log('حذف طالب', 'Student', "حذف طالب: {$this->name}");
+            AdminLoggerService::log('حذف طالب', 'Student', "حذف طالب: {$this->deleteName}");
 
             $this->deleteId = null;
             $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم حذف الطالب بنجاح']);

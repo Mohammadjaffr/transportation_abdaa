@@ -82,7 +82,10 @@ class Retreats extends Component
             'Reason' => $this->Reason,
             'region_id' => $this->region_id,
         ]);
-        AdminLoggerService::log('إنشاء منسحب', 'Retreat', "إنشاء منسحب: {$this->name}");
+        $studentName = Student::find($this->student_id)?->Name ?? 'غير معروف';
+
+        AdminLoggerService::log('إنشاء منسحب', 'Retreat', "إنشاء منسحب: {$studentName}");
+
 
 
 
@@ -119,7 +122,9 @@ class Retreats extends Component
             'region_id' => $this->region_id,
 
         ]);
-        AdminLoggerService::log('تحديث منسحب', 'Retreat', "تحديث منسحب: {$this->selectedRetreat->name}");
+        $studentName = $this->selectedRetreat->student?->Name ?? 'غير معروف';
+
+        AdminLoggerService::log('تحديث منسحب', 'Retreat', "تحديث منسحب: {$studentName}");
 
 
 
@@ -179,13 +184,11 @@ class Retreats extends Component
                 $query->whereHas('student', function ($q) {
                     $q->where('Name', 'like', "%{$this->search}%");
                 })
-                    ->orWhere('Grade', 'like', "%{$this->search}%")
-                    ->orWhereHas('driver', function ($q) {
-                        $q->where('Name', 'like', "%{$this->search}%");
-                    });
+                    ->orWhere('Grade', 'like', "%{$this->search}%");
             })
             ->orderBy('Date_of_interruption', 'desc')
-            ->paginate(perPage: 10);
+            ->paginate(10);
+
 
         return view('livewire.retreats', compact('retreats'));
     }

@@ -15,7 +15,7 @@ class PreparationDrivers extends Component
 {
     use WithPagination;
     public  $drivers, $regions;
-    public $Atend = false, $Month, $driver_id, $region_id,$deleteName;
+    public $Atend = false, $Month, $driver_id, $region_id, $deleteName;
     public $editMode = false, $selectedId;
     public $search = '';
     public $showForm = false;
@@ -77,13 +77,13 @@ class PreparationDrivers extends Component
     {
         $this->validate();
 
-        PreparationDriver::create([
+        $prep = PreparationDriver::create([
             'Atend' => $this->Atend ? 1 : 0,
             'Month' => $this->Month,
             'driver_id' => $this->driver_id,
             'region_id' => $this->region_id,
         ]);
-        AdminLoggerService::log('اضافة حضور السائق', 'PreparationDriver', "اضافة حضور السائق: {$this->driver->Name}");
+        AdminLoggerService::log('اضافة حضور السائق', 'PreparationDriver', "اضافة حضور السائق: {$prep->driver->Name}");
 
         $this->resetForm();
         $this->refreshDrivers();   // يحدث السائقين بعد الإضافة
@@ -115,7 +115,7 @@ class PreparationDrivers extends Component
             'driver_id' => $this->driver_id,
             'region_id' => $this->region_id,
         ]);
-        AdminLoggerService::log('تحديث حضور السائق', 'PreparationDriver', "تحديث حضور السائق: {$this->driver->Name}");
+        AdminLoggerService::log('تحديث حضور السائق', 'PreparationDriver', "تحديث حضور السائق: {$prep->driver->Name}");
 
         $this->resetForm();
         $this->refreshDrivers();
@@ -129,7 +129,7 @@ class PreparationDrivers extends Component
         if ($prep) {
             $prep->Atend = !$prep->Atend;
             $prep->save();
-            AdminLoggerService::log('تحديث حالة حضور السائق', 'PreparationDriver', "تحديث حالة حضور السائق: {$this->driver->Name}");
+            AdminLoggerService::log('تحديث حالة حضور السائق', 'PreparationDriver', "تحديث حالة حضور السائق: {$prep->driver->Name}");
 
             $this->dispatch('show-toast', [
                 'type' => 'success',
@@ -148,15 +148,35 @@ class PreparationDrivers extends Component
     public function deletePreparation()
     {
         if ($this->deleteId) {
-            PreparationDriver::find($this->deleteId)->delete();
-            AdminLoggerService::log('حذف حضور السائق', 'PreparationDriver', "حذف حضور السائق: {$this->driver->Name}");
+            $prep = PreparationDriver::with('driver')->find($this->deleteId);
+
+            if ($prep) {
+                $driverName = $prep->driver?->Name; 
+                $prep->delete();
+
+                AdminLoggerService::log(
+                    'حذف حضور السائق',
+                    'PreparationDriver',
+                    "حذف حضور السائق: {$driverName}"
+                );
+
+                $this->dispatch('show-toast', [
+                    'type' => 'success',
+                    'message' => 'تم حذف سجل حضور السائق'
+                ]);
+            } else {
+                $this->dispatch('show-toast', [
+                    'type' => 'error',
+                    'message' => 'السجل غير موجود أو تم حذفه مسبقاً'
+                ]);
+            }
 
             $this->deleteId = null;
             $this->refreshDrivers();
             $this->loadPreparations();
-            $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم حذف سجل حضور السائق']);
         }
     }
+
 
     public function cancel()
     {
