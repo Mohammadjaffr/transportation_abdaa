@@ -189,7 +189,6 @@
                     </table>
                  
                  <div class="card-footer d-flex justify-content-center">
-                    {{ $regions->links('pagination::bootstrap-5') }}
                 </div>
                 </div>
             </div>
