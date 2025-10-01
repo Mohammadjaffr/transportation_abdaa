@@ -11,30 +11,31 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('students', function (Blueprint $table) {
+        Schema::create('student_records', function (Blueprint $table) {
             $table->id();
-            $table->string('Name', 50);
+            $table->foreignId('student_id')->constrained('students')->onDelete('cascade');
+            $table->foreignId('school_year_id')->constrained('school_years')->onDelete('cascade');
             $table->string('Grade', 20);
-            $table->string('Sex', 20);
+            $table->string('status');
             $table->string('Phone', 20);
-            $table->string('Stu_position', 20);
-            $table->foreignId('wing_id')->constrained('wings')->onDelete('cascade');
-            $table->string('Division', 20)->nullable();
-            $table->foreignId('region_id')->nullable()->constrained('regions')->onDelete('cascade');
+
+            $table->string('Stu_position')->nullable();
+
+
             $table->foreignId('teacher_id')->nullable()->constrained('teachers')->nullOnDelete();
             $table->foreignId('driver_id')->nullable()->constrained('drivers')->nullOnDelete();
-            $table->foreignId('school_year_id')->constrained('school_years')->onDelete('cascade');
-            $table->string('status', 20)->nullable();
+            $table->foreignId('region_id')->nullable()->constrained('regions')->nullOnDelete();
+            $table->foreignId('wing_id')->nullable()->constrained('wings')->nullOnDelete();
+
             $table->timestamps();
         });
     }
-    
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('students');
+        Schema::dropIfExists('student_records');
     }
 };

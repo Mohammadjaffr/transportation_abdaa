@@ -13,7 +13,7 @@ use App\Imports\StudentsImport;
 use App\Exports\StudentsExport;
 use Livewire\WithPagination;
 use App\Services\AdminLoggerService;
-
+use App\Models\SchoolYear;
 
 class Students extends Component
 {
@@ -26,6 +26,7 @@ class Students extends Component
     public $name, $grade, $sex, $phone,
         $stu_position, $wing_id, $division, $region_id, $teacher_id, $deleteName;
     public $editMode = false, $selectedStudentId, $editId = null;
+
     public $primary_image;
     public $showForm = false;
     public $deleteId = null;
@@ -138,7 +139,7 @@ class Students extends Component
     public function createStudent()
     {
         $this->validate();
-
+        $year = SchoolYear::where('is_current', true)->first();
         Student::create([
             'Name' => $this->name,
             'Grade' => $this->grade,
@@ -149,6 +150,7 @@ class Students extends Component
             'Division' => $this->division,
             'region_id' => $this->region_id,
             'teacher_id' => $this->teacher_id,
+            'school_year_id' => $year->id,
         ]);
         AdminLoggerService::log('اضافة طالب', 'Student', "إضافة طالب جديد: {$this->name}");
 
@@ -238,30 +240,30 @@ class Students extends Component
 
     public function render()
     {
-    $students = Student::with(['wing', 'region', 'teacher', 'driver']) // ✅ أضفت driver هنا
-    ->when($this->search, function ($query) {
-        $searchTerm = '%' . $this->search . '%';
+        $students = Student::with(['wing', 'region', 'teacher', 'driver']) // ✅ أضفت driver هنا
+            ->when($this->search, function ($query) {
+                $searchTerm = '%' . $this->search . '%';
 
-        $query->where(function ($q) use ($searchTerm) {
-            $q->where('Name', 'like', $searchTerm)
-              ->orWhere('id', 'like', $searchTerm)
-              ->orWhere('Phone', 'like', $searchTerm)
-              ->orWhere('Stu_position', 'like', $searchTerm)
-              ->orWhere('Grade', 'like', $searchTerm)
-              ->orWhere('Division', 'like', $searchTerm);
-        })
-        ->orWhereHas('region', function ($q) use ($searchTerm) {
-            $q->where('Name', 'like', $searchTerm);
-        })
-        ->orWhereHas('driver', function ($q) use ($searchTerm) {
-            $q->where('Name', 'like', $searchTerm);
-        })
-        ->orWhereHas('teacher', function ($q) use ($searchTerm) {
-            $q->where('Name', 'like', $searchTerm);
-        });
-    })
-    ->orderBy('id', 'desc')
-    ->paginate(10);
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('Name', 'like', $searchTerm)
+                        ->orWhere('id', 'like', $searchTerm)
+                        ->orWhere('Phone', 'like', $searchTerm)
+                        ->orWhere('Stu_position', 'like', $searchTerm)
+                        ->orWhere('Grade', 'like', $searchTerm)
+                        ->orWhere('Division', 'like', $searchTerm);
+                })
+                    ->orWhereHas('region', function ($q) use ($searchTerm) {
+                        $q->where('Name', 'like', $searchTerm);
+                    })
+                    ->orWhereHas('driver', function ($q) use ($searchTerm) {
+                        $q->where('Name', 'like', $searchTerm);
+                    })
+                    ->orWhereHas('teacher', function ($q) use ($searchTerm) {
+                        $q->where('Name', 'like', $searchTerm);
+                    });
+            })
+            ->orderBy('id', 'desc')
+            ->paginate(10);
 
 
 

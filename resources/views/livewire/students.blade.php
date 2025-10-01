@@ -337,6 +337,7 @@
                             <th>الموقف</th>
                             <th>المعلم\ة</th>
                             <th>السائق</th>
+                            <th>سنة الدراسة</th>
                             <th>إجراءات</th>
                         </tr>
                     </thead>
@@ -357,6 +358,8 @@
                                 <td>{{ $student->Stu_position }}</td>
                                 <td>{{ $student->teacher?->Name ?? 'غير موجود' }}</td>
                                 <td>{{ $student->driver?->Name ?? 'غير موجود' }}</td>
+                                <td>{{ $student->schoolYear->year ?? 'غير محددة' }}</td>
+
                                 <td class="d-flex gap-2 justify-content-center">
                                     <button wire:click="editStudent({{ $student->id }})"
                                         class="btn btn-outline-success btn-sm rounded-pill mr-2">

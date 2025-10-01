@@ -1,6 +1,6 @@
 /* تغيير لون السايدبار */
 .main-sidebar {
-    background:  linear-gradient(135deg, #1f2422 0%, #29793d 100%)!important;
+    background: linear-gradient(135deg, #1f2422 0%, #29793d 100%) !important;
 }
 
 .main-header {
@@ -8,10 +8,9 @@
 }
 
 body {
-    font-family: 'Tajawal', sans-serif !important;
-   
+    font-family: "Tajawal", sans-serif !important;
 }
-.navbar-search{
+.navbar-search {
     background-color: #18974d !important;
 }
 .hover-shadow {
@@ -19,9 +18,11 @@ body {
 }
 .hover-shadow:hover {
     transform: translateY(-5px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.15) !important;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15) !important;
 }
-.sidebar-menu, .nav-menu, .dashboard-menu {
+.sidebar-menu,
+.nav-menu,
+.dashboard-menu {
     color: #000000 !important;
 }
 
@@ -31,7 +32,6 @@ body {
     font-weight: 500 !important;
     padding: 0.7rem 2.2rem !important;
     box-shadow: 0 2px 8px rgba(76, 175, 80, 0.07) !important;
-    
 }
 .text-primary {
     color: #1f2422 !important;
@@ -40,7 +40,7 @@ body {
     background-color: #18974d !important;
     border-color: #18974d !important;
 }
-.btn-outline-primary{
+.btn-outline-primary {
     color: #18974d !important;
     border-color: #18974d !important;
 }
@@ -57,4 +57,129 @@ body {
 .pagination .page-link:hover {
     background-color: #e9fbe7; /* خلفية خفيفة عند المرور */
     color: #28a745;
+}
+
+/* Switch Toggle Styles */
+.form-switch {
+    position: relative;
+    display: inline-block;
+    width: 2.5rem;
+    height: 1.4rem;
+    margin-right: 0.5rem;
+}
+
+.form-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.form-switch label::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2.5rem;
+    height: 1.4rem;
+    background-color: #adb5bd;
+    border-radius: 1.5rem;
+    transition: background-color 0.3s;
+}
+
+.form-switch label::after {
+    content: "";
+    position: absolute;
+    top: 0.1rem;
+    right: 0.1rem;
+    width: 1.2rem;
+    height: 1.2rem;
+    background-color: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.form-switch input:checked + label::after {
+    transform: translateX(-1.1rem);
+}
+
+.switch-active label::before {
+    background-color: #28a745;
+}
+
+.switch-banned label::before {
+    background-color: #dc3545;
+}
+
+/* Badge Styles */
+.badge-red {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-yellow {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-green {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-red,
+.badge-yellow,
+.badge-green {
+    padding: 0.35em 0.65em;
+    border-radius: 0.25rem;
+    font-size: 0.875em;
+}
+
+/* Table Styles */
+.table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+}
+
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+}
+
+/* Pagination */
+.pagination {
+    justify-content: flex-start;
+}
+
+/* Action Links */
+.action-link {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.action-link:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+/* Custom Card Styles */
+.card-header-custom {
+    background: linear-gradient(135deg, #1976d2 0%, #0d47a1 100%);
+}
+
+.filter-section {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+.nav-link.active {
+    background-color: #28a745 !important;
+    color: #fff !important;
+
+}
+.nav-link.btn {
+    border-radius: 2rem !important;
+}
+.nav-item:hover .nav-link.btn {
+    background-color: #cfcfcf !important;
+    color: #28a745 !important;
 }
