@@ -15,7 +15,7 @@ class Driver extends Model
         'Phone',
         'LicenseNo',
         'Picture',
-        'Ownership',
+        'Ownership  ',
         'Bus_type',
         'No_Passengers',
         'wing_id',

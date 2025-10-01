@@ -9,6 +9,8 @@
                 <i class="fas fa-plus-circle me-1"></i> إضافة منسحب جديدة
             </button>
         @endif
+        <h3 class="fw-bold text-center d-none d-sm-block"> عام {{ date('Y') }} </h3>
+
         <h3 class="fw-bold text-primary d-none d-md-block"> إدارة الطلاب المنسحبين</h3>
     </div>
 
@@ -161,8 +163,8 @@
                         @endforelse
                     </tbody>
                 </table>
-                
-                 <div class="card-footer d-flex justify-content-center">
+
+                <div class="card-footer d-flex justify-content-center">
                     {{ $retreats->links('pagination::bootstrap-5') }}
                 </div>
             </div>

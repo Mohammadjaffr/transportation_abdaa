@@ -10,7 +10,9 @@
                     <i class="fas fa-plus-circle me-1"></i> إضافة سائق جديد
                 </button>
             @endif
+            <h3 class="fw-bold text-center d-none d-sm-block"> عام {{ date('Y') }} </h3>
             <h3 class="fw-bold text-primary d-none d-sm-block">إدارة السائقين</h3>
+
         </div>
 
         {{-- Form --}}

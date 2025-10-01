@@ -238,13 +238,33 @@ class Students extends Component
 
     public function render()
     {
-        $students = Student::with(['wing', 'region', 'teacher'])
-            ->when($this->search, function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('id', 'like', '%' . $this->search . '%');
-            })
-            ->orderBy('id', 'desc')
-            ->paginate(10);
+    $students = Student::with(['wing', 'region', 'teacher', 'driver']) // ✅ أضفت driver هنا
+    ->when($this->search, function ($query) {
+        $searchTerm = '%' . $this->search . '%';
+
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('Name', 'like', $searchTerm)
+              ->orWhere('id', 'like', $searchTerm)
+              ->orWhere('Phone', 'like', $searchTerm)
+              ->orWhere('Stu_position', 'like', $searchTerm)
+              ->orWhere('Grade', 'like', $searchTerm)
+              ->orWhere('Division', 'like', $searchTerm);
+        })
+        ->orWhereHas('region', function ($q) use ($searchTerm) {
+            $q->where('Name', 'like', $searchTerm);
+        })
+        ->orWhereHas('driver', function ($q) use ($searchTerm) {
+            $q->where('Name', 'like', $searchTerm);
+        })
+        ->orWhereHas('teacher', function ($q) use ($searchTerm) {
+            $q->where('Name', 'like', $searchTerm);
+        });
+    })
+    ->orderBy('id', 'desc')
+    ->paginate(10);
+
+
+
 
         $children_regions = $this->region_id
             ? Region::where('parent_id', $this->region_id)->get()

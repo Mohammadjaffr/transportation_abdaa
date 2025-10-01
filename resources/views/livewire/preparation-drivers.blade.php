@@ -115,7 +115,11 @@
         }
     </style>
     <div class="container py-4">
-        <h3 class="fw-bold text-primary text-center mb-0">تحضير السائقين</h3>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="fw-bold text-start d-none d-sm-block">تحضير السائقين</h3>
+            <h3 class="fw-bold text-end d-none d-sm-block"> عام {{ date('Y') }} </h3>
+
+        </div>
 
         <div class="d-flex justify-content-between  mb-4">
             @if (!$showForm)

@@ -16,7 +16,7 @@ class PreparationStus extends Component
 {
     use WithPagination;
     public  $drivers, $regions, $students;
-    public $Atend = true, $Year, $driver_id, $region_id, $student_id,$deleteName;
+    public $Atend = true, $Year, $driver_id, $region_id, $student_id, $deleteName;
     public $editMode = false, $selectedId, $Grade, $Division;
     public $search = '';
     public $showForm = false;
@@ -91,37 +91,37 @@ class PreparationStus extends Component
             }
         }
     }
-  public function createPreparation()
-{
-    $this->validate();
+    public function createPreparation()
+    {
+        $this->validate();
 
-    $prep = PreparationStu::create([
-        'Atend'     => $this->Atend,
-        'Year'      => $this->Year,
-        'driver_id' => $this->driver_id,
-        'region_id' => $this->region_id,
-        'student_id'=> $this->student_id,
-    ]);
+        $prep = PreparationStu::create([
+            'Atend'     => $this->Atend,
+            'Year'      => $this->Year,
+            'driver_id' => $this->driver_id,
+            'region_id' => $this->region_id,
+            'student_id' => $this->student_id,
+        ]);
 
-    $this->loadPreparations();
+        $this->loadPreparations();
 
-    $preparedIds = PreparationStu::pluck('student_id')->toArray();
-    $this->students = Student::whereNotNull('driver_id')
-        ->whereNotIn('id', $preparedIds)
-        ->get();
+        $preparedIds = PreparationStu::pluck('student_id')->toArray();
+        $this->students = Student::whereNotNull('driver_id')
+            ->whereNotIn('id', $preparedIds)
+            ->get();
 
-    AdminLoggerService::log(
-        'اضافة حضور طالب',
-        'PreparationStu',
-        "اضافة حضور طالب: {$prep->student->Name}"
-    );
+        AdminLoggerService::log(
+            'اضافة حضور طالب',
+            'PreparationStu',
+            "اضافة حضور طالب: {$prep->student->Name}"
+        );
 
-    $this->resetForm();
-    $this->dispatch('show-toast', [
-        'type'    => 'success',
-        'message' => 'تم تسجيل الحضور بنجاح'
-    ]);
-}
+        $this->resetForm();
+        $this->dispatch('show-toast', [
+            'type'    => 'success',
+            'message' => 'تم تسجيل الحضور بنجاح'
+        ]);
+    }
 
 
     public function editPreparation($id)
@@ -161,35 +161,35 @@ class PreparationStus extends Component
         $this->deleteName = PreparationStu::find($id)->student->Name;
     }
 
-  public function deletePreparation()
-{
-    if ($this->deleteId) {
-        $prep = PreparationStu::find($this->deleteId);
+    public function deletePreparation()
+    {
+        if ($this->deleteId) {
+            $prep = PreparationStu::find($this->deleteId);
 
-        if ($prep) {
-            $prep->delete();
+            if ($prep) {
+                $prep->delete();
 
-            AdminLoggerService::log(
-                'حذف حضور طالب',
-                'PreparationStu',
-                "حذف حضور طالب: {$this->deleteName}"
-            );
+                AdminLoggerService::log(
+                    'حذف حضور طالب',
+                    'PreparationStu',
+                    "حذف حضور طالب: {$this->deleteName}"
+                );
 
-            $this->dispatch('show-toast', [
-                'type' => 'success',
-                'message' => 'تم حذف سجل الحضور'
-            ]);
-        } else {
-            $this->dispatch('show-toast', [
-                'type' => 'error',
-                'message' => 'السجل غير موجود أو تم حذفه مسبقاً'
-            ]);
+                $this->dispatch('show-toast', [
+                    'type' => 'success',
+                    'message' => 'تم حذف سجل الحضور'
+                ]);
+            } else {
+                $this->dispatch('show-toast', [
+                    'type' => 'error',
+                    'message' => 'السجل غير موجود أو تم حذفه مسبقاً'
+                ]);
+            }
+
+            $this->deleteId = null;
+            $this->deleteName = null;
         }
-
-        $this->deleteId = null;
-        $this->deleteName = null;
     }
-}
 
 
     public function cancel()
@@ -219,9 +219,25 @@ class PreparationStus extends Component
             ->get();
         $preparations = PreparationStu::with(['driver', 'region', 'student'])
             ->when($this->search, function ($q) {
-                $q->whereHas('student', fn($sq) => $sq->where('name', 'like', '%' . $this->search . '%'))
-                    ->orWhere('Year', 'like', '%' . $this->search . '%');
+                $searchTerm = '%' . $this->search . '%';
+
+                $q->where(function ($sub) use ($searchTerm) {
+                    $sub->where('Atend', 'like', $searchTerm)
+                        ->orWhere('Year', 'like', $searchTerm);
+                })
+                    ->orWhereHas('student', function ($sq) use ($searchTerm) {
+                        $sq->where('Name', 'like', $searchTerm)
+                            ->orWhere('Phone', 'like', $searchTerm); 
+                    })
+                    ->orWhereHas('region', function ($rq) use ($searchTerm) {
+                        $rq->where('Name', 'like', $searchTerm);
+                    })
+                    ->orWhereHas('driver', function ($dq) use ($searchTerm) {
+                        $dq->where('Name', 'like', $searchTerm)
+                            ->orWhere('IDNo', 'like', $searchTerm); 
+                    });
             })
+            ->orderBy('id', 'desc')
             ->paginate(10);
 
         return view('livewire.preparation-stus', compact('preparations'));

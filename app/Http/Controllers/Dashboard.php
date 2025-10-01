@@ -54,4 +54,7 @@ class Dashboard extends Controller
         public function adminlog(){
         return view('adminlogs.index');
     }
+        public function transferNewyear(){
+            return view('TransferNewyear.index');
+        }
 }

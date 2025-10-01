@@ -260,13 +260,22 @@ class Drivers extends Component
 
     public function render()
     {
-        $drivers = Driver::with(['bus', 'wing'])
-            ->when($this->search, function ($query) {
-                $query->where('Name', 'like', "%{$this->search}%")
-                    ->orWhere('IDNo', 'like', "%{$this->search}%");
-            })
-            ->orderBy('Name', 'desc')
-            ->paginate(10);
+      $drivers = Driver::with(['bus', 'wing'])
+    ->when($this->search, function ($query) {
+        $searchTerm = "%{$this->search}%";
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('Name', 'like', $searchTerm)         
+              ->orWhere('IDNo', 'like', $searchTerm)       
+              ->orWhere('Phone', 'like', $searchTerm)      
+              ->orWhere('LicenseNo', 'like', $searchTerm)  
+              ->orWhere('Bus_type', 'like', $searchTerm)   
+              ->orWhere('Ownership', 'like', $searchTerm)   
+              ->orWhere('No_Passengers', 'like', $searchTerm); 
+        });
+    })
+    ->orderBy('Name', 'asc') 
+    ->paginate(10);
+
         return view('livewire.drivers', compact('drivers'));
     }
 }

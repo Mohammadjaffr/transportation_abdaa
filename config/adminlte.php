@@ -338,6 +338,11 @@ return [
             'icon' => 'fas fa-fw fa-route',
         ],
         [
+            'text' => 'ادارة النقل السنوي',
+            'url' => 'transfer-newyear',
+            'icon' => 'fas fa-fw fa-upload',
+        ],
+        [
             'text' => 'ادارة السجلات',
             'url' => 'adminlogs',
             'icon' => 'fas fa-fw fa-file-alt',

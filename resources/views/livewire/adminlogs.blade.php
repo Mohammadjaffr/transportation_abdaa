@@ -1,4 +1,13 @@
 <div class="pt-4">
+     <div class="d-flex justify-content-between align-items-center">
+
+        <h3 class="fw-bold text-dark mb-4">
+            <i class="fas fa-users me-2 text-success"></i> سجلات النظام
+        </h3>
+        <h3 class="fw-bold text-center d-none d-sm-block"> عام {{ date('Y') }} </h3>
+
+
+    </div>
     <div class="card shadow-sm border-0 rounded-3 ">
         <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0"><i class="fas fa-clipboard-list me-2"></i> سجلات الأنشطة</h5>

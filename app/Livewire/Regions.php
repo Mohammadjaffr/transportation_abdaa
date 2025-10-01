@@ -133,10 +133,16 @@ class Regions extends Component
     {
         $regions = Region::with('parent')
             ->when($this->search, function ($query) {
-                $query->where('Name', 'like', '%' . $this->search . '%');
+                $searchTerm = '%' . $this->search . '%';
+
+                $query->where('Name', 'like', $searchTerm)
+                    ->orWhereHas('parent', function ($q) use ($searchTerm) {
+                        $q->where('Name', 'like', $searchTerm);
+                    });
             })
             ->orderBy('id', 'asc')
-            ->paginate(perPage: 10);
+            ->paginate(10);
+
         $parents = Region::with('parent')->get();
         $parent_regions = Region::whereNull('parent_id')->get();
         return view('livewire.regions', compact('parents', 'parent_regions', 'regions'));

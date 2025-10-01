@@ -181,13 +181,25 @@ class Retreats extends Component
 
         $retreats = Retreat::with(['student', 'region'])
             ->when($this->search, function ($query) {
-                $query->whereHas('student', function ($q) {
-                    $q->where('Name', 'like', "%{$this->search}%");
+                $searchTerm = '%' . $this->search . '%';
+
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('Grade', 'like', $searchTerm)
+                        ->orWhere('Division', 'like', $searchTerm)
+                        ->orWhere('Date_of_interruption', 'like', $searchTerm)
+                        ->orWhere('Reason', 'like', $searchTerm);
                 })
-                    ->orWhere('Grade', 'like', "%{$this->search}%");
+                    ->orWhereHas('student', function ($q) use ($searchTerm) {
+                        $q->where('Name', 'like', $searchTerm)
+                            ->orWhere('Phone', 'like', $searchTerm); 
+                    })
+                    ->orWhereHas('region', function ($q) use ($searchTerm) {
+                        $q->where('Name', 'like', $searchTerm);
+                    });
             })
             ->orderBy('Date_of_interruption', 'desc')
             ->paginate(10);
+            
 
 
         return view('livewire.retreats', compact('retreats'));

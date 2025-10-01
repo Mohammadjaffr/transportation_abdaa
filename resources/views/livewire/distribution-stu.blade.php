@@ -1,9 +1,14 @@
 <div class="container py-5">
-    <h3 class="fw-bold text-gradient mb-4">
-        <i class="fas fa-users me-2"></i> توزيع الطلاب
-    </h3>
+    <div class="d-flex justify-content-between align-items-center">
 
-    {{-- الفلاتر --}}
+        <h3 class="fw-bold text-dark mb-4">
+            <i class="fas fa-users me-2 text-success"></i> توزيع الطلاب
+        </h3>
+        <h3 class="fw-bold text-center d-none d-sm-block"> عام {{ date('Y') }} </h3>
+
+
+    </div>
+
 
     <div class="col-12 col-md-12 mb-2  mb-md-0">
         <div class="input-group shadow-sm rounded-pill overflow-hidden border-0 ">
@@ -39,11 +44,7 @@
                 @endforeach
             </select>
         </div>
-        {{-- <div class="col-md-12 mt-3 text-end">
-                    <button class="btn btn-gradient btn-lg px-4 shadow-sm" wire:click="bulkAssign">
-                        <i class="fas fa-users-cog me-2"></i> توزيع المحددين
-                    </button>
-                </div> --}}
+
     </div>
 
 
@@ -88,37 +89,33 @@
                                         <div class="m-1">
                                             الموقف
                                         </div>
-                                        
-                                    </div>
-                                   
-                                        
-                                    <div class="d-flex gap-2">
 
-                                        {{-- اختيار السائق --}}
-                                        
+                                    </div>
+
+
+                                    <div class="d-flex gap-2">
+                                        @php
+                                            $driversForStudent = $drivers->where('region_id', $student->region_id);
+                                        @endphp
+
                                         <select class="custom-select"
-                                            wire:change="updateDistribution(
-                                                    {{ $student->id }},
-                                                    $event.target.value,
-                                                    {{ $student->region_id ?? 'null' }},
-                                                    '{{ $student->Stu_position ?? '' }}'
-                                                )">
+                                            wire:change="updateDistribution({{ $student->id }}, $event.target.value, {{ $student->region_id ?? 'null' }}, '{{ $student->Stu_position ?? '' }}')">
                                             <option value="">اختر سائق</option>
-                                            @foreach ($drivers as $driver)
+                                            @forelse ($driversForStudent as $driver)
                                                 <option value="{{ $driver->id }}" @selected($student->driver_id == $driver->id)>
                                                     {{ $driver->Name }}
                                                 </option>
-                                            @endforeach
+                                            @empty
+                                                <option disabled>لا يوجد سائق في نفس المنطقة</option>
+                                            @endforelse
                                         </select>
+
+
+
 
                                         {{-- اختيار المنطقة --}}
                                         <select class="custom-select"
-                                            wire:change="updateDistribution(
-                                                            {{ $student->id }},
-                                                            {{ $student->driver_id ?? 'null' }},
-                                                            $event.target.value,
-                                                            '{{ $student->Stu_position ?? '' }}'
-                                                        )">
+                                            wire:change="updateDistribution({{ $student->id }}, {{ $student->driver_id ?? 'null' }}, $event.target.value, '{{ $student->Stu_position ?? '' }}')">
                                             <option value="">اختر منطقة</option>
                                             @foreach ($regions as $region)
                                                 <option value="{{ $region->id }}" @selected($student->region_id == $region->id)>
@@ -127,14 +124,9 @@
                                             @endforeach
                                         </select>
 
-                                        {{-- اختيار الموقف --}}
+
                                         <select class="custom-select"
-                                            wire:change="updateDistribution(
-                                                {{ $student->id }},
-                                                {{ $student->driver_id ?? 'null' }},
-                                                {{ $student->region_id ?? 'null' }},
-                                                $event.target.value
-                                            )">
+                                            wire:change="updateDistribution({{ $student->id }}, {{ $student->driver_id ?? 'null' }}, {{ $student->region_id ?? 'null' }}, $event.target.value)">
                                             <option value="">اختر الموقف</option>
                                             @foreach ($stu_postion as $position)
                                                 <option value="{{ $position }}" @selected($student->Stu_position == $position)>
@@ -142,6 +134,7 @@
                                                 </option>
                                             @endforeach
                                         </select>
+
                                     </div>
                                 </td>
 
@@ -156,7 +149,7 @@
                         @endforelse
                     </tbody>
                 </table>
-                  <div class="card-footer d-flex justify-content-center">
+                <div class="card-footer d-flex justify-content-center">
                     {{ $students->links('pagination::bootstrap-5') }}
                 </div>
             </div>

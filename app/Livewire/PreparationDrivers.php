@@ -196,12 +196,26 @@ class PreparationDrivers extends Component
 
     public function render()
     {
-        $preparations = PreparationDriver::with(['driver', 'region'])
-            ->when($this->search, function ($q) {
-                $q->whereHas('driver', fn($dq) => $dq->where('Name', 'like', '%' . $this->search . '%'))
-                    ->orWhere('Month', 'like', '%' . $this->search . '%');
-            })
-            ->paginate(10);
+       $preparations = PreparationDriver::with(['driver', 'region'])
+    ->when($this->search, function ($q) {
+        $searchTerm = '%' . $this->search . '%';
+
+        $q->where(function ($sub) use ($searchTerm) {
+            $sub->where('Atend', 'like', $searchTerm)
+                ->orWhere('Month', 'like', $searchTerm);
+        })
+        ->orWhereHas('driver', function ($dq) use ($searchTerm) {
+            $dq->where('Name', 'like', $searchTerm)
+               ->orWhere('IDNo', 'like', $searchTerm)  
+               ->orWhere('Phone', 'like', $searchTerm); 
+        })
+        ->orWhereHas('region', function ($rq) use ($searchTerm) {
+            $rq->where('Name', 'like', $searchTerm);
+        });
+    })
+    ->orderBy('id', 'desc')
+    ->paginate(10);
+
         return view('livewire.preparation-drivers', compact('preparations'));
     }
 }

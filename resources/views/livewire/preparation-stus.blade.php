@@ -115,7 +115,11 @@
                 border-bottom: 1px solid rgba(0, 0, 0, 0.05);
             }
         </style>
-        <h3 class="fw-bold text-primary text-center">تحضير الطلاب</h3>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="fw-bold text-start d-none d-sm-block">تحضير الطلاب</h3>
+            <h3 class="fw-bold text-end d-none d-sm-block"> عام {{ date('Y') }} </h3>
+
+        </div>
         <div class="d-flex justify-content-between align-items-center mb-4">
             @if (!$showForm)
                 <button wire:click="$set('showForm', true)" class="btn btn-primary add-btn">

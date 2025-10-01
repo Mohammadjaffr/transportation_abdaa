@@ -25,6 +25,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/wages', [Dashboard::class, 'wages'])->name('wages');
     Route::get('/distribution-stu', [Dashboard::class, 'distributionStu'])->name('distribution-stu');
     Route::get('/adminlogs', [Dashboard::class, 'adminlog'])->name('adminlogs');
+    Route::get('/transfer-newyear', [Dashboard::class, 'transferNewyear'])->name('transfer-newyear');
 
 
 

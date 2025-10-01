@@ -6,8 +6,11 @@
     <div class="container py-4">
 
 
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 class="fw-bold text-start d-none d-sm-block">إدارة الطلاب</h3>
+            <h3 class="fw-bold text-end d-none d-sm-block"> عام {{ date('Y') }} </h3>
 
-        <h3 class="fw-bold text-center d-none d-sm-block">إدارة الطلاب</h3>
+        </div>
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             @if (!$showForm && !$showImportForm)
@@ -333,6 +336,7 @@
                             <th>المنطقة</th>
                             <th>الموقف</th>
                             <th>المعلم\ة</th>
+                            <th>السائق</th>
                             <th>إجراءات</th>
                         </tr>
                     </thead>
@@ -352,6 +356,7 @@
                                 <td>{{ $student->region?->Name }}</td>
                                 <td>{{ $student->Stu_position }}</td>
                                 <td>{{ $student->teacher?->Name ?? 'غير موجود' }}</td>
+                                <td>{{ $student->driver?->Name ?? 'غير موجود' }}</td>
                                 <td class="d-flex gap-2 justify-content-center">
                                     <button wire:click="editStudent({{ $student->id }})"
                                         class="btn btn-outline-success btn-sm rounded-pill mr-2">

@@ -11,6 +11,8 @@
 
                 </button>
             @endif
+            <h3 class="fw-bold text-center d-none d-sm-block"> عام {{ date('Y') }} </h3>
+
             <h3 class="fw-bold text-primary mb-2 mb-sm-0 text-center text-sm-start d-none d-sm-block">
                 إدارة المناطق
             </h3>
@@ -141,7 +143,7 @@
                                 <tr class="border-bottom">
                                     <td class="text-center text-muted">{{ $loop->iteration }}</td>
 
-                                   
+
 
                                     <td class="text-start">
                                         @if ($region->parent)
@@ -154,7 +156,7 @@
                                             <span class="text-muted">—</span>
                                         @endif
                                     </td>
-                                     <td class="text-start">
+                                    <td class="text-start">
                                         <span class="fw-bold">{{ $region->Name }}</span>
                                     </td>
 
@@ -187,9 +189,10 @@
                             @endforelse
                         </tbody>
                     </table>
-                 
-                 <div class="card-footer d-flex justify-content-center">
-                </div>
+
+                    <div class="card-footer d-flex justify-content-center">
+                        {{ $regions->links('pagination::bootstrap-5') }}
+                    </div>
                 </div>
             </div>
         </div>
