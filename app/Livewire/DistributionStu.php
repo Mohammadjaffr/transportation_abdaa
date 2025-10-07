@@ -71,50 +71,52 @@ class DistributionStu extends Component
         }
     }
 
-   public function render()
-{
-    $query = Student::with(['region', 'driver']);
+    public function render()
+    {
+        $query = Student::with(['region', 'driver']);
 
-    if ($this->search) {
-        $searchTerm = "%{$this->search}%";
+        if ($this->search) {
+            $searchTerm = "%{$this->search}%";
 
-        $query->where(function ($q) use ($searchTerm) {
-            $q->where('Name', 'like', $searchTerm)              
-              ->orWhere('Stu_position', 'like', $searchTerm)    
-                            ->orWhereHas('region', function ($qr) use ($searchTerm) {
-                  $qr->where('Name', 'like', $searchTerm);      
-              })
-              ->orWhereHas('driver', function ($qd) use ($searchTerm) {
-                  $qd->where('Name', 'like', $searchTerm);     
-              });
-        });
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('Name', 'like', $searchTerm)
+                    ->orWhere('Stu_position', 'like', $searchTerm)
+                    ->orWhereHas('region', function ($qr) use ($searchTerm) {
+                        $qr->where('Name', 'like', $searchTerm);
+                    })
+                    ->orWhereHas('driver', function ($qd) use ($searchTerm) {
+                        $qd->where('Name', 'like', $searchTerm);
+                    });
+            });
+        }
+        if ($this->regionFilter) {
+            $childRegions = Region::where('parent_id', $this->regionFilter)->pluck('id')->toArray();
+
+            $regionIds = array_merge([$this->regionFilter], $childRegions);
+
+            $query->whereIn('region_id', $regionIds);
+        }
+
+
+        if ($this->driverFilter) {
+            $query->where('driver_id', $this->driverFilter);
+        }
+
+        if ($this->positionFilter) {
+            $query->where('Stu_position', 'like', "%{$this->positionFilter}%");
+        }
+
+        $students = $query->paginate(10);
+
+        $regionIds = $students->pluck('region_id')->filter()->unique();
+        $this->drivers = Driver::whereIn('region_id', $regionIds)->get();
+
+        $this->regions = Region::whereNull('parent_id')->get();
+        $this->stu_postion = Student::distinct()->pluck('Stu_position')->toArray();
+
+        return view('livewire.distribution-stu', [
+            'students' => $students,
+            'drivers' => $this->drivers,
+        ]);
     }
-
-    if ($this->regionFilter) {
-        $childRegions = Region::where('parent_id', $this->regionFilter)->pluck('id');
-        $query->whereIn('region_id', $childRegions);
-    }
-
-    if ($this->driverFilter) {
-        $query->where('driver_id', $this->driverFilter);
-    }
-
-    if ($this->positionFilter) {
-        $query->where('Stu_position', 'like', "%{$this->positionFilter}%");
-    }
-
-    $students = $query->paginate(10);
-
-    $regionIds = $students->pluck('region_id')->filter()->unique();
-    $this->drivers = Driver::whereIn('region_id', $regionIds)->get();
-
-    $this->regions = Region::whereNull('parent_id')->get();
-    $this->stu_postion = Student::distinct()->pluck('Stu_position')->toArray();
-
-    return view('livewire.distribution-stu', [
-        'students' => $students,
-        'drivers' => $this->drivers, 
-    ]);
-}
-
 }

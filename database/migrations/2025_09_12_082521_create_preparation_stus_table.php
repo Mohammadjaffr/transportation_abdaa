@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('preparation_stus', function (Blueprint $table) {
             $table->id();
             $table->boolean('Atend')->default(1);
-            $table->date('Year');
+            $table->date('Date');
+            $table->enum('type', ['morning', 'leave'])->default('morning');
             $table->foreignId('driver_id')->constrained('drivers')->onDelete('cascade');
             $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
             $table->foreignId('student_id')->constrained('students')->onDelete('cascade');

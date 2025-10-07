@@ -70,11 +70,11 @@
         {{-- آخر السائقين --}}
         <div class="col-md-6 mb-4">
             <div class="card glass-table animate-up">
-                <div class="card-header bg-success text-white">
+                <div class="card-header bg-success text-black">
                     <i class="fas fa-users"></i> آخر السائقين
                 </div>
                 <div class="card-body p-0">
-                    <table class="table stylish-table mb-0 text-center">
+                    <table class="table mb-0 text-center">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -101,11 +101,11 @@
         {{-- أحدث الطلاب --}}
         <div class="col-md-6 mb-4">
             <div class="card glass-table animate-up">
-                <div class="card-header bg-success text-dark">
+                <div class="card-header bg-success text-white">
                     <i class="fas fa-user-graduate"></i> أحدث الطلاب
                 </div>
                 <div class="card-body p-0">
-                    <table class="table stylish-table mb-0 text-center">
+                    <table class="table  mb-0 text-center">
                         <thead>
                             <tr>
                                 <th>#</th>

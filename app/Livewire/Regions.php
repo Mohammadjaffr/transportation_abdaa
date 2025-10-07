@@ -69,6 +69,7 @@ class Regions extends Component
     }
 
     public function update()
+    
     {
         $this->validate([
             'Name' => 'required|string|max:255',

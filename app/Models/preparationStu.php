@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class preparationStu extends Model
+class PreparationStu extends Model
 {
     use HasFactory;
    
     protected $fillable = [
         'Atend',
-        'Year',
+        'Date',
+        'type',
         'student_id',
         'region_id',
         'driver_id'
@@ -21,6 +22,7 @@ class preparationStu extends Model
 {
     return $this->belongsTo(Student::class);
 }
+    
 
 public function driver()
 {

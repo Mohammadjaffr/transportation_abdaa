@@ -5,62 +5,62 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\PreparationStu;
 use App\Models\Driver;
-use App\Models\Region;
 use App\Models\Student;
-use App\Exports\PreparationStuExport;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Services\AdminLoggerService;
-use Livewire\WithPagination;
+use App\Exports\DriverReportExport;
 
 class PreparationStus extends Component
 {
-    use WithPagination;
-    public  $drivers, $regions, $students;
-    public $Atend = true, $Year, $driver_id, $region_id, $student_id, $deleteName;
-    public $editMode = false, $selectedId, $Grade, $Division;
-    public $search = '';
-    public $showForm = false;
-    public $deleteId = null;
+    public $type = null;
+    public $selectedDriver = null;
+    public $driverStudents = [];
+    public $activeTab = 'morning'; // morning | leave | report
 
-    public function export()
+    public function setTab($tab)
     {
-        return Excel::download(new PreparationStuExport, 'preparations.xlsx');
-    }
-    protected $rules = [
-        'Atend' => 'required|boolean',
-        'Year' => 'required|date',
-        'driver_id' => 'required|exists:drivers,id',
-        'region_id' => 'required|exists:regions,id',
-        'student_id' => 'required|exists:students,id',
-    ];
-
-    protected $messages = [
-        'Atend.required' => 'حالة الحضور مطلوبة',
-        'Year.required' => 'التاريخ مطلوب',
-        'Year.date' => 'التاريخ غير صالح',
-        'driver_id.required' => 'السائق مطلوب',
-        'driver_id.exists' => 'السائق غير موجود',
-        'region_id.required' => 'المنطقة مطلوبة',
-        'region_id.exists' => 'المنطقة غير موجودة',
-        'student_id.required' => 'الطالب مطلوب',
-        'student_id.exists' => 'الطالب غير موجود',
-    ];
-
-    public function mount()
-    {
-        $this->drivers = Driver::all();
-        $this->regions = Region::all();
-        $this->Year = now()->format('Y-m-d');
-
-        $this->students = Student::whereNotNull('driver_id')
-            ->whereDoesntHave('preparations', function ($q) {
-                $q->whereDate('Year', $this->Year);
-            })
-            ->get();
-
-        $this->loadPreparations();
+        $this->activeTab = $tab;
+        $this->selectedDriver = null;
+        $this->driverStudents = [];
     }
 
+    public function updatedSelectedDriver($driverId)
+    {
+        // ندخل بيانات فقط لو التاب صباحي أو انصراف
+        if ($driverId && in_array($this->activeTab, ['morning', 'leave'])) {
+            $students = Student::where('driver_id', $driverId)->get();
+
+            foreach ($students as $stu) {
+                PreparationStu::updateOrCreate(
+                    [
+                        'student_id' => $stu->id,
+                        'Date'       => Carbon::today()->toDateString(),
+                        'type'       => $this->activeTab, // فقط morning أو leave
+                    ],
+                    [
+                        'driver_id'  => $driverId,
+                        'region_id'  => $stu->region_id,
+                        'Atend'      => true, // افتراضي حاضر
+                    ]
+                );
+            }
+
+            $this->loadDriverStudents();
+        }
+    }
+
+    public function loadDriverStudents()
+    {
+        if ($this->selectedDriver && in_array($this->activeTab, ['morning','leave'])) {
+            $this->driverStudents = PreparationStu::with('student','region')
+                ->where('driver_id', $this->selectedDriver)
+                ->where('Date', Carbon::today()->toDateString())
+                ->where('type', $this->activeTab)
+                ->get();
+        } else {
+            $this->driverStudents = [];
+        }
+    }
 
     public function toggleAtend($prepId)
     {
@@ -68,178 +68,34 @@ class PreparationStus extends Component
         if ($prep) {
             $prep->Atend = !$prep->Atend;
             $prep->save();
-            AdminLoggerService::log('تحديث حالة حضور طالب', 'PreparationStu', "تحديث حالة حضور طالب: {$prep->student->Name}");
-
-            $this->dispatch('show-toast', [
-                'type' => 'success',
-                'message' => 'تم تحديث حالة الحضور لطالب'
-            ]);
-            $this->loadPreparations();
+            $this->loadDriverStudents();
         }
     }
-    public function loadPreparations() {}
-    public function updatedStudentId($value)
+
+    public function exportDriverReport($driverId)
     {
-        if ($value) {
-            $student = Student::with(['region', 'driver'])->find($value);
-
-            if ($student) {
-                $this->Grade     = $student->Grade;
-                $this->region_id = $student->region_id;
-                $this->Division  = $student->Division;
-                $this->driver_id  = $student->driver_id;
-            }
-        }
-    }
-    public function createPreparation()
-    {
-        $this->validate();
-
-        $prep = PreparationStu::create([
-            'Atend'     => $this->Atend,
-            'Year'      => $this->Year,
-            'driver_id' => $this->driver_id,
-            'region_id' => $this->region_id,
-            'student_id' => $this->student_id,
-        ]);
-
-        $this->loadPreparations();
-
-        $preparedIds = PreparationStu::pluck('student_id')->toArray();
-        $this->students = Student::whereNotNull('driver_id')
-            ->whereNotIn('id', $preparedIds)
-            ->get();
-
-        AdminLoggerService::log(
-            'اضافة حضور طالب',
-            'PreparationStu',
-            "اضافة حضور طالب: {$prep->student->Name}"
+        return Excel::download(
+            new DriverReportExport($driverId, now()->toDateString()),
+            "driver_report_{$driverId}.xlsx"
         );
-
-        $this->resetForm();
-        $this->dispatch('show-toast', [
-            'type'    => 'success',
-            'message' => 'تم تسجيل الحضور بنجاح'
-        ]);
-    }
-
-
-    public function editPreparation($id)
-    {
-        $prep = PreparationStu::findOrFail($id);
-        $this->selectedId = $id;
-        $this->editMode = true;
-        $this->showForm = true;
-
-        $this->Atend = $prep->Atend;
-        $this->Year = $prep->Year;
-        $this->driver_id = $prep->driver_id;
-        $this->region_id = $prep->region_id;
-        $this->student_id = $prep->student_id;
-    }
-
-    public function updatePreparation()
-    {
-        $this->validate();
-        $prep = PreparationStu::findOrFail($this->selectedId);
-        $prep->update([
-            'Atend' => $this->Atend,
-            'Year' => $this->Year,
-            'driver_id' => $this->driver_id,
-            'region_id' => $this->region_id,
-            'student_id' => $this->student_id,
-        ]);
-        AdminLoggerService::log('تحديث حضور طالب', 'PreparationStu', "تحديث حضور طالب: {$prep->student->Name}");
-
-        $this->resetForm();
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تحديث سجل الحضور']);
-    }
-
-    public function confirmDelete($id)
-    {
-        $this->deleteId = $id;
-        $this->deleteName = PreparationStu::find($id)->student->Name;
-    }
-
-    public function deletePreparation()
-    {
-        if ($this->deleteId) {
-            $prep = PreparationStu::find($this->deleteId);
-
-            if ($prep) {
-                $prep->delete();
-
-                AdminLoggerService::log(
-                    'حذف حضور طالب',
-                    'PreparationStu',
-                    "حذف حضور طالب: {$this->deleteName}"
-                );
-
-                $this->dispatch('show-toast', [
-                    'type' => 'success',
-                    'message' => 'تم حذف سجل الحضور'
-                ]);
-            } else {
-                $this->dispatch('show-toast', [
-                    'type' => 'error',
-                    'message' => 'السجل غير موجود أو تم حذفه مسبقاً'
-                ]);
-            }
-
-            $this->deleteId = null;
-            $this->deleteName = null;
-        }
-    }
-
-
-    public function cancel()
-    {
-        $this->resetForm();
-    }
-
-    public function resetForm()
-    {
-        $this->reset(['Atend', 'Year', 'driver_id', 'region_id', 'student_id', 'editMode', 'selectedId', 'showForm', 'deleteId']);
-        $this->Year = now()->format('Y-m-d');
-    }
-
-    public function updatedSearch()
-    {
-        $this->loadPreparations();
     }
 
     public function render()
     {
-        $this->loadPreparations();
+        $today = Carbon::today()->toDateString();
 
-        $students = Student::whereNotNull('driver_id')
-            ->whereDoesntHave('preparations', function ($q) {
-                $q->whereDate('Year', $this->Year);
-            })
+        $morningPreps = PreparationStu::with(['student','driver','region'])
+            ->whereDate('Date', $today)
+            ->where('type', 'morning')
             ->get();
-        $preparations = PreparationStu::with(['driver', 'region', 'student'])
-            ->when($this->search, function ($q) {
-                $searchTerm = '%' . $this->search . '%';
 
-                $q->where(function ($sub) use ($searchTerm) {
-                    $sub->where('Atend', 'like', $searchTerm)
-                        ->orWhere('Year', 'like', $searchTerm);
-                })
-                    ->orWhereHas('student', function ($sq) use ($searchTerm) {
-                        $sq->where('Name', 'like', $searchTerm)
-                            ->orWhere('Phone', 'like', $searchTerm); 
-                    })
-                    ->orWhereHas('region', function ($rq) use ($searchTerm) {
-                        $rq->where('Name', 'like', $searchTerm);
-                    })
-                    ->orWhereHas('driver', function ($dq) use ($searchTerm) {
-                        $dq->where('Name', 'like', $searchTerm)
-                            ->orWhere('IDNo', 'like', $searchTerm); 
-                    });
-            })
-            ->orderBy('id', 'desc')
-            ->paginate(10);
+        $leavePreps = PreparationStu::with(['student','driver','region'])
+            ->whereDate('Date', $today)
+            ->where('type', 'leave')
+            ->get();
 
-        return view('livewire.preparation-stus', compact('preparations'));
+        $drivers = Driver::with('students')->get();
+
+        return view('livewire.preparation-stus', compact('morningPreps','leavePreps','drivers'));
     }
 }

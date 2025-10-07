@@ -6,8 +6,8 @@
         <div class="d-flex justify-content-between align-items-start my-2" dir="rtl">
             @if (!$showForm && !$isEdit)
                 <button wire:click="create" class="btn btn-primary add-btn ">
-                    <i class="fas fa-plus me-1 d-none d-md-inline"></i>
                     <span>إضافة منطقة</span>
+                    <i class="fas fa-plus me-1 d-none d-md-inline"></i>
 
                 </button>
             @endif
@@ -55,7 +55,7 @@
                             <div class="col-12 col-md-6">
                                 <div class="form-group mb-3">
                                     <label class="form-label text-primary fw-bold d-block  mb-1 mb-md-2">
-                                        اسم المنطقة <span class="text-danger">*</span>
+                                        اسم المنطقة \موقف <span class="text-danger">*</span>
                                     </label>
 
                                     <div class="input-group input-group-lg shadow-sm rounded-2 overflow-hidden">
@@ -64,7 +64,7 @@
                                         </span>
                                         <input type="text" wire:model.defer="Name"
                                             class="form-control border-0  py-2 py-md-3 @error('Name') is-invalid @enderror"
-                                            placeholder="أدخل اسم المنطقة">
+                                            placeholder="أدخل اسم المنطقة \موقف">
 
                                     </div>
 
@@ -133,7 +133,7 @@
                             <tr>
                                 <th class="text-center py-2 py-md-3 fw-bold">#</th>
                                 <th class="text-start py-2 py-md-3 fw-bold">المنطقة</th>
-                                <th class="text-start py-2 py-md-3 fw-bold">الموقف</th>
+                                <th class="text-start py-2 py-md-3 fw-bold">منطقة رئيسية /موقف</th>
 
                                 <th class="text-center py-2 py-md-3 fw-bold">الإجراءات</th>
                             </tr>
@@ -142,9 +142,6 @@
                             @forelse ($regions as $region)
                                 <tr class="border-bottom">
                                     <td class="text-center text-muted">{{ $loop->iteration }}</td>
-
-
-
                                     <td class="text-start">
                                         @if ($region->parent)
                                             <span
@@ -153,11 +150,23 @@
                                                 {{ $region->parent->Name }}
                                             </span>
                                         @else
-                                            <span class="text-muted">—</span>
+                                            <span
+                                                class="badge bg-primary bg-opacity-10 text-white rounded-pill px-2 px-md-3 py-1">
+                                                {{ $region->Name }} </span>
                                         @endif
                                     </td>
+
+
                                     <td class="text-start">
-                                        <span class="fw-bold">{{ $region->Name }}</span>
+                                        @if ($region->parent)
+                                            <span class="text-muted">
+                                                {{ $region->Name }}
+                                            </span>
+                                        @else
+                                            <span
+                                                class="badge bg-primary bg-opacity-10 text-white rounded-pill px-2 px-md-3 py-1">منطقة
+                                                رئيسية</span>
+                                        @endif
                                     </td>
 
                                     <td class="text-center">
