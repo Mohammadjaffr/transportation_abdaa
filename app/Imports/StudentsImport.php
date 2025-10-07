@@ -19,6 +19,11 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
 
     public function model(array $row)
     {
+        // ✅ تجاوز الصف إذا كان فارغ بالكامل
+        if (empty(array_filter($row))) {
+            return null;
+        }
+
         return new Student([
             'Name'         => trim($row['alasm'] ?? ''),
             'Grade'        => trim($row['alsf'] ?? ''),
