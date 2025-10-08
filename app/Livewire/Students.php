@@ -85,12 +85,10 @@ class Students extends Component
             ]
         );
 
-
         $import = new StudentsImport();
         Excel::import($import, $this->excelFile->getRealPath());
 
         if ($import->failures()->isNotEmpty()) {
-
             $labels = [
                 'name' => 'عمود الاسم ',
                 'grad' => 'عمود الصف',
@@ -117,11 +115,14 @@ class Students extends Component
 
             return;
         }
-        AdminLoggerService::log('استيراد ملف   Excle لطلاب', 'Student', "إضافة طلاب جدد: {$this->import}");
+
+        $fileName = $this->excelFile->getClientOriginalName();
+        AdminLoggerService::log('استيراد ملف Excel لطلاب', 'Student', "تم استيراد الطلاب من الملف: {$fileName}");
 
         $this->reset('excelFile', 'showImportForm');
         $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم استيراد الطلاب بنجاح']);
     }
+
 
     public function exportExcel()
     {
