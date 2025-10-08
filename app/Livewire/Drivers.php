@@ -185,7 +185,7 @@ class Drivers extends Component
 
     public function updateDriver()
     {
-        $this->validate();
+        // $this->validate();
 
         $data = $this->fields;
 

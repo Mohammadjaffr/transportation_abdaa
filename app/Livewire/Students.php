@@ -181,7 +181,7 @@ class Students extends Component
 
     public function updateStudent()
     {
-        $this->validate();
+        // $this->validate();
 
         $student = Student::findOrFail($this->selectedStudentId);
         $student->update([
