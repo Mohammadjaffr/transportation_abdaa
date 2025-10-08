@@ -72,13 +72,17 @@ class PreparationStus extends Component
         }
     }
 
-    public function exportDriverReport($driverId)
-    {
-        return Excel::download(
-            new DriverReportExport($driverId, now()->toDateString()),
-            "driver_report_{$driverId}.xlsx"
-        );
-    }
+
+public function exportDriverReport($driverId)
+{
+    $driver = Driver::findOrFail($driverId); 
+    $driverName = str_replace(' ', '_', $driver->Name); 
+
+    return Excel::download(
+        new DriverReportExport($driverId, now()->toDateString()),
+        "تقرير_السائق_{$driverName}.xlsx"
+    );
+}
 
     public function render()
     {

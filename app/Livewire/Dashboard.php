@@ -8,7 +8,7 @@ use App\Models\Student;
 use Livewire\Component;
 use App\Models\Wing;
 use App\Models\Retreat;
-
+use App\Models\User;
 class Dashboard extends Component
 {
     public function render()
@@ -21,6 +21,7 @@ class Dashboard extends Component
             'hiace'        => Driver::where('Bus_type', 'هايس')->count(),
             'buses'        => Driver::whereNotNull('Bus_type')->count(),
             'active_buses' => Driver::where('CheckUp', 'نشط')->count(),
+            'users'         => User::count(),
         ];
         $retreats = Retreat::count();
         $wings =Wing::count() ;
@@ -43,6 +44,7 @@ class Dashboard extends Component
             'latestStudents',
             'wings',
             'retreats'
+            
         ));
     }
 }

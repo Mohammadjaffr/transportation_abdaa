@@ -47,6 +47,8 @@
                                 <tr>
                                     <th>الطالب</th>
                                     <th>المنطقة</th>
+                                    <th>السائق</th>
+                                    <th>التاريخ</th>
                                     <th>الحالة</th>
                                 </tr>
                             </thead>
@@ -55,6 +57,8 @@
                                     <tr>
                                         <td>{{ $prep->student?->Name }}</td>
                                         <td>{{ $prep->region?->Name }}</td>
+                                        <td>{{ $prep->driver?->Name }}</td>
+                                        <td>{{ $prep->created_at->format('y-m-d') }}</td>
                                         <td>
                                             <div
                                                 class="form-switch {{ $prep->Atend ? 'switch-active' : 'switch-banned' }}">
@@ -97,6 +101,8 @@
                                 <tr>
                                     <th>الطالب</th>
                                     <th>المنطقة</th>
+                                    <th>السائق</th>
+                                    <th>التاريخ</th>
                                     <th>الحالة</th>
                                 </tr>
                             </thead>
@@ -105,6 +111,8 @@
                                     <tr>
                                         <td>{{ $prep->student?->Name }}</td>
                                         <td>{{ $prep->region?->Name }}</td>
+                                        <td>{{ $prep->driver?->Name }}</td>
+                                        <td>{{ $prep->created_at->format('y-m-d') }}</td>
                                         <td>
                                             <div
                                                 class="form-switch {{ $prep->Atend ? 'switch-active' : 'switch-banned' }}">
@@ -164,6 +172,7 @@
                                     <th>الطالب</th>
                                     <th>صباحي</th>
                                     <th>انصراف</th>
+                                    <th>التاريخ</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -205,6 +214,7 @@
                                                 <span class="text-muted">لم يسجل</span>
                                             @endif
                                         </td>
+                                        <td>{{ $today }}</td>
                                     </tr>
                                 @endforeach
 
@@ -219,6 +229,7 @@
                                         حضور: <span class="text-success">{{ $leavePresent }}</span> /
                                         غياب: <span class="text-danger">{{ $leaveAbsent }}</span>
                                     </td>
+                                    <td>{{ $today }}</td>
                                 </tr>
                             </tbody>
                         </table>

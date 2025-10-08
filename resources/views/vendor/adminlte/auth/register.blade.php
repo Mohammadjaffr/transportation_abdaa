@@ -72,6 +72,7 @@
                 </span>
             @enderror
         </div>
+        
 
         {{-- Confirm password field --}}
         <div class="input-group mb-3">

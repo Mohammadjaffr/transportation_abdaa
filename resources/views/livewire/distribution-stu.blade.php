@@ -148,11 +148,13 @@
                             </tr>
                         @endforelse
                     </tbody>
+                 
                 </table>
-                <div class="card-footer d-flex justify-content-center">
+              
+            </div>
+                 <div class="card-footer d-flex justify-content-center">
                     {{ $students->links('pagination::bootstrap-5') }}
                 </div>
-            </div>
         </div>
     </div>
     {{-- CSS مخصص --}}

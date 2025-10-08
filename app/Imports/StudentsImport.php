@@ -12,14 +12,15 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\SkipsFailures;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 
-class StudentsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure
+class StudentsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure, SkipsEmptyRows
 {
     use SkipsFailures;
+    
 
     public function model(array $row)
     {
-        // ✅ تجاوز الصف إذا كان فارغ بالكامل
         if (empty(array_filter($row))) {
             return null;
         }
@@ -50,7 +51,7 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
             'almntk'    => ['nullable', Rule::exists('regions','Name')],
             'almaalm'   => ['nullable', Rule::exists('teachers','Name')],
 
-            'alshaab'   => ['required','string', Rule::in(['أ','ب','ج'])],
+            'alshaab'   => ['required','string', Rule::in(['أ','ب','ج','د','ه','و','ز'])],
         ];
     }
 

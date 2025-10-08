@@ -10,6 +10,14 @@
 
     {{-- KPIs --}}
     <div class="row g-4 mb-4">
+           <div class="col-lg-3 col-md-6">
+            <div class="card kpi-card kpi-gee text-center animate-fade">
+                <div class="icon-box"><i class="fas fa-user"></i></div>
+                <h6>اجمالي المستخدمين</h6>
+
+                <h2>{{ $stats['users'] }}</h2>
+            </div>
+        </div>
         <div class="col-lg-3 col-md-6">
             <div class="card kpi-card kpi-blue text-center animate-fade">
                 <div class="icon-box"><i class="fas fa-user-tie"></i></div>
@@ -60,6 +68,7 @@
                 <small class="badge px-3 py-1">عدد الأجنحة : {{ $wings }} اجنحة</small>
             </div>
         </div>
+     
     </div>
 
     {{-- المخططات --}}
@@ -285,6 +294,9 @@
 
         .kpi-purple {
             background: linear-gradient(135deg, #6f42c1, #b76df0);
+        }
+        .kpi-gee {
+            background: linear-gradient(135deg, #0a4ecc, #0a3b7c);
         }
 
         /* Modern Chart Cards */

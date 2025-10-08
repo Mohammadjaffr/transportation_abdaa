@@ -198,7 +198,7 @@
                             @if ($children_regions)
 
                                 <div class="col-md-4 mt-4">
-                                    <select wire:model.live="child_region_id"
+                                    <select wire:model="child_region_id"
                                         class="form-control @error('child_region_id') is-invalid @enderror">
                                         <option value="">اختر الموقف</option>
                                         @foreach ($children_regions as $region)
@@ -233,6 +233,11 @@
                                     <option value="">اختر الشعبه</option>
                                     <option value="أ">أ</option>
                                     <option value="ب">ب</option>
+                                    <option value="ج">ج</option>
+                                    <option value="د">د</option>
+                                    <option value="ه">ه</option>
+                                    <option value="و">و</option>
+                                    <option value="ز">ز</option>
                                 </select>
                                 @error('division')
                                     <span class="text-danger">{{ $message }}</span>
@@ -381,13 +386,13 @@
                             </tr>
                         @endforelse
                     </tbody>
+                
                 </table>
-                <div class="card-footer d-flex justify-content-center">
+        
+            </div>
+                    <div class="card-footer d-flex justify-content-center">
                     {{ $students->links('pagination::bootstrap-5') }}
                 </div>
-
-
-            </div>
         </div>
 
     </div>

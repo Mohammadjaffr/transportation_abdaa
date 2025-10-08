@@ -11,7 +11,8 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
-Auth::routes(['register' => false]); 
+
+Auth::routes();
 
 Route::middleware('auth')->group(function () {
     Route::get('/home', [Dashboard::class, 'index'])->name('home');
@@ -26,6 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/distribution-stu', [Dashboard::class, 'distributionStu'])->name('distribution-stu');
     Route::get('/adminlogs', [Dashboard::class, 'adminlog'])->name('adminlogs');
     Route::get('/transfer-newyear', [Dashboard::class, 'transferNewyear'])->name('transfer-newyear');
+    Route::get('/register', [Dashboard::class, 'register'])->name('register.form');
+    Route::post('/register', [Dashboard::class, 'storeRegister'])->name('register.store');
 
 
 

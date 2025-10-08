@@ -338,6 +338,11 @@ return [
             'icon' => 'fas fa-fw fa-route',
         ],
         [
+            'text' => 'ادارة التسجيل',
+            'url' => 'register',
+            'icon' => 'fas fa-fw fa-user-plus',
+        ],
+        [
             'text' => 'ادارة النقل السنوي',
             'url' => 'transfer-newyear',
             'icon' => 'fas fa-fw fa-upload',
@@ -368,11 +373,11 @@ return [
             'url' => 'retreats',
             'icon' => 'fas fa-fw fa-hand-holding-usd',
         ],
-        [
-            'text' => 'ادارة الرواتب',
-            'url' => 'wages',
-            'icon' => 'fas fa-fw fa-money-bill-wave',
-        ],
+        // [
+        //     'text' => 'ادارة الرواتب',
+        //     'url' => 'wages',
+        //     'icon' => 'fas fa-fw fa-money-bill-wave',
+        // ],
         [
             'text' => 'ادارة التحضير',
             'icon' => 'fas fa-fw fa-clipboard-check',

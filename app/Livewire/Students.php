@@ -125,7 +125,7 @@ class Students extends Component
 
     public function exportExcel()
     {
-        return Excel::download(new StudentsExport, 'students.xlsx');
+        return Excel::download(new StudentsExport, 'كشف الطلاب.xlsx');
     }
 
     public function resetImportForm()
