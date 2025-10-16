@@ -273,10 +273,10 @@
                                         <span class="text-dark">الى {{ $customReport[0]['to'] }}</span>
                                     </div>
                                 </div>
-
+{{-- 
                                 <button class="btn btn-sm btn-success" wire:click="exportCustomReport">
                                     <i class="fas fa-file-archive"></i> تصدير ZIP
-                                </button>
+                                </button> --}}
                             </div>
 
                             <table class="table table-bordered text-center">

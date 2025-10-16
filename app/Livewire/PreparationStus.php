@@ -10,8 +10,7 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\DriverReportExport;
 use App\Exports\DriverCustomReportExport;
-use Illuminate\Support\Facades\Storage;
-use ZipArchive;
+use App\Exports\AllDriversCustomReportExport;
 use Illuminate\Support\Facades\DB;
 
 class PreparationStus extends Component
@@ -57,9 +56,8 @@ class PreparationStus extends Component
         }
     }
 
-    /* ==================== تبويب تحضير مفقود ==================== */
+    /* ==================== تبويب التحضير المفقود ==================== */
 
-    // جلب السائقين الذين لديهم طلاب ولم يسجلوا أي تحضير (صباح/انصراف) في التاريخ المحدد
     public function findMissingDrivers()
     {
         $this->validate([
@@ -85,24 +83,19 @@ class PreparationStus extends Component
             'students_count' => $d->students_count,
         ])->toArray();
 
-        // إغلاق لوحة التحضير اليدوي (إن وُجدت) بعد تغيير التاريخ
         $this->selectedMissingDriverId = null;
         $this->manualStudents = [];
     }
 
-    // فتح لوحة التحضير اليدوي لسائق معيّن داخل نفس التبويب
     public function startManualPrepare($driverId)
     {
         $this->selectedMissingDriverId = $driverId;
         $this->loadManualStudents();
     }
 
-    // تحميل الطلاب مع حالات صباح/انصراف في التاريخ المحدد
     public function loadManualStudents($driverId = null)
     {
-        if ($driverId) {
-            $this->selectedMissingDriverId = $driverId;
-        }
+        if ($driverId) $this->selectedMissingDriverId = $driverId;
 
         if (!$this->selectedMissingDriverId || !$this->missingDate) {
             $this->manualStudents = [];
@@ -112,18 +105,15 @@ class PreparationStus extends Component
         $date = Carbon::parse($this->missingDate)->toDateString();
         $driverId = $this->selectedMissingDriverId;
 
-        // جميع طلاب السائق
         $students = Student::where('driver_id', $driverId)
             ->orderBy('Name')
             ->get(['id', 'Name', 'region_id']);
 
-        // سجلات التحضير الحالية (إن وُجدت) لهذا التاريخ
         $records = PreparationStu::where('driver_id', $driverId)
             ->whereDate('Date', $date)
             ->whereIn('type', ['morning', 'leave'])
             ->get(['student_id', 'type', 'Atend']);
 
-        // فهرسة الحالات: [student_id][type] => bool
         $idx = [];
         foreach ($records as $r) {
             $idx[$r->student_id][$r->type] = (bool) $r->Atend;
@@ -142,7 +132,6 @@ class PreparationStus extends Component
         $this->manualStudents = $rows;
     }
 
-    // تحديث مباشر عند تغيير Toggle (صباح/انصراف)
     public function setAttendance($studentId, $period, $checked)
     {
         if (!in_array($period, ['morning', 'leave'])) return;
@@ -166,7 +155,6 @@ class PreparationStus extends Component
             ]
         );
 
-        // حدّث المصفوفة المحلية لواجهة المستخدم
         foreach ($this->manualStudents as &$row) {
             if ($row['student_id'] == $studentId) {
                 $row[$period] = $checked;
@@ -174,14 +162,12 @@ class PreparationStus extends Component
             }
         }
 
-        // إشعار بسيط (كما طلبت - لا تغيير)
         $this->dispatch('show-toast', [
             'type' => 'success',
             'message' => 'تم تحديث الحالة مباشرة'
         ]);
     }
 
-    // تحضير تلقائي لكل السائقين الظاهرين في القائمة (حسب رغبتك في الإبقاء عليه)
     public function autoPrepareAllMissing()
     {
         if (!$this->missingDate) {
@@ -193,13 +179,11 @@ class PreparationStus extends Component
         }
 
         $date = Carbon::parse($this->missingDate)->toDateString();
-
         $ids = collect($this->missingDrivers)->pluck('id')->all();
 
         foreach ($ids as $driverId) {
             $students = Student::where('driver_id', $driverId)->get();
             foreach ($students as $stu) {
-                // صباح
                 PreparationStu::firstOrCreate([
                     'student_id' => $stu->id,
                     'driver_id'  => $driverId,
@@ -210,7 +194,6 @@ class PreparationStus extends Component
                     'region_id' => $stu->region_id,
                 ]);
 
-                // انصراف
                 PreparationStu::firstOrCreate([
                     'student_id' => $stu->id,
                     'driver_id'  => $driverId,
@@ -228,13 +211,12 @@ class PreparationStus extends Component
             'message' => 'تم اضافة التحضير التلقائي لكل الطلاب الظاهرين'
         ]);
 
-        // حدّث القائمة بعد التحضير
         $this->findMissingDrivers();
         $this->selectedMissingDriverId = null;
         $this->manualStudents = [];
     }
 
-    /* ==================== تبويبا الصباح/الانصراف (كما هي) ==================== */
+    /* ==================== الصباح / الانصراف ==================== */
 
     public function updatedSelectedDriver($driverId)
     {
@@ -283,7 +265,7 @@ class PreparationStus extends Component
         }
     }
 
-    /* ==================== تقرير السائق/تقرير مخصص (كما لديك) ==================== */
+    /* ==================== التقارير ==================== */
 
     public function exportDriverReport($driverId)
     {
@@ -320,7 +302,6 @@ class PreparationStus extends Component
                 ->whereIn('type', ['morning', 'leave'])
                 ->get();
 
-            // الحضور الكلي: يحسب للطالب الذي حضر الفترتين في نفس اليوم
             $studentsByDay = $records->groupBy(function ($r) {
                 return $r->student_id . '|' . $r->Date;
             });
@@ -329,16 +310,11 @@ class PreparationStus extends Component
             foreach ($studentsByDay as $rows) {
                 $morning = $rows->firstWhere('type', 'morning');
                 $leave   = $rows->firstWhere('type', 'leave');
-                if ($morning?->Atend && $leave?->Atend) {
-                    $presentCount++;
-                }
+                if ($morning?->Atend && $leave?->Atend) $presentCount++;
             }
 
-            // الغياب: تجميع جزئي/كلي باليوم
             $groupedAbsences = $records->where('Atend', false)
-                ->groupBy(function ($item) {
-                    return $item->student_id . '-' . $item->Date;
-                });
+                ->groupBy(fn($item) => $item->student_id . '-' . $item->Date);
 
             $absentPartCount = 0;
             $totalAbsentCount = 0;
@@ -397,47 +373,11 @@ class PreparationStus extends Component
             );
         }
 
-        return $this->exportAllDriversAsZip($from, $to, $this->showNames);
-    }
-
-    protected function exportAllDriversAsZip($from, $to, $showNames)
-    {
-        $drivers = Driver::all();
-
-        $folder = 'reports/tmp_' . now()->format('Ymd_His');
-        Storage::makeDirectory($folder);
-
-        $paths = [];
-        foreach ($drivers as $drv) {
-            $driverName = str_replace(' ', '_', $drv->Name);
-            $fileName = "تقرير_مخصص_{$driverName}_{$from}_{$to}.xlsx";
-            $relativePath = "{$folder}/{$fileName}";
-
-            Excel::store(
-                new DriverCustomReportExport($drv->id, $from, $to, $showNames),
-                $relativePath
-            );
-
-            $paths[] = [
-                'absolute' => storage_path('app/' . $relativePath),
-                'relative' => $relativePath,
-                'name' => $fileName,
-            ];
-        }
-
-        $zipName = "تقارير_كل_السائقين_{$from}_{$to}.zip";
-        $zipRelative = "{$folder}/{$zipName}";
-        $zipAbsolute = storage_path('app/' . $zipRelative);
-
-        $zip = new ZipArchive;
-        if ($zip->open($zipAbsolute, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
-            foreach ($paths as $p) {
-                $zip->addFile($p['absolute'], $p['name']);
-            }
-            $zip->close();
-        }
-
-        return response()->download($zipAbsolute);
+        // ✅ هنا التعديل: نصدر ملف Excel واحد فيه كل السائقين
+        return Excel::download(
+            new AllDriversCustomReportExport($from, $to, $this->showNames),
+            "تقرير_كل_السائقين_{$from}_{$to}.xlsx"
+        );
     }
 
     public function render()
