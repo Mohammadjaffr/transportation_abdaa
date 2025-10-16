@@ -546,22 +546,17 @@
                                         <td>{{ $stu->Name }}</td>
                                         <td>
                                             @if ($morning)
-                                                <div
-                                                    class="form-switch d-inline-block {{ $morning->Atend ? 'switch-active' : 'switch-banned' }}">
-                                                    <input type="checkbox" disabled @checked($morning->Atend)>
-                                                    <label></label>
-                                                </div>
+                                                   
+                                                        <span class="badge badge-green {{ $morning->Atend ? 'bg-success' : 'bg-danger' }}">{{  $morning->Atend ? 'حاضر' : 'غائب' }}</span>
+
                                             @else
                                                 <span class="text-muted">لم يسجل</span>
                                             @endif
                                         </td>
                                         <td>
                                             @if ($leave)
-                                                <div
-                                                    class="form-switch d-inline-block {{ $leave->Atend ? 'switch-active' : 'switch-banned' }}">
-                                                    <input type="checkbox" disabled @checked($leave->Atend)>
-                                                    <label></label>
-                                                </div>
+                                               
+                                 <span class="badge badge-green {{ $leave->Atend ? 'bg-success' : 'bg-danger' }}">{{  $leave->Atend ? 'حاضر' : 'غائب' }}</span>
                                             @else
                                                 <span class="text-muted">لم يسجل</span>
                                             @endif
