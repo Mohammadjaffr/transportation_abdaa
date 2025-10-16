@@ -11,7 +11,8 @@ class PreparationDriver extends Model
 
     protected $fillable = [
         'Atend',
-        'Month',
+        'Date',
+        'Alternative_name',
         'driver_id',
         'region_id'
     ];

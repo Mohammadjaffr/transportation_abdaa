@@ -16,6 +16,7 @@ class PreparationDriverStuExport implements FromCollection,WithHeadings
                 return [
                     'السائق'  => $item->driver?->Name ?? '-',
                     'المنطقة' => $item->region?->Name ?? '-',
+                    'اسم بديل' => $item->Alternative_name ?? '-',
                     'التاريخ' => $item->Month,
                     'الحضور'  => $item->Atend ? 'حاضر' : 'غائب',
                 ];
@@ -24,6 +25,6 @@ class PreparationDriverStuExport implements FromCollection,WithHeadings
 
     public function headings(): array
     {
-        return ['السائق', 'المنطقة', 'التاريخ', 'الحضور'];
+        return ['السائق', 'المنطقة', 'اسم بديل', 'التاريخ', 'الحضور'];
     }
 }
