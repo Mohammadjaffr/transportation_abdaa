@@ -138,26 +138,46 @@ class Students extends Component
 
 
     public function createStudent()
-    {
-        $this->validate();
-        $year = SchoolYear::where('is_current', true)->first();
-        Student::create([
-            'Name' => $this->name,
-            'Grade' => $this->grade,
-            'Sex' => $this->sex,
-            'Phone' => $this->phone,
-            'Stu_position' => $this->child_region_id,
-            'wing_id' => $this->wing_id,
-            'Division' => $this->division,
-            'region_id' => $this->region_id,
-            'teacher_id' => $this->teacher_id,
-            'school_year_id' => $year->id,
-        ]);
-        AdminLoggerService::log('اضافة طالب', 'Student', "إضافة طالب جديد: {$this->name}");
+{
+    $this->validate();
 
-        $this->resetForm();
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم إضافة الطالب بنجاح']);
+    // 🔹 ابحث عن العام الدراسي الحالي
+    $year = SchoolYear::where('is_current', true)->first();
+
+    // 🔸 إذا لم يوجد، أنشئ عام دراسي جديد تلقائياً
+    if (!$year) {
+        $year = SchoolYear::create([
+              'year' => now()->year,
+            'name' => now()->year . '-' . (now()->year + 1), // مثال: 2025-2026
+            'start_date' => now()->startOfYear(),
+            'end_date' => now()->endOfYear(),
+            'is_current' => true,
+        ]);
     }
+
+    // 🔹 الآن أضف الطالب
+    Student::create([
+        'Name' => $this->name,
+        'Grade' => $this->grade,
+        'Sex' => $this->sex,
+        'Phone' => $this->phone,
+        'Stu_position' => $this->child_region_id,
+        'wing_id' => $this->wing_id,
+        'Division' => $this->division,
+        'region_id' => $this->region_id,
+        'teacher_id' => $this->teacher_id,
+        'school_year_id' => $year->id,
+    ]);
+
+    AdminLoggerService::log('اضافة طالب', 'Student', "إضافة طالب جديد: {$this->name}");
+
+    $this->resetForm();
+    $this->dispatch('show-toast', [
+        'type' => 'success',
+        'message' => 'تم إضافة الطالب والسنة الدراسية بنجاح'
+    ]);
+}
+
 
     public function editStudent($id)
     {
