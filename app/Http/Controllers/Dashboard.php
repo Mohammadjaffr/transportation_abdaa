@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
+use App\Models\Teacher;
 use App\Services\AdminLoggerService;
 
 class Dashboard extends Controller
@@ -68,5 +68,28 @@ class Dashboard extends Controller
         return view('Register.index');
     }
     
-  
+    public function indexteacher()
+    {
+        $teachers = Teacher::all();
+        return view('teacher.index', compact('teachers'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'Name' => 'required|string|max:255',
+            'Sex' => 'required|string|max:10',
+        ]);
+
+        Teacher::create($request->only(['Name', 'Sex']));
+
+        return redirect()->route('teacher.index')->with('success', 'تمت إضافة المعلم بنجاح');
+    }
+
+    public function destroy($id)
+    {
+        $teacher = Teacher::findOrFail($id);
+        $teacher->delete();
+        return redirect()->route('teacher.index')->with('success', 'تم حذف المعلم بنجاح');
+    }
 }

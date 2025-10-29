@@ -13,6 +13,10 @@ class Region extends Model
         'Name',
         'parent_id'
     ];
+      public function drivers()
+    {
+        return $this->belongsToMany(Driver::class, 'driver_region');
+    }
     public function parent()
     {
         return $this->belongsTo(Region::class, 'parent_id');
@@ -31,10 +35,7 @@ class Region extends Model
     {
         return $this->hasMany(Wage::class);
     }
-    public function drivers()
-    {
-        return $this->hasMany(Driver::class);
-    }
+  
     public function students()
     {
         return $this->hasMany(Student::class);

@@ -183,3 +183,45 @@ body {
     background-color: #cfcfcf !important;
     color: #28a745 !important;
 }
+/* جعل مكوّن الاختيار دائري بالكامل */
+.choices {
+    width: 100% !important;
+}
+
+.choices__inner {
+    min-height: 45px !important;
+    border-radius: 50px !important;
+    border: 1px solid #ced4da !important;
+    display: flex !important;
+    align-items: center !important;
+    padding-right: 15px !important;
+    padding-left: 15px !important;
+}
+
+/* البطاقات */
+.choices__list--multiple .choices__item {
+    background-color: #198754 !important;
+    border-radius: 20px !important;
+    color: white !important;
+    margin: 2px !important;
+    padding: 3px 10px !important;
+    font-size: 0.85rem !important;
+}
+
+/* زر حذف البطاقة */
+.choices[data-type*=select-multiple] .choices__button {
+    background: rgba(0,0,0,0.2) !important;
+}
+
+/* دعم RTL بالكامل */
+[dir="rtl"] .choices__list--dropdown,
+[dir="rtl"] .choices__inner {
+    text-align: right !important;
+    direction: rtl !important;
+}
+
+[dir="rtl"] .choices__list[aria-expanded] {
+    right: 0 !important;
+    left: auto !important;
+}
+

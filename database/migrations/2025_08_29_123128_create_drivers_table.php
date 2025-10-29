@@ -26,7 +26,6 @@ return new class extends Migration
             $table->boolean('Behavior')->nullable(); 
             $table->boolean('Form')->nullable(); 
             $table->boolean('Fitnes')->nullable(); 
-            $table->foreignId('region_id')->constrained('regions')->onDelete('cascade');
             $table->timestamps();
         });
     }

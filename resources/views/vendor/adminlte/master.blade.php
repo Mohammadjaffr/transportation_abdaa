@@ -121,8 +121,12 @@
         <meta name="msapplication-TileImage" content="{{ asset('favicons/ms-icon-144x144.png') }}">
     @endif
 
-</head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+
 @livewireStyles
+
+</head>
 
 <body class="@yield('classes_body')" @yield('body_data')>
 

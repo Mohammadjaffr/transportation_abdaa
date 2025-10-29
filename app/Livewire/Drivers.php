@@ -37,8 +37,9 @@ class Drivers extends Component
         'Behavior' => '',
         'Form' => '',
         'Fitnes' => '',
-        'region_id' => '',
+        'region_ids' => [],
         'Picture' => '',
+
 
     ];
 
@@ -70,7 +71,8 @@ class Drivers extends Component
                 'fields.Behavior' => 'required|boolean',
                 'fields.Form' => 'required|boolean',
                 'fields.Fitnes' => 'required|boolean',
-                'fields.region_id' => 'required|exists:regions,id',
+                'fields.region_ids' => 'required|array',
+                'fields.region_ids.*' => 'exists:regions,id',
 
             ]
             : [
@@ -86,7 +88,8 @@ class Drivers extends Component
                 'fields.Behavior' => 'required|boolean',
                 'fields.Form' => 'required|boolean',
                 'fields.Fitnes' => 'required|boolean',
-                'fields.region_id' => 'required|exists:regions,id',
+                'fields.region_ids' => 'required|array',
+                'fields.region_ids.*' => 'exists:regions,id',
             ];
     }
 
@@ -118,8 +121,8 @@ class Drivers extends Component
         'fields.wing_id.required'   => 'الجناح مطلوب',
         'fields.wing_id.exists'     => 'الجناح المحدد غير صحيح',
 
-        'fields.region_id.required' => 'المنطقة مطلوبة',
-        'fields.region_id.exists'   => 'رقم المنطقة غير صحيح',
+        'fields.region_ids.required' => 'المنطقة مطلوبة',
+        'fields.region_ids.exists'   => 'رقم المنطقة غير صحيح',
 
         'fields.CheckUp.required'   => 'حقل الفحص الطبي مطلوب',
         'fields.CheckUp.boolean'    => 'قيمة الفحص الطبي يجب أن تكون نعم أو لا',
@@ -156,8 +159,10 @@ class Drivers extends Component
         $this->validate();
 
         $data = $this->fields;
+        unset($data['region_ids']);
 
         $driver = Driver::create($data);
+        $driver->regions()->sync($this->fields['region_ids']);
 
         AdminLoggerService::log(
             'إضافة السائق',
@@ -181,6 +186,7 @@ class Drivers extends Component
         $this->fields = $driver->toArray();
         $this->editMode = true;
         $this->showForm = true;
+        $this->fields['region_ids'] = $driver->regions->pluck('id')->toArray();
     }
 
     public function updateDriver()
@@ -188,8 +194,10 @@ class Drivers extends Component
         // $this->validate();
 
         $data = $this->fields;
+        unset($data['region_ids']);
 
         $this->selectedDriver->update($data);
+        $this->selectedDriver->regions()->sync($this->fields['region_ids']);
 
         AdminLoggerService::log(
             'تحديث السائق',
@@ -249,7 +257,7 @@ class Drivers extends Component
             'Behavior' => '',
             'Form' => '',
             'Fitnes' => '',
-            'region_id' => '',
+            'region_ids' => [],
 
         ];
         $this->primary_image = null;

@@ -378,6 +378,12 @@ return [
         //     'url' => 'wages',
         //     'icon' => 'fas fa-fw fa-money-bill-wave',
         // ],
+
+        [
+            'text' => 'ادارة المعلمين',
+            'url' => 'teacher',
+            'icon' => 'fas fa-fw fa-user',
+        ],
         [
             'text' => 'ادارة التحضير',
             'icon' => 'fas fa-fw fa-clipboard-check',

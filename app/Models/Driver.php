@@ -23,38 +23,40 @@ class Driver extends Model
         'Behavior',
         'Form',
         'Fitnes',
-        'region_id'
     ];
+
+    public function regions()
+    {
+        return $this->belongsToMany(Region::class, 'driver_region');
+    }
+
+    public function wing()
+    {
+        return $this->belongsTo(Wing::class);
+    }
 
     public function bus()
     {
         return $this->belongsTo(Bus::class);
     }
 
-    public function region()
-    {
-        return $this->belongsTo(region::class);
-    }
-  
     public function students()
     {
         return $this->hasMany(Student::class);
     }
+
     public function retreats()
     {
         return $this->hasMany(Retreat::class);
     }
+
     public function wages()
     {
         return $this->hasMany(Wage::class);
     }
-    public function wing()
-{
-    return $this->belongsTo(Wing::class);
-}
-  public function preparations()
-{
-    return $this->hasMany(PreparationDriver::class, 'driver_id');
-}
 
+    public function preparations()
+    {
+        return $this->hasMany(PreparationDriver::class, 'driver_id');
+    }
 }

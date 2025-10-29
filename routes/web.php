@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Imports\StudentsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
+use App\Http\Controllers\TeacherController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -29,6 +30,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/transfer-newyear', [Dashboard::class, 'transferNewyear'])->name('transfer-newyear');
     Route::get('/register', [Dashboard::class, 'register'])->name('register.form');
     Route::post('/register', [Dashboard::class, 'storeRegister'])->name('register.store');
+
+
+    Route::get('/teacher', [TeacherController::class, 'index'])->name('teacher.index');
+    Route::post('/teacher', [TeacherController::class, 'store'])->name('teacher.store');
+    Route::get('/teacher/{id}/edit', [TeacherController::class, 'edit'])->name('teacher.edit');
+    Route::put('/teacher/{id}', [TeacherController::class, 'update'])->name('teacher.update');
+    Route::delete('/teacher/{id}', [TeacherController::class, 'destroy'])->name('teacher.destroy');
 
 
 

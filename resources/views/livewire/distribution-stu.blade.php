@@ -98,21 +98,44 @@
                                             $driversForStudent = $drivers->where('region_id', $student->region_id);
                                         @endphp
 
-                                        <select class="custom-select"
+                                        {{-- اختيار السائق --}}
+                                        <select class="custom-select" @if (isset($regionDrivers[$student->id]) && $regionDrivers[$student->id]->isEmpty()) disabled @endif
                                             wire:change="updateDistribution({{ $student->id }}, $event.target.value, {{ $student->region_id ?? 'null' }}, '{{ $student->Stu_position ?? '' }}')">
+
                                             <option value="">اختر سائق</option>
-                                            @forelse ($driversForStudent as $driver)
-                                                <option value="{{ $driver->id }}" @selected($student->driver_id == $driver->id)>
-                                                    {{ $driver->Name }}
-                                                </option>
-                                            @empty
-                                                <option disabled>لا يوجد سائق في نفس المنطقة</option>
-                                            @endforelse
+
+                                            {{-- 🔴 لا يوجد سائق في المنطقة --}}
+                                            @if (isset($regionDrivers[$student->id]) && $regionDrivers[$student->id]->isEmpty())
+                                                <option disabled selected>لا يوجد سائق في هذه المنطقة</option>
+
+                                                {{-- 🟡 أكثر من سائق --}}
+                                            @elseif (isset($regionDrivers[$student->id]))
+                                                @foreach ($regionDrivers[$student->id] as $driver)
+                                                    <option value="{{ $driver->id }}" @selected($student->driver_id == $driver->id)>
+                                                        {{ $driver->Name }}
+                                                    </option>
+                                                @endforeach
+
+                                                {{-- 🟢 الحالة العادية --}}
+                                            @else
+                                                @php
+                                                    // جلب السائقين المرتبطين بنفس المنطقة
+                                                    $driversForStudent = \App\Models\Driver::whereHas(
+                                                        'regions',
+                                                        function ($q) use ($student) {
+                                                            $q->where('regions.id', $student->region_id);
+                                                        },
+                                                    )->get();
+                                                @endphp
+                                                @forelse ($driversForStudent as $driver)
+                                                    <option value="{{ $driver->id }}" @selected($student->driver_id == $driver->id)>
+                                                        {{ $driver->Name }}
+                                                    </option>
+                                                @empty
+                                                    <option disabled>لا يوجد سائق في هذه المنطقة</option>
+                                                @endforelse
+                                            @endif
                                         </select>
-
-
-
-
                                         {{-- اختيار المنطقة --}}
                                         <select class="custom-select"
                                             wire:change="updateDistribution({{ $student->id }}, {{ $student->driver_id ?? 'null' }}, $event.target.value, '{{ $student->Stu_position ?? '' }}')">
@@ -148,13 +171,13 @@
                             </tr>
                         @endforelse
                     </tbody>
-                 
+
                 </table>
-              
+
             </div>
-                 <div class="card-footer d-flex justify-content-center">
-                    {{ $students->links('pagination::bootstrap-5') }}
-                </div>
+            <div class="card-footer d-flex justify-content-center">
+                {{ $students->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
     {{-- CSS مخصص --}}

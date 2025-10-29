@@ -92,23 +92,7 @@
                             </div>
 
                             {{-- المنطقة --}}
-                            <div class="col-md-12 mb-3">
-                                <label class="form-label fw-bold">المنطقة</label>
-                                <div class="input-group input-group-sm shadow-sm rounded-pill overflow-hidden py-2">
-                                    <span class="input-group-text bg-white border-0">
-                                        <i class="fas fa-filter text-primary"></i>
-                                    </span>
-                                    <select wire:model="fields.region_id" class="form-control border-0">
-                                        <option value="">-- بدون --</option>
-                                        @foreach ($regions as $region)
-                                            <option value="{{ $region->id }}">{{ $region->Name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                                @error('fields.region_id')
-                                    <span class="text-danger small">{{ $message }}</span>
-                                @enderror
-                            </div>
+                          
 
                             {{-- الحقول Boolean --}}
                             @foreach (['CheckUp' => 'الفحص الطبي', 'Behavior' => 'السلوك', 'Form' => 'الاستمارة', 'Fitnes' => 'لائق'] as $field => $label)
@@ -130,6 +114,45 @@
                                     @enderror
                                 </div>
                             @endforeach
+
+                              <div class="col-md-12 mb-3">
+                                <label class="form-label fw-bold text-primary">المناطق</label>
+
+                                <div class="border rounded-4 shadow-sm bg-white p-3"
+                                    style="max-height: 300px; overflow-y: auto;">
+                                    @forelse ($regions as $region)
+                                        <div class="form-check form-check-inline w-75 mb-2">
+                                            <input class="form-check-input" type="checkbox" value="{{ $region->id }}"
+                                                wire:model="fields.region_ids" id="region_{{ $region->id }}">
+                                            <label class="form-check-label fw-semibold ms-2"
+                                                for="region_{{ $region->id }}">
+                                                {{ $region->Name }}
+                                            </label>
+                                        </div>
+                                    @empty
+                                        <p class="text-muted small">لا توجد مناطق متاحة حاليًا.</p>
+                                    @endforelse
+                                </div>
+
+                                <!-- عرض المناطق المحددة -->
+                                @if (!empty($fields['region_ids']))
+                                    <div class="mt-2">
+                                        <label class="form-label fw-bold text-primary">المناطق المحددة:</label>
+
+                                        {{-- <small class="text-success fw-bold">المناطق المحددة:</small> --}}
+                                        <div class="d-flex flex-wrap mt-1">
+                                            @foreach ($regions->whereIn('id', $fields['region_ids']) as $selected)
+                                                <span
+                                                    class="badge bg-success text-white border border-success mr-1 mb-1">    
+                                                    {{ $selected->Name }}
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+
 
                             {{-- أزرار --}}
                             <div class="col-md-6 mt-3">
@@ -201,7 +224,11 @@
                                 <td>{{ $driver->Bus_type ?? '-' }}</td>
                                 <td>{{ $driver->No_Passengers ?? '-' }}</td>
                                 <td>{{ $driver->Wing->Name ?? '-' }}</td>
-                                <td>{{ $driver->Region->Name ?? '-' }}</td>
+                                <td>
+                                    @foreach ($driver->regions as $region)
+                                        <span class="badge bg-success">{{ $region->Name }}</span>
+                                    @endforeach
+                                </td>
                                 <td>
                                     @if ($driver->Form === 1)
                                         <span class="badge bg-success">يوجد</span>
@@ -291,4 +318,32 @@
             </div>
         @endif
     </div>
+    <script>
+        document.addEventListener('livewire:load', function() {
+            const selectElement = document.getElementById('regionSelect');
+
+            const choices = new Choices(selectElement, {
+                removeItemButton: true,
+                placeholderValue: 'اختر المناطق',
+                searchPlaceholderValue: 'بحث...',
+            });
+
+            selectElement.addEventListener('change', function() {
+                @this.set('fields.region_ids', choices.getValue(true));
+            });
+
+            Livewire.hook('message.processed', () => {
+                choices.setChoiceByValue(@this.get('fields.region_ids'));
+            });
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            try {
+                new Choices('#regionSelect');
+                console.log("Choices.js يعمل ✅");
+            } catch (e) {
+                console.log("Choices.js لا يعمل ❌", e);
+            }
+        });
+    </script>
+
 </div>
