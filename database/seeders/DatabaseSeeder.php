@@ -78,6 +78,12 @@ class DatabaseSeeder extends Seeder
             ['Name' => 'فاطمة', 'Sex' => 'أنثى'],
             ['Name' => 'ساره', 'Sex' => 'أنثى'],
         ]);
+        
+        // 4) السنة الدراسية
+        SchoolYear::create([
+            'year' => now()->year,
+            'is_current' => true,
+        ]);
 
 //         // 5) السائقين (20)
 //       DB::table('drivers')->insert([
