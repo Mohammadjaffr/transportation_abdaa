@@ -47,11 +47,17 @@
 
     </div>
 
-
+  <a href="{{ route('distributed.index') }}" class="btn btn-success mb-3">
+            <i class="fas fa-users me-1"></i> عرض الطلاب الموزعين
+        </a>
     <div class="card custom-card shadow-lg border-0 rounded-4">
         <div class="card-header bg-gradient text-white">
             <h5 class="mb-0"><i class="fas fa-list me-2"></i> قائمة الطلاب</h5>
         </div>
+
+      
+
+
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0 text-center">

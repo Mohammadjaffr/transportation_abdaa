@@ -7,6 +7,7 @@ use App\Imports\StudentsImport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use App\Http\Controllers\TeacherController;
+use App\Http\Controllers\DistributedStudentsController;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -38,6 +39,9 @@ Route::middleware('auth')->group(function () {
     Route::put('/teacher/{id}', [TeacherController::class, 'update'])->name('teacher.update');
     Route::delete('/teacher/{id}', [TeacherController::class, 'destroy'])->name('teacher.destroy');
 
+
+    Route::get('/distributed-students', [DistributedStudentsController::class, 'index'])->name('distributed.index');
+    Route::get('/distributed-students/export', [DistributedStudentsController::class, 'export'])->name('distributed.export');
 
 
     Route::get('/students/import', function () {
