@@ -61,14 +61,18 @@ class PreparationDrivers extends Component
 
     /** عند اختيار السائق اجلب منطقته تلقائيًا */
     public function updatedDriverId($value)
-    {
-        if ($value) {
-            $driver = Driver::with('region')->find($value);
-            if ($driver) {
-                $this->region_id = $driver->region_id;
-            }
+{
+    if ($value) {
+        $driver = Driver::with('regions')->find($value);
+        if ($driver && $driver->regions->isNotEmpty()) {
+            // خذ أول منطقة افتراضية
+            $this->region_id = $driver->regions->first()->id;
+        } else {
+            $this->region_id = null;
         }
     }
+}
+
 
     public function loadPreparations() { /* محجوز للتوسّع مستقبلاً */ }
 

@@ -25,10 +25,10 @@ class Driver extends Model
         'Fitnes',
     ];
 
-    public function regions()
-    {
-        return $this->belongsToMany(Region::class, 'driver_region');
-    }
+  public function regions()
+{
+    return $this->belongsToMany(Region::class, 'driver_region');
+}
 
     public function wing()
     {

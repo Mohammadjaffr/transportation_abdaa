@@ -26,6 +26,13 @@ class DistributionStu extends Component
     public $selectedRegion = '';
     public $selectedDriver = '';
     public $regionDrivers = [];
+    public $showUnassignedOnly = false;
+
+
+    public function toggleUnassigned()
+{
+    $this->showUnassignedOnly = !$this->showUnassignedOnly;
+}
 
 
 public function updateDistribution($studentId, $driverId = null, $regionId = null, $positionId = null)
@@ -115,53 +122,70 @@ public function updateDistribution($studentId, $driverId = null, $regionId = nul
     }
 
 
-    public function render()
-    {
-        $query = Student::with(['region', 'driver']);
+   public function render()
+{
+    $query = Student::with(['region', 'driver']);
 
-        if ($this->search) {
-            $searchTerm = "%{$this->search}%";
-
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('Name', 'like', $searchTerm)
-                    ->orWhere('Stu_position', 'like', $searchTerm)
-                    ->orWhereHas('region', function ($qr) use ($searchTerm) {
-                        $qr->where('Name', 'like', $searchTerm);
-                    })
-                    ->orWhereHas('driver', function ($qd) use ($searchTerm) {
-                        $qd->where('Name', 'like', $searchTerm);
-                    });
-            });
-        }
-
-        if ($this->regionFilter) {
-            $childRegions = Region::where('parent_id', $this->regionFilter)->pluck('id')->toArray();
-            $regionIds = array_merge([$this->regionFilter], $childRegions);
-            $query->whereIn('region_id', $regionIds);
-        }
-
-        if ($this->driverFilter) {
-            $query->where('driver_id', $this->driverFilter);
-        }
-
-        if ($this->positionFilter) {
-            $query->where('Stu_position', 'like', "%{$this->positionFilter}%");
-        }
-
-        $students = $query->paginate(10);
-
-        // تحميل المناطق والمواقف
-        $this->regions = Region::whereNull('parent_id')->get();
-        $this->stu_postion = Student::distinct()->pluck('Stu_position')->toArray();
-
-        // تحميل السائقين عند أول تحميل فقط
-        if (!$this->drivers) {
-            $this->drivers = Driver::with('regions')->get();
-        }
-
-        return view('livewire.distribution-stu', [
-            'students' => $students,
-            'drivers' => $this->drivers,
-        ]);
+    // ✅ فلتر عرض غير الموزعين فقط
+    if ($this->showUnassignedOnly) {
+        $query->where(function ($q) {
+            $q->whereNull('region_id')
+              ->orWhereNull('driver_id')
+              ->orWhereNull('Stu_position');
+        });
     }
+
+    // 🔍 البحث والفلاتر الأخرى كما هي
+    if ($this->search) {
+        $searchTerm = "%{$this->search}%";
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('Name', 'like', $searchTerm)
+                ->orWhere('Stu_position', 'like', $searchTerm)
+                ->orWhereHas('region', function ($qr) use ($searchTerm) {
+                    $qr->where('Name', 'like', $searchTerm);
+                })
+                ->orWhereHas('driver', function ($qd) use ($searchTerm) {
+                    $qd->where('Name', 'like', $searchTerm);
+                });
+        });
+    }
+
+    if ($this->regionFilter) {
+        $childRegions = Region::where('parent_id', $this->regionFilter)->pluck('id')->toArray();
+        $regionIds = array_merge([$this->regionFilter], $childRegions);
+        $query->whereIn('region_id', $regionIds);
+    }
+
+    if ($this->driverFilter) {
+        $query->where('driver_id', $this->driverFilter);
+    }
+
+    if ($this->positionFilter) {
+        $query->where('Stu_position', 'like', "%{$this->positionFilter}%");
+    }
+
+    $students = $query->paginate(10);
+
+    // تحميل البيانات العامة
+    $this->regions = Region::whereNull('parent_id')->get();
+    $this->stu_postion = Student::distinct()->pluck('Stu_position')->toArray();
+
+    if (!$this->drivers) {
+        $this->drivers = Driver::with('regions')->get();
+    }
+
+    // ✅ تحقق إذا ما في أي طالب غير موزع
+    $unassignedCount = Student::where(function ($q) {
+        $q->whereNull('region_id')
+          ->orWhereNull('driver_id')
+          ->orWhereNull('Stu_position');
+    })->count();
+
+    return view('livewire.distribution-stu', [
+        'students' => $students,
+        'drivers' => $this->drivers,
+        'unassignedCount' => $unassignedCount,
+    ]);
+}
+
 }

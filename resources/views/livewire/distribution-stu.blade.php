@@ -46,16 +46,39 @@
         </div>
 
     </div>
-
-  <a href="{{ route('distributed.index') }}" class="btn btn-success mb-3">
+    <div class="d-flex justify-content-between align-items-center">
+        <a href="{{ route('distributed.index') }}" class="btn btn-success mb-3">
             <i class="fas fa-users me-1"></i> عرض الطلاب الموزعين
         </a>
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div>
+                <button wire:click="toggleUnassigned" class="btn btn-outline-success">
+                    @if ($showUnassignedOnly)
+                        <i class="fas fa-users"></i> عرض جميع الطلاب
+                    @else
+                        <i class="fas fa-user-slash"></i> عرض غير الموزعين فقط
+                    @endif
+                </button>
+            </div>
+
+          
+        </div>
+    </div>
+      {{-- ✅ رسالة في حال لا يوجد طلاب غير موزعين --}}
+            @if ($showUnassignedOnly && $unassignedCount === 0)
+            
+                <div class="alert alert-success mb-0 text-center py-2 my-3 px-3 rounded-pill">
+                    🎉 جميع الطلاب موزعين بالفعل
+                </div>
+            @endif
+
+
     <div class="card custom-card shadow-lg border-0 rounded-4">
         <div class="card-header bg-gradient text-white">
             <h5 class="mb-0"><i class="fas fa-list me-2"></i> قائمة الطلاب</h5>
         </div>
 
-      
+
 
 
         <div class="card-body p-0">
