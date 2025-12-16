@@ -132,8 +132,9 @@
                         <thead class="table-success">
                             <tr>
                                 <th class="text-center py-2 py-md-3 fw-bold">#</th>
-                                <th class="text-start py-2 py-md-3 fw-bold">المنطقة</th>
-                                <th class="text-start py-2 py-md-3 fw-bold">منطقة رئيسية /موقف</th>
+                                <th class="text-start py-2 py-md-3 fw-bold">المنطقة رئيسية </th>
+                                <th class="text-start py-2 py-md-3 fw-bold">منطقة /موقف</th>
+
 
                                 <th class="text-center py-2 py-md-3 fw-bold">الإجراءات</th>
                             </tr>
