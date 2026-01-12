@@ -95,7 +95,7 @@
                           
 
                             {{-- الحقول Boolean --}}
-                            @foreach (['CheckUp' => 'الفحص الطبي', 'Behavior' => 'السلوك', 'Form' => 'الاستمارة', 'Fitnes' => 'لائق'] as $field => $label)
+                            @foreach (['CheckUp' => 'الفحص للمركبة', 'Behavior' => 'السلوك', 'Form' => 'الاستمارة', 'Fitnes' => 'لياقة السائق'] as $field => $label)
                                 <div class="col-md-6 my-1">
                                     <label class="form-label fw-bold">{{ $label }}</label>
                                     <div
@@ -207,9 +207,9 @@
                             <th>الجناح</th>
                             <th>المنطقة</th>
                             <th>الاستمارة</th>
-                            <th>الفحص الطبي</th>
+                            <th>الفحص للمركبة</th>
                             <th>السلوك</th>
-                            <th>لائق</th>
+                            <th>لياقة السائق</th>
                             <th>الإجراءات</th>
                         </tr>
                     </thead>
