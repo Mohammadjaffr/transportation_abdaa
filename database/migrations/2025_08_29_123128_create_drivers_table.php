@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('Name', 50);
             $table->string('IDNo', 11);
-            $table->string('Phone', length: 15);
-            $table->string('LicenseNo', length: 8)->nullable()->unique();
+            $table->string('Phone');
+            $table->string('LicenseNo',255)->nullable()->unique();
             $table->string('Picture', 20)->nullable();
             $table->string('Bus_type', 10);
             $table->string('No_Passengers', 10);

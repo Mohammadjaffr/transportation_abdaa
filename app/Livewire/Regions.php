@@ -12,7 +12,7 @@ use function Ramsey\Uuid\v1;
 class Regions extends Component
 {
     use WithPagination;
-
+    protected $paginationTheme = 'bootstrap-5';
     // public $regions;
     public $parent_regions;
     public $Name, $parent_id, $region_id;

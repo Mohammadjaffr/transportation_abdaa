@@ -35,7 +35,30 @@ class DatabaseSeeder extends Seeder
             ['Name' => 'القعيطي'],
         ];
         Wing::insert($wings);
+       $drivers = []; // مصفوفة فارغة لتجميع السائقين
 
+for ($i = 1; $i <= 15; $i++) {
+    $drivers[] = [
+        'Name'          => 'سائق تجريبي ' . $i,       // الاسم: سائق تجريبي 1، 2، إلخ
+        'IDNo'          => '10000000' . $i,          // رقم هوية مختلف
+        'Phone'         => '05000000' . str_pad($i, 2, '0', STR_PAD_LEFT), // رقم هاتف مختلف (9 خانات)
+        'LicenseNo'     => 'LIC-' . $i . rand(100, 999), // رقم رخصة عشوائي ومختلف
+        'Bus_type'      => ($i % 2 == 0) ? 'هايس' : 'كوستر', // تنويع نوع الباص
+        'No_Passengers' => 14,
+        'Picture'       => null,
+        'Ownership'     => 'ملك',
+        'wing_id'       => 1, // تأكد أن رقم الجناح 1 موجود في جدول wings
+        'CheckUp'       => true,
+        'Behavior'      => true,
+        'Form'          => true,
+        'Fitnes'        => true,
+        'created_at'    => now(), // ضروري عند استخدام insert
+        'updated_at'    => now(),
+    ];
+}
+
+// إضافة جميع البيانات دفعة واحدة للقاعدة
+Driver::insert($drivers);
 //         // 3) المناطق + المواقف
 //         $regions = [
 //             ['id' => 1, 'parent_id' => null, 'Name' => 'القطن - السوق'],

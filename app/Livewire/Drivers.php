@@ -17,6 +17,7 @@ class Drivers extends Component
 {
     use WithFileUploads;
     use WithPagination;
+    protected $paginationTheme = 'bootstrap-5';
 
     public function updatingSearch()
     {
@@ -62,9 +63,9 @@ class Drivers extends Component
                 'fields.IDNo' => 'required|string|max:11|unique:drivers,IDNo,' . $this->selectedDriver->id,
                 'fields.Phone' => 'required|digits:9|unique:drivers,Phone,' . ($this->editMode ? $this->selectedDriver->id : 'NULL'),
 
-                'fields.LicenseNo' => 'required|string|max:10|unique:drivers,LicenseNo,' . $this->selectedDriver->id,
-                'fields.Bus_type' => 'required|string|max:10',
-                'fields.No_Passengers' => 'required|string|max:10',
+                'fields.LicenseNo' => 'required|string|unique:drivers,LicenseNo,' . $this->selectedDriver->id,
+                'fields.Bus_type' => 'required|string',
+                'fields.No_Passengers' => 'required|string',
                 'fields.Ownership' => 'required|string|max:50',
                 'fields.wing_id' => 'required|exists:wings,id',
                 'fields.CheckUp' => 'required|boolean',
@@ -78,8 +79,8 @@ class Drivers extends Component
             : [
                 'fields.Name' => 'required|string|max:50',
                 'fields.IDNo' => 'required|string|max:11|unique:drivers,IDNo',
-                'fields.Bus_type' => 'required|string|max:10',
-                'fields.No_Passengers' => 'required|string|max:10',
+                'fields.Bus_type' => 'required|string',
+                'fields.No_Passengers' => 'required|string',
                 'fields.Phone' => 'required|digits:9|unique:drivers,Phone',
                 'fields.LicenseNo' => 'required|string|max:8|unique:drivers,LicenseNo',
                 'fields.Ownership' => 'required|string|max:50',
@@ -113,7 +114,6 @@ class Drivers extends Component
 
         'fields.LicenseNo.required' => 'رقم الرخصة مطلوب',
         'fields.LicenseNo.unique'   => 'رقم الرخصة مستخدم من قبل',
-        'fields.LicenseNo.max'      => 'رقم الرخصة يجب ألا يتجاوز 10 ارقام',
 
         'fields.Ownership.required' => 'حقل الملكية مطلوب',
         'fields.Ownership.max'      => 'الملكية يجب ألا تتجاوز 20 ارقام',
