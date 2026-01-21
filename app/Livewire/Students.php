@@ -41,7 +41,7 @@ class Students extends Component
         'name' => 'required|string|max:200',
         'grade' => 'required|string|max:30',
         'sex' => 'required|string|max:20',
-        'phone' => 'required|string|max:20',
+        'phone' => 'nullable|string|max:20',
         'child_region_id' => 'required|string|max:200',
         'wing_id' => 'required|exists:wings,id',
         'division' => 'required|string|max:20',

@@ -143,18 +143,18 @@
                                 <label>الصف</label>
                                 <select wire:model="grade" class="form-control @error('grade') is-invalid @enderror">
                                     <option value="">اختر الصف</option>
-                                    <option value="الاول">الاول</option>
-                                    <option value="الثاني">الثاني</option>
-                                    <option value="الثالث">الثالث</option>
-                                    <option value="الرابع">الرابع</option>
-                                    <option value="الخامس">الخامس</option>
-                                    <option value="السادس">السادس</option>
-                                    <option value="السابع">السابع</option>
-                                    <option value="الثامن">الثامن</option>
-                                    <option value="التاسع">التاسع</option>
-                                    <option value="اول ثانوي">اول ثانوي</option>
-                                    <option value="ثاني ثانوي">ثاني ثانوي</option>
-                                    <option value="ثالث ثانوي">ثالث ثانوي</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="1ث">1ث</option>
+                                    <option value="2ث">2ث</option>
+                                    <option value="3ث">3ث</option>
                                 </select>
                                 @error('grade')
                                     <span class="text-danger">{{ $message }}</span>
