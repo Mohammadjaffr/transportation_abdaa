@@ -2,19 +2,19 @@
 
 namespace App\Imports;
 
-use App\Models\Student;
-use App\Models\Wing;
 use App\Models\Region;
+use App\Models\Student;
 use App\Models\Teacher;
+use App\Models\Wing;
 use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
-use Maatwebsite\Excel\Concerns\SkipsOnFailure;
-use Maatwebsite\Excel\Concerns\SkipsFailures;
-use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
 
-class StudentsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOnFailure, SkipsEmptyRows
+class StudentsImport implements SkipsEmptyRows, SkipsOnFailure, ToModel, WithHeadingRow, WithValidation
 {
     use SkipsFailures;
 
@@ -23,10 +23,16 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
      */
     private function normalize($value)
     {
-        if (!$value) return null;
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        // تحويل القيمة إلى نص أولاً (معالجة الأرقام من Excel)
+        $value = (string) $value;
+
+        // إزالة المسافات الزائدة
         return trim(preg_replace('/\s+/', ' ', $value));
     }
-
 
     public function model(array $row)
     {
@@ -35,12 +41,12 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
         }
 
         // تنظيف القيم
-        $wingName    = $this->normalize($row['algnah'] ?? null);
-        $regionName  = $this->normalize($row['almntk'] ?? null);
+        $wingName = $this->normalize($row['algnah'] ?? null);
+        $regionName = $this->normalize($row['almntk'] ?? null);
         $teacherName = $this->normalize($row['almaalm'] ?? null);
 
         // البحث عن العلاقات
-        $wing   = Wing::where('Name', $wingName)->first();
+        $wing = Wing::where('Name', $wingName)->first();
         $region = $regionName ? Region::where('Name', $regionName)->first() : null;
         $teacher = $teacherName ? Teacher::where('Name', $teacherName)->first() : null;
 
@@ -52,73 +58,70 @@ class StudentsImport implements ToModel, WithHeadingRow, WithValidation, SkipsOn
         */
 
         return new Student([
-            'Name'         => $this->normalize($row['alasm'] ?? ''),
-            'Grade'        => $this->normalize($row['alsf'] ?? ''),
-            'Sex'          => $this->normalize($row['algns'] ?? ''),
-            'Phone'        => $this->normalize($row['alhatf'] ?? ''),
-            'wing_id'      => $wing?->id,
-            'Division'     => $this->normalize($row['alshaab'] ?? ''),
-            'region_id'    => $region?->id,
+            'Name' => $this->normalize($row['alasm'] ?? ''),
+            'Grade' => $this->normalize($row['alsf'] ?? ''),
+            'Sex' => $this->normalize($row['algns'] ?? ''),
+            'Phone' => $this->normalize($row['alhatf'] ?? ''),
+            'wing_id' => $wing?->id,
+            'Division' => $this->normalize($row['alshaab'] ?? ''),
+            'region_id' => $region?->id,
             'Stu_position' => $this->normalize($row['almokf'] ?? ''),
-            'teacher_id'   => $teacher?->id,
+            'teacher_id' => $teacher?->id,
         ]);
     }
-
 
     public function rules(): array
     {
         return [
-            'alasm'     => ['required', 'string'],
-            'alsf'      => ['required', 'string'],
-            'algns'     => ['required', 'string', Rule::in(['ذكر', 'أنثى'])],
-            'alhatf'    => ['required'],
-            'almokf'    => ['required', 'string'],
+            'alasm' => ['required'],
+            'alsf' => ['required'],
+            'algns' => ['required', Rule::in(['ذكر', 'أنثى'])],
+            'alhatf' => ['required'],
+            'almokf' => ['required'],
 
-            'algnah'    => ['required', Rule::exists('wings', 'Name')],
-            'almntk'    => ['nullable', Rule::exists('regions', 'Name')],
-            'almaalm'   => ['nullable', Rule::exists('teachers', 'Name')],
+            'algnah' => ['required', Rule::exists('wings', 'Name')],
+            'almntk' => ['nullable', Rule::exists('regions', 'Name')],
+            'almaalm' => ['nullable', Rule::exists('teachers', 'Name')],
 
-            'alshaab'   => ['required', 'string', Rule::in(['أ', 'ب', 'ج', 'د', 'ه', 'و', 'ز'])],
+            'alshaab' => ['required', Rule::in(['أ', 'ب', 'ج', 'د', 'ه', 'و', 'ز'])],
         ];
     }
-
 
     public function customValidationAttributes()
     {
         return [
-            'alasm'     => 'الاسم',
-            'alsf'      => 'الصف',
-            'algns'     => 'الجنس',
-            'alhatf'    => 'الهاتف',
-            'almokf'    => 'الموقف',
-            'algnah'    => 'الجناح',
-            'almntk'    => 'المنطقة',
-            'almaalm'   => 'المعلم',
-            'alshaab'   => 'الشعبة',
+            'alasm' => 'الاسم',
+            'alsf' => 'الصف',
+            'algns' => 'الجنس',
+            'alhatf' => 'الهاتف',
+            'almokf' => 'الموقف',
+            'algnah' => 'الجناح',
+            'almntk' => 'المنطقة',
+            'almaalm' => 'المعلم',
+            'alshaab' => 'الشعبة',
         ];
     }
-
 
     public function customValidationMessages()
     {
         return [
-            'alasm.required'     => 'الاسم مطلوب',
-            'alsf.required'      => 'الصف مطلوب',
+            'alasm.required' => 'الاسم مطلوب',
+            'alsf.required' => 'الصف مطلوب',
 
-            'algns.required'     => 'الجنس مطلوب',
-            'algns.in'           => 'الجنس يجب أن يكون إما "ذكر" أو "أنثى". (القيمة المدخلة: :input)',
+            'algns.required' => 'الجنس مطلوب',
+            'algns.in' => 'الجنس يجب أن يكون إما "ذكر" أو "أنثى". (القيمة المدخلة: :input)',
 
-            'alhatf.required'    => 'الهاتف مطلوب',
-            'almokf.required'    => 'الموقف مطلوب',
+            'alhatf.required' => 'الهاتف مطلوب',
+            'almokf.required' => 'الموقف مطلوب',
 
-            'algnah.required'    => 'الجناح مطلوب',
-            'algnah.exists'      => 'اسم الجناح غير صحيح',
+            'algnah.required' => 'الجناح مطلوب',
+            'algnah.exists' => 'اسم الجناح غير صحيح',
 
-            'almntk.exists'      => 'اسم المنطقة غير صحيح',
-            'almaalm.exists'     => 'اسم المعلم غير صحيح',
+            'almntk.exists' => 'اسم المنطقة غير صحيح',
+            'almaalm.exists' => 'اسم المعلم غير صحيح',
 
-            'alshaab.required'   => 'الشعبة مطلوبة',
-            'alshaab.in'         => 'الشعبة يجب أن تكون إحدى القيم المسموحة. (القيمة المدخلة: :input)',
+            'alshaab.required' => 'الشعبة مطلوبة',
+            'alshaab.in' => 'الشعبة يجب أن تكون إحدى القيم المسموحة. (القيمة المدخلة: :input)',
         ];
     }
 }
