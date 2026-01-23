@@ -60,7 +60,7 @@ class StudentsImport implements SkipsEmptyRows, SkipsOnFailure, ToModel, WithHea
         return new Student([
             'Name' => $this->normalize($row['alasm'] ?? ''),
             'Grade' => $this->normalize($row['alsf'] ?? ''),
-            'Sex' => $this->normalize($row['algns'] ?? ''),
+            'Sex' => $this->normalize($row['algns'] ?? '') ?: 'غير محدد', // قيمة افتراضية إذا كان فارغاً
             'Phone' => $this->normalize($row['alhatf'] ?? ''),
             'wing_id' => $wing?->id,
             'Division' => $this->normalize($row['alshaab'] ?? ''),
@@ -75,13 +75,13 @@ class StudentsImport implements SkipsEmptyRows, SkipsOnFailure, ToModel, WithHea
         return [
             'alasm' => ['required'],
             'alsf' => ['required'],
-            'algns' => ['required', Rule::in(['ذكر', 'أنثى'])],
+            'algns' => ['nullable', Rule::in(['ذكر', 'انثى'])],
             'alhatf' => ['required'],
             'almokf' => ['required'],
 
             'algnah' => ['required', Rule::exists('wings', 'Name')],
             'almntk' => ['nullable', Rule::exists('regions', 'Name')],
-            'almaalm' => ['nullable', Rule::exists('teachers', 'Name')],
+            'almaalm' => ['nullable'],
 
             'alshaab' => ['required', Rule::in(['أ', 'ب', 'ج', 'د', 'ه', 'و', 'ز'])],
         ];
