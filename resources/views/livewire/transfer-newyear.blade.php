@@ -131,7 +131,7 @@
                         </tbody>
                     </table>
                     <div class="card-footer d-flex justify-content-center">
-                        {{ $students->links('pagination::bootstrap-5') }}
+                        {{ $students->links() }}
                     </div>
                 </div>
             </div>

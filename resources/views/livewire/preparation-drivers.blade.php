@@ -281,7 +281,7 @@
                         </table>
 
                         <div class="card-footer d-flex justify-content-center">
-                            {{ $preparations->links('pagination::bootstrap-5') }}
+                            {{ $preparations->links() }}
                         </div>
                     </div>
                 </div>

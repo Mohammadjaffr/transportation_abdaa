@@ -20,7 +20,7 @@ class Students extends Component
 
     use WithFileUploads;
     use WithPagination;
-    protected $paginationTheme = 'bootstrap-5';
+    protected $paginationTheme = 'bootstrap';
 
     public  $wings, $regions, $teachers;
     public $name, $grade, $sex, $phone,

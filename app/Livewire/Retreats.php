@@ -13,7 +13,7 @@ use App\Services\AdminLoggerService;
 class Retreats extends Component
 {
     use WithPagination;
-        protected $paginationTheme = 'bootstrap-5';
+        protected $paginationTheme = 'bootstrap';
 
     public  $students, $drivers, $regions;
 

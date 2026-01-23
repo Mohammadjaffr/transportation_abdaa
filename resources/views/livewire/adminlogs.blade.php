@@ -64,7 +64,7 @@
         </div>
 
         <div class="card-footer d-flex justify-content-center">
-            {{ $logs->links('pagination::bootstrap-5') }}
+            {{ $students->links() }}
 
         </div>
     </div>

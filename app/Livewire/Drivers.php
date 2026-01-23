@@ -17,7 +17,7 @@ class Drivers extends Component
 {
     use WithFileUploads;
     use WithPagination;
-    protected $paginationTheme = 'bootstrap-5';
+    protected $paginationTheme = 'bootstrap';
 
     public function updatingSearch()
     {

@@ -165,7 +165,7 @@
                 </table>
 
                 <div class="card-footer d-flex justify-content-center">
-                    {{ $retreats->links('pagination::bootstrap-5') }}
+                    {{ $retreats->links() }}
                 </div>
             </div>
         </div>

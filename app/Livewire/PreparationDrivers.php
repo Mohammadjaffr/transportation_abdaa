@@ -15,7 +15,7 @@ use Carbon\Carbon;
 class PreparationDrivers extends Component
 {
     use WithPagination;
-    protected $paginationTheme = 'bootstrap-5';
+    protected $paginationTheme = 'bootstrap';
 
     public $drivers, $regions;
 

@@ -288,7 +288,7 @@
                 </table>
 
                 <div class="card-footer d-flex justify-content-center">
-                    {{ $drivers->links('pagination::bootstrap-5') }}
+                    {{ $students->links() }}
                 </div>
             </div>
         </div>

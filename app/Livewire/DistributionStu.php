@@ -11,7 +11,7 @@ use Livewire\WithPagination;
 class DistributionStu extends Component
 {
     use WithPagination;
-    public $paginationTheme = 'bootstrap-5';
+    public $paginationTheme = 'bootstrap';
     // public $students;
     public $drivers;
     public $regions;
