@@ -64,7 +64,7 @@
         </div>
 
         <div class="card-footer d-flex justify-content-center">
-            {{ $students->links() }}
+            {{ $logs->links() }}
 
         </div>
     </div>

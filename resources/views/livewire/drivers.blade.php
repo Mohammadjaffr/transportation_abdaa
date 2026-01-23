@@ -288,7 +288,7 @@
                 </table>
 
                 <div class="card-footer d-flex justify-content-center">
-                    {{ $students->links() }}
+                    {{ $drivers->links() }}
                 </div>
             </div>
         </div>
