@@ -61,7 +61,7 @@ class StudentsImport implements SkipsEmptyRows, SkipsOnFailure, ToModel, WithHea
             'Name' => $this->normalize($row['alasm'] ?? ''),
             'Grade' => $this->normalize($row['alsf'] ?? ''),
             'Sex' => $this->normalize($row['algns'] ?? '') ?: 'غير محدد', // قيمة افتراضية إذا كان فارغاً
-            'Phone' => $this->normalize($row['alhatf'] ?? ''),
+            'Phone' => $this->normalize($row['alhatf'] ?? '') ?: 'غير محدد', // قيمة افتراضية إذا كان فارغاً
             'wing_id' => $wing?->id,
             'Division' => $this->normalize($row['alshaab'] ?? ''),
             'region_id' => $region?->id,
@@ -76,8 +76,8 @@ class StudentsImport implements SkipsEmptyRows, SkipsOnFailure, ToModel, WithHea
             'alasm' => ['required'],
             'alsf' => ['required'],
             'algns' => ['nullable', Rule::in(['ذكر', 'انثى'])],
-            'alhatf' => ['required'],
-            'almokf' => ['required'],
+            'alhatf' => ['nullable'],
+            'almokf' => ['nullable'],
 
             'algnah' => ['required', Rule::exists('wings', 'Name')],
             'almntk' => ['nullable', Rule::exists('regions', 'Name')],
@@ -111,8 +111,6 @@ class StudentsImport implements SkipsEmptyRows, SkipsOnFailure, ToModel, WithHea
             'algns.required' => 'الجنس مطلوب',
             'algns.in' => 'الجنس يجب أن يكون إما "ذكر" أو "أنثى". (القيمة المدخلة: :input)',
 
-            'alhatf.required' => 'الهاتف مطلوب',
-            'almokf.required' => 'الموقف مطلوب',
 
             'algnah.required' => 'الجناح مطلوب',
             'algnah.exists' => 'اسم الجناح غير صحيح',
