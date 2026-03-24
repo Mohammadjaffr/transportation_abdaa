@@ -19,9 +19,16 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        // 'email',
+        'email',
         'password',
+        'role',
+        'driver_id',
     ];
+
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class, 'driver_id');
+    }
 
     /**
      * The attributes that should be hidden for serialization.

@@ -67,6 +67,11 @@ class Dashboard extends Controller
     {
         return view('Register.index');
     }
+
+    public function settings()
+    {
+        return view('settings.index');
+    }
     
     public function indexteacher()
     {

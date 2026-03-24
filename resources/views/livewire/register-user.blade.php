@@ -30,6 +30,29 @@
                     <input type="password" wire:model="password_confirmation" class="form-control">
                 </div>
 
+                <div class="form-group mb-3">
+                    <label>الدور</label>
+                    <select wire:model.live="role" class="form-control @error('role') is-invalid @enderror">
+                        <option value="">اختر الدور</option>
+                        <option value="admin">مدير</option>
+                        <option value="driver">سائق</option>
+                    </select>
+                    @error('role') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                </div>
+
+                @if($role === 'driver')
+                <div class="form-group mb-3">
+                    <label>السائق المرتبط</label>
+                    <select wire:model="driver_id" class="form-control @error('driver_id') is-invalid @enderror">
+                        <option value="">اختر السائق من القائمة</option>
+                        @foreach($drivers as $driver)
+                            <option value="{{ $driver->id }}">{{ $driver->Name }} (الهوية: {{ $driver->IDNo }})</option>
+                        @endforeach
+                    </select>
+                    @error('driver_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                </div>
+                @endif
+
                 <button type="submit" class="btn btn-{{ $editId ? 'warning' : 'success' }} w-100">
                     <i class="fas fa-{{ $editId ? 'edit' : 'user-check' }}"></i>
                     {{ $editId ? 'تحديث' : 'إضافة' }}
@@ -50,6 +73,7 @@
                         <tr>
                             <th>#</th>
                             <th>الاسم</th>
+                            <th>الدور</th>
                             <th>إجراءات</th>
                         </tr>
                     </thead>
@@ -58,6 +82,12 @@
                             <tr>
                                 <td>{{ $user->id }}</td>
                                 <td>{{ $user->name }}</td>
+                                <td>
+                                    {{ $user->role == 'admin' ? 'مدير' : 'سائق' }}
+                                    @if($user->role == 'driver' && $user->driver)
+                                        <br><span class="badge bg-secondary">{{ $user->driver->Name }}</span>
+                                    @endif
+                                </td>
                                 <td class="text-center">
                                     <button wire:click="edit({{ $user->id }})"
                                             class="btn btn-outline-success btn-sm">

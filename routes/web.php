@@ -16,7 +16,7 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::get('/home', [Dashboard::class, 'index'])->name('home');
     Route::get('/buses', [Dashboard::class, 'buses'])->name('buses');
     Route::get('/drivers', [Dashboard::class, 'drivers'])->name('drivers');
@@ -31,6 +31,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/transfer-newyear', [Dashboard::class, 'transferNewyear'])->name('transfer-newyear');
     Route::get('/register', [Dashboard::class, 'register'])->name('register.form');
     Route::post('/register', [Dashboard::class, 'storeRegister'])->name('register.store');
+    Route::get('/settings', [Dashboard::class, 'settings'])->name('settings.index');
 
 
     Route::get('/teacher', [TeacherController::class, 'index'])->name('teacher.index');
@@ -56,4 +57,16 @@ Route::middleware('auth')->group(function () {
 
         return back()->with('success', 'تم استيراد الطلاب بنجاح');
     });
+});
+
+// مسارات السائق
+Route::middleware(['auth', 'is_driver'])->prefix('driver')->name('driver.')->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('driver.dashboard');
+    });
+    Route::get('/dashboard', \App\Livewire\Driver\Dashboard::class)->name('dashboard');
+    Route::get('/attendance/{type?}', \App\Livewire\Driver\Attendance::class)->name('attendance');
+    Route::get('/today-trip', \App\Livewire\Driver\TodayTrip::class)->name('today-trip');
+    Route::get('/history', \App\Livewire\Driver\History::class)->name('history');
+    Route::get('/profile', \App\Livewire\Driver\Profile::class)->name('profile');
 });
