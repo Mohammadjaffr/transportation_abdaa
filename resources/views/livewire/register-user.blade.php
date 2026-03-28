@@ -10,26 +10,7 @@
         </div>
         <div class="card-body">
             <form wire:submit.prevent="{{ $editId ? 'update' : 'store' }}">
-                <div class="form-group mb-3">
-                    <label>الاسم</label>
-                    <input type="text" wire:model="name"
-                           class="form-control @error('name') is-invalid @enderror"
-                           placeholder="أدخل الاسم الكامل">
-                    @error('name') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                </div>
-
-                <div class="form-group mb-3">
-                    <label>كلمة المرور {{ $editId ? '(اتركها فارغة إذا لا تريد التغيير)' : '' }}</label>
-                    <input type="password" wire:model="password"
-                           class="form-control @error('password') is-invalid @enderror">
-                    @error('password') <span class="invalid-feedback">{{ $message }}</span> @enderror
-                </div>
-
-                <div class="form-group mb-3">
-                    <label>تأكيد كلمة المرور</label>
-                    <input type="password" wire:model="password_confirmation" class="form-control">
-                </div>
-
+                
                 <div class="form-group mb-3">
                     <label>الدور</label>
                     <select wire:model.live="role" class="form-control @error('role') is-invalid @enderror">
@@ -43,7 +24,7 @@
                 @if($role === 'driver')
                 <div class="form-group mb-3">
                     <label>السائق المرتبط</label>
-                    <select wire:model="driver_id" class="form-control @error('driver_id') is-invalid @enderror">
+                    <select wire:model.live="driver_id" class="form-control @error('driver_id') is-invalid @enderror">
                         <option value="">اختر السائق من القائمة</option>
                         @foreach($drivers as $driver)
                             <option value="{{ $driver->id }}">{{ $driver->Name }} (الهوية: {{ $driver->IDNo }})</option>
@@ -52,6 +33,28 @@
                     @error('driver_id') <span class="invalid-feedback">{{ $message }}</span> @enderror
                 </div>
                 @endif
+                <div class="form-group mb-3">
+                    <label>الاسم</label>
+                    <input type="text" wire:model="name"
+                           class="form-control @error('name') is-invalid @enderror"
+                           placeholder="أدخل الاسم الكامل"
+                           {{ $role === 'driver' ? 'readonly' : '' }}>
+                    @error('name') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>كلمة المرور {{ $editId ? '(اتركها فارغة إذا لا تريد التغيير)' : '' }}</label>
+                    <input type="password" wire:model="password"
+                           class="form-control @error('password') is-invalid @enderror">
+                    @error('password') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                </div>
+
+                <div class="form-group mb-3">
+                    <label>تأكيد كلمة المرور</label>
+                    <input type="password" wire:model="password_confirmation" class="form-control @error('password_confirmation') is-invalid @enderror">
+                    @error('password_confirmation') <span class="invalid-feedback">{{ $message }}</span> @enderror
+                </div>
+
 
                 <button type="submit" class="btn btn-{{ $editId ? 'warning' : 'success' }} w-100">
                     <i class="fas fa-{{ $editId ? 'edit' : 'user-check' }}"></i>

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class LoginController extends Controller
 {
@@ -30,6 +32,7 @@ class LoginController extends Controller
         $request->validate([
             'name' => 'required|string|exists:users,name',
             'password' => 'required|string',
+
         ], [
             'name.required' => 'حقل اسم المستخدم مطلوب.',
             'name.string' => 'يجب أن يكون اسم المستخدم نصًا.',
@@ -38,9 +41,27 @@ class LoginController extends Controller
             'password.string' => 'يجب أن تكون كلمة المرور نصًا.',
         ]);
     }
+   protected function attemptLogin(Request $request)
+   {
+    $user = User::where('name', $request->name)->first();
+     if ($user && $user->is_banned) {
+        throw ValidationException::withMessages([
+            'name' => [
+                !empty($user->ban_reason)
+                    ? 'هذا الحساب محظور. السبب: ' . $user->ban_reason
+                    : 'هذا الحساب محظور ولا يمكنه الدخول للنظام.'
+            ],
+        ]);
+    }
 
+    return $this->guard()->attempt(
+        $this->credentials($request),
+        $request->boolean('remember')
+    );
+   }
     protected function authenticated(Request $request, $user)
-    {
+    {   
+        
         if ($user->role === 'driver' && !empty($user->driver_id)) {
             return redirect()->route('driver.dashboard');
         }

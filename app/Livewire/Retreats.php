@@ -92,7 +92,7 @@ class Retreats extends Component
 
 
         $this->resetForm();
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تسجيل المنسحب بنجاح']);
+        $this->dispatch('show-toast', type: 'success', message: 'تم تسجيل المنسحب بنجاح');
     }
 
     public function edit($id)
@@ -131,7 +131,7 @@ class Retreats extends Component
 
 
         $this->resetForm();
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تحديث بيانات المنسحب بنجاح']);
+        $this->dispatch('show-toast', type: 'success', message: 'تم تحديث بيانات المنسحب بنجاح');
     }
 
     public function confirmDelete($id)
@@ -147,7 +147,7 @@ class Retreats extends Component
         AdminLoggerService::log('حذف منسحب', 'Retreat', "حذف منسحب: {$this->deleteRetreatName}");
 
         $this->reset(['deleteId', 'deleteRetreatName']);
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم حذف المنسحب بنجاح']);
+        $this->dispatch('show-toast', type: 'success', message: 'تم حذف المنسحب بنجاح');
     }
 
     public function cancel()

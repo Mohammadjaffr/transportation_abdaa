@@ -22,6 +22,11 @@ class Dashboard extends Controller
         return view('drivers.index');
     }
 
+    public function driverDetails($id)
+    {
+        return view('drivers.details', compact('id'));
+    }
+
     public function students()
     {
         return view('Students.index');

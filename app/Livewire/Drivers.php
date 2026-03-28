@@ -171,10 +171,7 @@ class Drivers extends Component
         );
 
         $this->resetForm();
-        $this->dispatch('show-toast', [
-            'type' => 'success',
-            'message' => 'تم إضافة السائق بنجاح'
-        ]);
+        $this->dispatch('show-toast', type: 'success', message: 'تم إضافة السائق بنجاح');
     }
 
 
@@ -206,10 +203,7 @@ class Drivers extends Component
         );
 
         $this->resetForm();
-        $this->dispatch('show-toast', [
-            'type' => 'success',
-            'message' => 'تم تحديث السائق بنجاح'
-        ]);
+        $this->dispatch('show-toast', type: 'success', message: 'تم تحديث السائق بنجاح');
     }
 
 
@@ -237,10 +231,7 @@ class Drivers extends Component
         $this->deleteId = null;
         $this->deleteDriverName = null;
 
-        $this->dispatch('show-toast', [
-            'type' => 'success',
-            'message' => 'تم حذف السائق بنجاح'
-        ]);
+        $this->dispatch('show-toast', type: 'success', message: 'تم حذف السائق بنجاح');
     }
 
 
@@ -268,7 +259,7 @@ class Drivers extends Component
 
     public function render()
     {
-        $drivers = Driver::with(['bus', 'wing'])
+        $drivers = Driver::with(['bus', 'wing', 'students', 'user', 'regions'])
             ->when($this->search, function ($query) {
                 $searchTerm = "%{$this->search}%";
                 $query->where(function ($q) use ($searchTerm) {

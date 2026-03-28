@@ -49,7 +49,7 @@ class Wages extends Component
         ]);
 
         $this->resetForm();
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم إضافة الأجرة بنجاح']);
+        $this->dispatch('show-toast', type: 'success', message: 'تم إضافة الأجرة بنجاح');
     }
 
     public function edit($id)
@@ -76,7 +76,7 @@ class Wages extends Component
         ]);
 
         $this->resetForm();
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تحديث بيانات الأجرة بنجاح']);
+        $this->dispatch('show-toast', type: 'success', message: 'تم تحديث بيانات الأجرة بنجاح');
     }
 
     public function confirmDelete($id)
@@ -88,7 +88,7 @@ class Wages extends Component
     {
         Wage::destroy($this->deleteId);
         $this->reset('deleteId');
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم حذف الأجرة بنجاح']);
+        $this->dispatch('show-toast', type: 'success', message: 'تم حذف الأجرة بنجاح');
     }
 
     public function cancel()

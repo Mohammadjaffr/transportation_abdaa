@@ -51,10 +51,7 @@ class Regions extends Component
 
         $this->resetForm();
         $this->loadRegions();
-        $this->dispatch('show-toast', [
-            'type' => 'success',
-            'message' => 'تم اضافة المنطقه بنجاح'
-        ]);
+        $this->dispatch('show-toast', type: 'success', message: 'تم اضافة المنطقه بنجاح');
     }
 
     public function edit($id)
@@ -84,10 +81,7 @@ class Regions extends Component
 
         $this->resetForm();
         $this->loadRegions();
-        $this->dispatch('show-toast', [
-            'type' => 'success',
-            'message' => 'تم تعديل المنطقه بنجاح'
-        ]);
+        $this->dispatch('show-toast', type: 'success', message: 'تم تعديل المنطقه بنجاح');
     }
     public function confirmDelete($id)
     {
@@ -99,10 +93,7 @@ class Regions extends Component
     {
         Region::findOrFail($this->deleteId)->delete();
         $this->loadRegions();
-        $this->dispatch('show-toast', [
-            'type' => 'success',
-            'message' => 'تم حذف المنطقه بنجاح'
-        ]);
+        $this->dispatch('show-toast', type: 'success', message: 'تم حذف المنطقه بنجاح');
         AdminLoggerService::log('حذف منطقه', 'Region', "حذف منطقه: {$this->deleteName}");
 
         $this->deleteId = null;

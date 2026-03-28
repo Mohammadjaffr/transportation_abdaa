@@ -14,6 +14,12 @@ class IsDriver
         $user = Auth::user();
 
         if ($user && $user->role === 'driver' && !empty($user->driver_id)) {
+            if ($user->is_banned) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return redirect()->route('login')->withErrors(['email' => 'عذراً، هذا الحساب محظور من الإدارة ولا يمكنك الدخول.']);
+            }
             return $next($request);
         }
 

@@ -197,83 +197,51 @@
                 <table class="table table-bordered table-hover align-middle mb-0">
                     <thead class="table-success text-center">
                         <tr>
-                            <th>رقم البطاقة</th>
-                            <th>الاسم</th>
-                            <th>الهاتف</th>
-                            <th>رقم الرخصة</th>
-                            <th>الملكية</th>
-                            <th>نوع الباص</th>
-                            <th>عدد الركاب</th>
-                            <th>الجناح</th>
-                            <th>المنطقة</th>
-                            <th>الاستمارة</th>
-                            <th>الفحص للمركبة</th>
-                            <th>السلوك</th>
-                            <th>لياقة السائق</th>
-                            <th>الإجراءات</th>
+                            <th>الاسم / رقم البطاقة</th>
+                            <th>معلومات التواصل</th>
+                            <th>الباص / الجناح / المناطق</th>
+                            <th class="text-center">الطلاب المخصصين</th>
+                            <th class="text-center">حالة الحساب</th>
+                            <th class="text-center">الإجراءات</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($drivers as $driver)
-                            <tr class="text-center">
-                                <td><span class="badge px-3 py-2">{{ $driver->IDNo }}</span></td>
-                                <td>{{ $driver->Name }}</td>
-                                <td>{{ $driver->Phone }}</td>
-                                <td>{{ $driver->LicenseNo }}</td>
-                                <td>{{ $driver->Ownership ?? '-' }}</td>
-                                <td>{{ $driver->Bus_type ?? '-' }}</td>
-                                <td>{{ $driver->No_Passengers ?? '-' }}</td>
-                                <td>{{ $driver->Wing->Name ?? '-' }}</td>
+                            <tr class="align-middle">
                                 <td>
+                                    <div class="fw-bold">{{ $driver->Name }}</div>
+                                    <div class="text-muted small"><i class="fas fa-id-card me-1"></i> {{ $driver->IDNo }}</div>
+                                </td>
+                                <td>
+                                    <div class="text-primary"><i class="fas fa-phone-alt me-1"></i> {{ $driver->Phone }}</div>
+                                </td>
+                                <td>
+                                    @if($driver->Bus_type) <span class="badge bg-secondary mb-1"><i class="fas fa-bus-alt"></i> {{ $driver->Bus_type }}</span> @endif
+                                    @if($driver->wing) <span class="badge bg-info text-dark mb-1"><i class="fas fa-building"></i> {{ $driver->wing->Name }}</span> @endif
+                                    <div class="mt-1">
                                     @foreach ($driver->regions as $region)
-                                        <span class="badge bg-success">{{ $region->Name }}</span>
+                                        <span class="badge bg-success me-1">{{ $region->Name }}</span>
                                     @endforeach
+                                    </div>
                                 </td>
-                                <td>
-                                    @if ($driver->Form === 1)
-                                        <span class="badge bg-success">يوجد</span>
-                                    @elseif($driver->Form === 0)
-                                        <span class="badge bg-danger">لايوجد</span>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-dark shadow-sm px-3 py-2 fs-6">
+                                        <i class="fas fa-users text-info me-1"></i> {{ $driver->students ? $driver->students->count() : 0 }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    @if($driver->user)
+                                        <span class="badge bg-success px-3 py-2"><i class="fas fa-check-circle me-1"></i> مرتبط</span>
                                     @else
-                                        <span class="badge bg-secondary">-</span>
+                                        <span class="badge bg-warning text-dark px-3 py-2"><i class="fas fa-times-circle me-1"></i> غير مرتبط</span>
                                     @endif
                                 </td>
-                                <td>
-                                    @if ($driver->CheckUp === 1)
-                                        <span class="badge bg-success">يوجد</span>
-                                    @elseif($driver->CheckUp === 0)
-                                        <span class="badge bg-danger">لايوجد</span>
-                                    @else
-                                        <span class="badge bg-secondary">-</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($driver->Behavior === 1)
-                                        <span class="badge bg-success">جيد</span>
-                                    @elseif($driver->Behavior === 0)
-                                        <span class="badge bg-danger">سيء</span>
-                                    @else
-                                        <span class="badge bg-secondary">-</span>
-                                    @endif
-                                </td>
-                                <td>
-                                    @if ($driver->Fitnes === 1)
-                                        <span class="badge bg-success">لائق</span>
-                                    @elseif($driver->Fitnes === 0)
-                                        <span class="badge bg-danger">غير لائق</span>
-                                    @else
-                                        <span class="badge bg-secondary">-</span>
-                                    @endif
-                                </td>
-                                <td class="d-flex gap-2 justify-content-center">
-                                    <button wire:click="editDriver({{ $driver->id }})"
-                                        class="btn btn-outline-success btn-sm rounded-pill mr-2" title="تعديل">
-                                        <i class="fas fa-edit"></i> تعديل
-                                    </button>
-                                    <button wire:click="confirmDelete({{ $driver->id }})"
-                                        class="btn btn-outline-danger btn-sm rounded-pill" title="حذف">
-                                        <i class="fas fa-trash-alt"></i> حذف
-                                    </button>
+                                <td class="text-center">
+                                    <div class="btn-group shadow-sm">
+                                        <a href="{{ route('driver.details', $driver->id) }}" class="btn btn-primary btn-sm" title="التفاصيل"><i class="fas fa-eye"></i></a>
+                                        <button wire:click="editDriver({{ $driver->id }})" class="btn btn-success btn-sm" title="تعديل"><i class="fas fa-edit"></i></button>
+                                        <button wire:click="confirmDelete({{ $driver->id }})" class="btn btn-danger btn-sm" title="حذف"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
                                 </td>
                             </tr>
                         @empty

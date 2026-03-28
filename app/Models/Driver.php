@@ -30,6 +30,11 @@ class Driver extends Model
     return $this->belongsToMany(Region::class, 'driver_region');
 }
 
+    public function user()
+    {
+        return $this->hasOne(User::class, 'driver_id');
+    }
+
     public function wing()
     {
         return $this->belongsTo(Wing::class);

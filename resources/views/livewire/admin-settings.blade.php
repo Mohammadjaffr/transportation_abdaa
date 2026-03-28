@@ -1,3 +1,4 @@
+<div>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
@@ -6,13 +7,8 @@
         border-radius: 20px;
         background: rgba(255, 255, 255, 0.9);
         backdrop-filter: blur(10px);
-        /* transition: transform 0.3s ease; */
     }
     
-    .settings-card:hover {
-        /* transform: translateY(-5px); */
-    }
-
     .time-input-wrapper {
         position: relative;
         border-radius: 15px;
@@ -68,11 +64,24 @@
         border-radius: 12px;
         margin-left: 15px;
     }
+    
+    input[type="time"]::-webkit-calendar-picker-indicator {
+        background: transparent;
+        bottom: 0;
+        color: transparent;
+        cursor: pointer;
+        height: auto;
+        left: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: auto;
+    }
 </style>
 
 <div class="container-fluid py-5" style="font-family: 'Tajawal', sans-serif;">
     <div class="row justify-content-center">
-        <div class="col-md-10 col-lg-5">
+        <div class="col-md-10 col-lg-6">
             
             <div class="card settings-card shadow-lg">
                 <div class="card-header bg-transparent border-0 pt-4 pb-0 text-center">
@@ -80,7 +89,7 @@
                         <i class="fas fa-user-clock fa-3x text-primary"></i>
                     </div>
                     <h4 class="fw-bold text-dark mb-1">إعدادات أوقات التحضير</h4>
-                    <p class="text-muted small">إدارة المواعيد النهائية لتحضير الطلاب</p>
+                    <p class="text-muted small">إدارة الفترات الزمنية المسموحة لتحضير الطلاب</p>
                 </div>
 
                 <div class="card-body px-4">
@@ -90,44 +99,61 @@
                         </div>
                         <div>
                             <p class="mb-0 small text-dark fw-medium">
-                                سيتم إغلاق إمكانية التحضير تلقائياً فور تجاوز الأوقات المحددة أدناه.
+                                سيتم فتح وإغلاق إمكانية التحضير تلقائياً بناءً على الفترات المحددة أدناه.
                             </p>
                         </div>
                     </div>
 
-                    <form wire:submit.prevent="saveLocks">
-                        <div class="mb-4">
-                            <label class="form-label fw-bold text-secondary mb-2 ms-1">
+                    <form wire:submit="saveLocks">
+                    
+                        <!-- رحلة الذهاب (الصباحية) -->
+                        <div class="mb-4 p-3 border rounded bg-light">
+                            <label class="form-label fw-bold text-secondary mb-3 d-block border-bottom pb-2">
                                 <i class="fas fa-sun text-warning me-1"></i> رحلة الذهاب (الصباحية)
                             </label>
-                            <div class="input-group time-input-wrapper shadow-sm" wire:ignore>
-                                <span class="input-group-text">
-                                    <i class="fas fa-clock text-primary"></i>
-                                </span>
-                                <input type="text" wire:model="morning_lock" 
-                                       class="form-control timepicker @error('morning_lock') is-invalid @enderror"
-                                       placeholder="--:-- --">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="small text-muted mb-1">من الساعة:</label>
+                                    <div class="input-group time-input-wrapper shadow-sm bg-white">
+                                        <span class="input-group-text"><i class="fas fa-play text-success"></i></span>
+                                        <input type="time" wire:model="morning_start" class="form-control @error('morning_start') is-invalid @enderror">
+                                    </div>
+                                    @error('morning_start') <div class="text-danger small mt-1 ps-2">{{ $message }}</div> @enderror
+                                </div>
+                                <div class="col-6">
+                                    <label class="small text-muted mb-1">إلى الساعة:</label>
+                                    <div class="input-group time-input-wrapper shadow-sm bg-white">
+                                        <span class="input-group-text"><i class="fas fa-stop text-danger"></i></span>
+                                        <input type="time" wire:model="morning_end" class="form-control @error('morning_end') is-invalid @enderror">
+                                    </div>
+                                    @error('morning_end') <div class="text-danger small mt-1 ps-2">{{ $message }}</div> @enderror
+                                </div>
                             </div>
-                            @error('morning_lock') 
-                                <div class="text-danger small mt-1 ps-2"><i class="fas fa-exclamation-circle me-1"></i> {{ $message }}</div> 
-                            @enderror
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-label fw-bold text-secondary mb-2 ms-1">
+                        <!-- رحلة العودة (المسائية) -->
+                        <div class="mb-4 p-3 border rounded bg-light">
+                            <label class="form-label fw-bold text-secondary mb-3 d-block border-bottom pb-2">
                                 <i class="fas fa-moon text-indigo me-1"></i> رحلة العودة (المسائية)
                             </label>
-                            <div class="input-group time-input-wrapper shadow-sm" wire:ignore>
-                                <span class="input-group-text">
-                                    <i class="fas fa-clock text-primary"></i>
-                                </span>
-                                <input type="text" wire:model="leave_lock" 
-                                       class="form-control timepicker @error('leave_lock') is-invalid @enderror"
-                                       placeholder="--:-- --">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="small text-muted mb-1">من الساعة:</label>
+                                    <div class="input-group time-input-wrapper shadow-sm bg-white">
+                                        <span class="input-group-text"><i class="fas fa-play text-success"></i></span>
+                                        <input type="time" wire:model="leave_start" class="form-control @error('leave_start') is-invalid @enderror">
+                                    </div>
+                                    @error('leave_start') <div class="text-danger small mt-1 ps-2">{{ $message }}</div> @enderror
+                                </div>
+                                <div class="col-6">
+                                    <label class="small text-muted mb-1">إلى الساعة:</label>
+                                    <div class="input-group time-input-wrapper shadow-sm bg-white">
+                                        <span class="input-group-text"><i class="fas fa-stop text-danger"></i></span>
+                                        <input type="time" wire:model="leave_end" class="form-control @error('leave_end') is-invalid @enderror">
+                                    </div>
+                                    @error('leave_end') <div class="text-danger small mt-1 ps-2">{{ $message }}</div> @enderror
+                                </div>
                             </div>
-                            @error('leave_lock') 
-                                <div class="text-danger small mt-1 ps-2"><i class="fas fa-exclamation-circle me-1"></i> {{ $message }}</div> 
-                            @enderror
                         </div>
 
                         <button type="submit" class="btn btn-save btn-lg w-100 text-white fw-bold shadow-sm mt-2">
@@ -149,4 +175,31 @@
             </p>
         </div>
     </div>
+</div>
+
+<script>
+    window.addEventListener('show-toast', event => {
+        // نتحقق من شكل البيانات المستلمة لضمان التوافق مع Livewire 3
+        let data = Array.isArray(event.detail) ? event.detail[0] : event.detail;
+        
+        // استخراج النوع والرسالة، مع وضع قيم افتراضية
+        let type = data?.type || 'success';
+        let message = data?.message || 'تم الحفظ بنجاح';
+        
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: type,
+                title: 'عملية ناجحة',
+                text: message,
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 4000,
+                timerProgressBar: true,
+            });
+        } else {
+            alert(message);
+        }
+    });
+</script>
 </div>

@@ -162,19 +162,13 @@ class PreparationStus extends Component
             }
         }
 
-        $this->dispatch('show-toast', [
-            'type' => 'success',
-            'message' => 'تم تحديث الحالة مباشرة'
-        ]);
+        $this->dispatch('show-toast', type: 'success', message: 'تم تحديث الحالة مباشرة');
     }
 
     public function autoPrepareAllMissing()
     {
         if (!$this->missingDate) {
-            $this->dispatch('show-toast', [
-                'type' => 'success',
-                'message' => 'تم اضافة التحضير التلقائي لكل الطلاب الظاهرين'
-            ]);
+            $this->dispatch('show-toast', type: 'success', message: 'تم اضافة التحضير التلقائي لكل الطلاب الظاهرين');
             return;
         }
 
@@ -206,10 +200,7 @@ class PreparationStus extends Component
             }
         }
 
-        $this->dispatch('show-toast', [
-            'type' => 'success',
-            'message' => 'تم اضافة التحضير التلقائي لكل الطلاب الظاهرين'
-        ]);
+        $this->dispatch('show-toast', type: 'success', message: 'تم اضافة التحضير التلقائي لكل الطلاب الظاهرين');
 
         $this->findMissingDrivers();
         $this->selectedMissingDriverId = null;

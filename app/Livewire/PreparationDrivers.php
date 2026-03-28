@@ -119,7 +119,7 @@ class PreparationDrivers extends Component
         $this->resetForm();
         $this->refreshDrivers();
         $this->loadPreparations();
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تسجيل حضور السائق']);
+        $this->dispatch('show-toast', type: 'success', message: 'تم تسجيل حضور السائق');
     }
 
     public function editPreparation($id)
@@ -154,7 +154,7 @@ class PreparationDrivers extends Component
         $this->resetForm();
         $this->refreshDrivers();
         $this->loadPreparations();
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تحديث سجل حضور السائق']);
+        $this->dispatch('show-toast', type: 'success', message: 'تم تحديث سجل حضور السائق');
     }
 
     public function toggleAtend($prepId)
@@ -166,10 +166,7 @@ class PreparationDrivers extends Component
 
             AdminLoggerService::log('تحديث حالة حضور السائق', 'PreparationDriver', "تحديث حالة حضور السائق: {$prep->driver->Name}");
 
-            $this->dispatch('show-toast', [
-                'type' => 'success',
-                'message' => 'تم تحديث حالة الحضور للسائق'
-            ]);
+            $this->dispatch('show-toast', type: 'success', message: 'تم تحديث حالة الحضور للسائق');
 
             $this->loadPreparations();
         }
@@ -192,15 +189,9 @@ class PreparationDrivers extends Component
 
                 AdminLoggerService::log('حذف حضور السائق','PreparationDriver',"حذف حضور السائق: {$driverName}");
 
-                $this->dispatch('show-toast', [
-                    'type' => 'success',
-                    'message' => 'تم حذف سجل حضور السائق'
-                ]);
+                $this->dispatch('show-toast', type: 'success', message: 'تم حذف سجل حضور السائق');
             } else {
-                $this->dispatch('show-toast', [
-                    'type' => 'error',
-                    'message' => 'السجل غير موجود أو تم حذفه مسبقاً'
-                ]);
+                $this->dispatch('show-toast', type: 'error', message: 'السجل غير موجود أو تم حذفه مسبقاً');
             }
 
             $this->deleteId = null;

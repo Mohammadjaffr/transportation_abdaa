@@ -85,10 +85,7 @@ class TransferNewyear extends Component
         $record->save();
         AdminLoggerService::log('تحديث حالة طالب', 'StudentRecord', "تحديث حالة الطالب: {$record->student->Name} إلى {$record->status}");
 
-        $this->dispatch('show-toast', [
-            'type' => 'success',
-            'message' => "تم تحديث حالة الطالب: {$record->student->Name} إلى {$record->status}"
-        ]);
+        $this->dispatch('show-toast', type: 'success', message: "تم تحديث حالة الطالب: {$record->student->Name} إلى {$record->status}");
     }
 
     public function confirmTransfer()

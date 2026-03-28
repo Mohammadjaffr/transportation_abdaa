@@ -120,7 +120,7 @@ class Students extends Component
         AdminLoggerService::log('استيراد ملف Excel لطلاب', 'Student', "تم استيراد الطلاب من الملف: {$fileName}");
 
         $this->reset('excelFile', 'showImportForm');
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم استيراد الطلاب بنجاح']);
+        $this->dispatch('show-toast', type: 'success', message: 'تم استيراد الطلاب بنجاح');
     }
 
 
@@ -172,10 +172,7 @@ class Students extends Component
     AdminLoggerService::log('اضافة طالب', 'Student', "إضافة طالب جديد: {$this->name}");
 
     $this->resetForm();
-    $this->dispatch('show-toast', [
-        'type' => 'success',
-        'message' => 'تم إضافة الطالب والسنة الدراسية بنجاح'
-    ]);
+    $this->dispatch('show-toast', type: 'success', message: 'تم إضافة الطالب والسنة الدراسية بنجاح');
 }
 
 
@@ -218,7 +215,7 @@ class Students extends Component
         AdminLoggerService::log('تحديث طالب', 'Student', "تحديث طالب: {$this->name}");
 
         $this->resetForm();
-        $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تحديث الطالب بنجاح']);
+        $this->dispatch('show-toast', type: 'success', message: 'تم تحديث الطالب بنجاح');
     }
 
     public function confirmDelete($studentId)
@@ -235,7 +232,7 @@ class Students extends Component
             AdminLoggerService::log('حذف طالب', 'Student', "حذف طالب: {$this->deleteName}");
 
             $this->deleteId = null;
-            $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم حذف الطالب بنجاح']);
+            $this->dispatch('show-toast', type: 'success', message: 'تم حذف الطالب بنجاح');
         }
     }
 

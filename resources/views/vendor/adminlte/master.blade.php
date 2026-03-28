@@ -121,10 +121,10 @@
         <meta name="msapplication-TileImage" content="{{ asset('favicons/ms-icon-144x144.png') }}">
     @endif
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
-<script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
 
-@livewireStyles
+    @livewireStyles
 
 </head>
 
@@ -168,7 +168,32 @@
 
     {{-- Custom Scripts --}}
     @yield('adminlte_js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        window.addEventListener('show-toast', (event) => {
 
+            let data = event.detail;
+            if (Array.isArray(data)) {
+                data = data[0];
+            }
+
+            console.log('📦 التنبيه وصل، البيانات:', data);
+
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: data.type || 'success',
+                title: data.message || 'تم تنفيذ العملية بنجاح',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer);
+                    toast.addEventListener('mouseleave', Swal.resumeTimer);
+                }
+            });
+        });
+    </script>
 </body>
 
 </html>

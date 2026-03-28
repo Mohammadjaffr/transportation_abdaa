@@ -31,6 +31,8 @@ class DriverAttendanceService
 
     public function markAttendance($driverId, $studentId, $date, $type, $status)
     {
+        // تم نقل هذا الشرط لملف الـ Component بدلاً من هنا لمنع التكرار، 
+        // لكننا سنتركه كإجراء أمني إضافي.
         if ($this->isLocked($type, $date)) {
             return false;
         }
@@ -77,40 +79,68 @@ class DriverAttendanceService
         return true;
     }
 
+    // الدالة المحدثة للتحقق من الفترات الزمنية
     public function isLocked($type, $date)
     {
         $targetDate = Carbon::parse($date)->startOfDay();
         $today = Carbon::today();
         
-        if ($targetDate->lessThan($today)) {
+        // منع تحضير الأيام السابقة أو القادمة
+        if ($targetDate->lessThan($today) || $targetDate->greaterThan($today)) {
             return true;
         }
-        if ($targetDate->greaterThan($today)) {
-            return true;
-        }
-
-        $lockTime = Cache::rememberForever('attendance_lock_' . $type, function () use ($type) {
-            return Setting::where('key', 'attendance_lock_' . $type)->value('value') ?? config('attendance.locks.' . $type);
-        });
-
-        if (!$lockTime) return false;
 
         $now = Carbon::now();
-        $cutoff = Carbon::createFromFormat('H:i', $lockTime);
 
-        return $now->greaterThan($cutoff);
+        // جلب أوقات البداية والنهاية بناءً على نوع الرحلة
+        if ($type === 'morning') {
+            $startTimeStr = Setting::where('key', 'morning_start')->value('value') ?? '07:00';
+            $endTimeStr   = Setting::where('key', 'morning_end')->value('value') ?? '09:00';
+        } else {
+            $startTimeStr = Setting::where('key', 'leave_start')->value('value') ?? '13:00';
+            $endTimeStr   = Setting::where('key', 'leave_end')->value('value') ?? '16:00';
+        }
+
+        try {
+            // تحويل النصوص إلى أوقات للتمكن من مقارنتها
+            $startTime = Carbon::createFromTimeString($startTimeStr);
+            $endTime   = Carbon::createFromTimeString($endTimeStr);
+        } catch (\Exception $e) {
+            // في حال وجود خطأ في صيغة الوقت في قاعدة البيانات، يتم إغلاق التحضير احترازياً
+            return true;
+        }
+
+        // يكون "مغلقاً" إذا كان الوقت الحالي (خارج) الفترة المسموحة
+        return !$now->between($startTime, $endTime);
     }
 
+    // الدالة المحدثة لإظهار الرسائل بناءً على الفترات الزمنية
     public function getLockMessage($type)
     {
-        $lockTime = Cache::rememberForever('attendance_lock_' . $type, function () use ($type) {
-            return Setting::where('key', 'attendance_lock_' . $type)->value('value') ?? config('attendance.locks.' . $type);
-        });
-        
         if ($type === 'morning') {
-            return "تم إغلاق تحضير رحلة الذهاب (الحد الأقصى: $lockTime).";
+            $startTimeStr = Setting::where('key', 'morning_start')->value('value') ?? '07:00';
+            $endTimeStr   = Setting::where('key', 'morning_end')->value('value') ?? '09:00';
+            
+            try {
+                $startFormatted = Carbon::parse($startTimeStr)->format('h:i A');
+                $endFormatted   = Carbon::parse($endTimeStr)->format('h:i A');
+                return "التحضير لرحلة الذهاب متاح فقط بين ($startFormatted) و ($endFormatted).";
+            } catch (\Exception $e) {
+                return "تم إغلاق تحضير رحلة الذهاب حالياً.";
+            }
+            
+        } else {
+            $startTimeStr = Setting::where('key', 'leave_start')->value('value') ?? '13:00';
+            $endTimeStr   = Setting::where('key', 'leave_end')->value('value') ?? '16:00';
+            
+            try {
+                $startFormatted = Carbon::parse($startTimeStr)->format('h:i A');
+                $endFormatted   = Carbon::parse($endTimeStr)->format('h:i A');
+                return "التحضير لرحلة العودة متاح فقط بين ($startFormatted) و ($endFormatted).";
+            } catch (\Exception $e) {
+                return "تم إغلاق تحضير رحلة العودة حالياً.";
+            }
         }
-        return "تم إغلاق تحضير رحلة العودة (الحد الأقصى: $lockTime).";
     }
 
     public function getCounters($students, $records)
@@ -119,7 +149,6 @@ class DriverAttendanceService
         $absent = 0;
         $total = $students->count();
 
-        // Correct implementation:
         foreach ($students as $student) {
             if ($records->has($student->id)) {
                 if ($records[$student->id]->Atend) {

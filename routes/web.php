@@ -20,6 +20,7 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::get('/home', [Dashboard::class, 'index'])->name('home');
     Route::get('/buses', [Dashboard::class, 'buses'])->name('buses');
     Route::get('/drivers', [Dashboard::class, 'drivers'])->name('drivers');
+    Route::get('/drivers/{id}/details', [Dashboard::class, 'driverDetails'])->name('driver.details');
     Route::get('/students', [Dashboard::class, 'students'])->name('students');
     Route::get('/regions', [Dashboard::class, 'region'])->name('region');
     Route::get('/preparation-stus', [Dashboard::class, 'preparationStus'])->name('preparation-stus');
@@ -61,12 +62,16 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
 
 // مسارات السائق
 Route::middleware(['auth', 'is_driver'])->prefix('driver')->name('driver.')->group(function () {
-    Route::get('/', function () {
-        return redirect()->route('driver.dashboard');
+    Route::get('/setup-password', \App\Livewire\ForceChangePassword::class)->name('force-change-password');
+
+    Route::middleware(['force.password.change'])->group(function () {
+        Route::get('/', function () {
+            return redirect()->route('driver.dashboard');
+        });
+        Route::get('/dashboard', \App\Livewire\Driver\Dashboard::class)->name('dashboard');
+        Route::get('/attendance/{type?}', \App\Livewire\Driver\Attendance::class)->name('attendance');
+        Route::get('/today-trip', \App\Livewire\Driver\TodayTrip::class)->name('today-trip');
+        Route::get('/history', \App\Livewire\Driver\History::class)->name('history');
+        Route::get('/profile', \App\Livewire\Driver\Profile::class)->name('profile');
     });
-    Route::get('/dashboard', \App\Livewire\Driver\Dashboard::class)->name('dashboard');
-    Route::get('/attendance/{type?}', \App\Livewire\Driver\Attendance::class)->name('attendance');
-    Route::get('/today-trip', \App\Livewire\Driver\TodayTrip::class)->name('today-trip');
-    Route::get('/history', \App\Livewire\Driver\History::class)->name('history');
-    Route::get('/profile', \App\Livewire\Driver\Profile::class)->name('profile');
 });

@@ -14,7 +14,9 @@ body {
     background-color: #18974d !important;
 }
 .hover-shadow {
-    transition: transform 0.3s, box-shadow 0.3s;
+    transition:
+        transform 0.3s,
+        box-shadow 0.3s;
 }
 .hover-shadow:hover {
     transform: translateY(-5px);
@@ -174,7 +176,6 @@ body {
 .nav-link.active {
     background-color: #28a745 !important;
     color: #fff !important;
-
 }
 .nav-link.btn {
     border-radius: 2rem !important;
@@ -209,8 +210,8 @@ body {
 }
 
 /* زر حذف البطاقة */
-.choices[data-type*=select-multiple] .choices__button {
-    background: rgba(0,0,0,0.2) !important;
+.choices[data-type*="select-multiple"] .choices__button {
+    background: rgba(0, 0, 0, 0.2) !important;
 }
 
 /* دعم RTL بالكامل */
@@ -224,4 +225,3 @@ body {
     right: 0 !important;
     left: auto !important;
 }
-

@@ -22,7 +22,10 @@ class Attendance extends Component
     public function setAttendance(DriverAttendanceService $service, $studentId, $status)
     {
         if ($service->isLocked($this->type, $this->date)) {
-            $this->dispatch('show-toast', ['type' => 'error', 'message' => $service->getLockMessage($this->type)]);
+            $this->dispatch('show-toast', [
+                'type' => 'error', 
+                'message' => $service->getLockMessage($this->type)
+            ]);
             return;
         }
 
@@ -30,14 +33,20 @@ class Attendance extends Component
         $success = $service->markAttendance($driverId, $studentId, $this->date, $this->type, $status);
 
         if (!$success) {
-            $this->dispatch('show-toast', ['type' => 'error', 'message' => 'حدث خطأ أثناء حفظ التحضير.']);
+            $this->dispatch('show-toast', [
+                'type' => 'error', 
+                'message' => 'حدث خطأ أثناء حفظ التحضير.'
+            ]);
         }
     }
 
     public function prepareAllPresent(DriverAttendanceService $service)
     {
         if ($service->isLocked($this->type, $this->date)) {
-            $this->dispatch('show-toast', ['type' => 'error', 'message' => $service->getLockMessage($this->type)]);
+            $this->dispatch('show-toast', [
+                'type' => 'error', 
+                'message' => $service->getLockMessage($this->type)
+            ]);
             return;
         }
 
@@ -45,7 +54,10 @@ class Attendance extends Component
         $students = $service->getStudents($driverId, $this->search);
         
         if ($service->markAllPresent($driverId, $students, $this->date, $this->type)) {
-            $this->dispatch('show-toast', ['type' => 'success', 'message' => 'تم تحضير الكل كحاضر بنجاح!']);
+            $this->dispatch('show-toast', [
+                'type' => 'success', 
+                'message' => 'تم تحضير الكل كحاضر بنجاح!'
+            ]);
         }
     }
 

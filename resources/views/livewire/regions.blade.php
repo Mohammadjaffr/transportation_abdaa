@@ -1,5 +1,4 @@
 <div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <div class="container py-2 py-md-4">
 
@@ -105,6 +104,8 @@
         @endif
 
         <div class="card border-0 shadow-sm rounded-3 overflow-hidden">
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
             <div class=" bg-success py-2 py-md-3">
                 <div class="row align-items-center">
                     <div class="col-12 col-md-6 d-none d-md-block">
@@ -238,4 +239,4 @@
             </div>
         </div>
     @endif
-</div>
+</div> 

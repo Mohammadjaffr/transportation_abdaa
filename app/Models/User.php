@@ -19,10 +19,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
+        // 'email',
         'password',
         'role',
         'driver_id',
+        'is_banned',
+        'require_password_change',
     ];
 
     public function driver()

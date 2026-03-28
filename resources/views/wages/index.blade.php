@@ -13,16 +13,19 @@
 
 <script src="{{ asset('vendor/sweetalert2/sweetalert2.all.min.js')}}"></script>
 <script>
-    document.addEventListener('livewire:initialized', () => {
-        Livewire.on('show-toast', ({ type, message }) => {
-            console.log('📦 نوع التنبيه:', type);
-            console.log('📣 الرسالة:', message);
+  document.addEventListener('livewire:initialized', () => {
+        Livewire.on('show-toast', (event) => {
+            // Livewire 3 يضع البيانات داخل العنصر الأول من المصفوفة
+            const data = event[0]; 
+
+            console.log('📦 نوع التنبيه:', data.type);
+            console.log('📣 الرسالة:', data.message);
 
             Swal.fire({
                 toast: true,
                 position: 'top-end',
-                icon: type || 'success',
-                title: message || 'تم تنفيذ العملية بنجاح',
+                icon: data.type || 'success',
+                title: data.message || 'تم تنفيذ العملية بنجاح', // الآن سيقرأ رسالة الكنترول بنجاح!
                 showConfirmButton: false,
                 timer: 3000,
                 timerProgressBar: true,
