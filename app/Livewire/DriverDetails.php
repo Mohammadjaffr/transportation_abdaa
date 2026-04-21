@@ -135,6 +135,24 @@ class DriverDetails extends Component
             ->where('Date', '=', $today)
             ->first();
     }
+    public function resetPasswordToDefault()
+{
+    if (!$this->driver->user) {
+        $this->dispatch('show-toast', type: 'error', message: 'لا يوجد حساب مرتبط بهذا السائق');
+        return;
+    }
+
+    $defaultPassword = '123456';
+
+    $this->driver->user->update([
+        'password' => Hash::make($defaultPassword),
+        'require_password_change' => true,
+    ]);
+
+    $this->logAction('إعادة تعيين كلمة المرور', "تم إعادة تعيين كلمة مرور السائق: {$this->driver->Name} إلى الرقم الافتراضي");
+
+    $this->dispatch('show-toast', type: 'success', message: 'تم إعادة تعيين كلمة المرور إلى 123456 بنجاح');
+}
 
     public function render()
     {

@@ -263,10 +263,28 @@
                             <p class="text-muted small mb-3">@ {{ $driver->user->name }}</p>
 
                             <div class="account-actions px-2">
-                                <button class="btn btn-outline-dark btn-sm btn-block rounded-pill mb-2 fw-bold"
-                                    onclick="$('#passwordModal').modal('show')">
-                                    <i class="fas fa-key ml-1"></i> كلمة المرور
-                                </button>
+                            <button
+    x-data
+    x-on:click="
+        Swal.fire({
+            title: 'تأكيد تغيير كلمة المرور',
+            text: 'هل أنت موافق على إعادة تعيين كلمة مرور السائق إلى 123456؟',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#18974d',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'نعم، موافق',
+            cancelButtonText: 'إلغاء',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $wire.resetPasswordToDefault();
+            }
+        })
+    "
+    class="btn btn-outline-dark btn-sm btn-block rounded-pill mb-2 fw-bold">
+    <i class="fas fa-key ml-1"></i> كلمة المرور
+</button>
 
                                 <button wire:click="toggleAccountStatus"
                                     class="btn {{ $driver->user->is_banned ? 'btn-success' : 'btn-warning' }} btn-sm btn-block rounded-pill mb-2 fw-bold shadow-sm text-white">
@@ -475,7 +493,7 @@
     </div>
 
     <!-- Password Modal -->
-    <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
+    {{-- <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
             <div class="modal-content border-0 rounded-lg shadow">
                 <div class="modal-header text-white border-0" style="background: #1f2422;">
@@ -496,7 +514,7 @@
                 </form>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     @script
         <script>

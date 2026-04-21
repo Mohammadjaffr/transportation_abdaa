@@ -208,7 +208,7 @@
                                             <span class="text-dark">الى {{ $r['to'] }}</span>
                                         </div>
                                     </div>
-                                    <button class="btn btn-sm btn-success" wire:click="exportCustomReport">
+                                    <button class="btn btn-sm btn-success mx-2" wire:click="exportCustomReport">
                                         <i class="fas fa-file-excel"></i> تصدير Excel
                                     </button>
                                 </div>
