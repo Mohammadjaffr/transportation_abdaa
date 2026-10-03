@@ -19,10 +19,10 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        // 'email',
         'password',
         'role',
         'driver_id',
+        'guardian_id',
         'is_banned',
         'require_password_change',
     ];
@@ -31,7 +31,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Driver::class, 'driver_id');
     }
-
+    public function guardian()
+    {
+        return $this->belongsTo(Guardian::class,'guardian_id');
+    }
     /**
      * The attributes that should be hidden for serialization.
      *

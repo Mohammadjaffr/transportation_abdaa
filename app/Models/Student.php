@@ -71,4 +71,14 @@ class Student extends Model
     {
         return $this->belongsTo(SchoolYear::class);
     }
+    public function guardians()
+    {
+        return $this->belongsToMany(Guardian::class,'guardian_student','student_id','guardian_id')
+            ->withPivot([
+                'relationship',
+                'is_primary',
+                'receive_notifications'
+            ])
+            ->withTimestamps();
+    }
 }

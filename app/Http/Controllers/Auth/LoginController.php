@@ -65,6 +65,9 @@ class LoginController extends Controller
         if ($user->role === 'driver' && !empty($user->driver_id)) {
             return redirect()->route('driver.dashboard');
         }
+        if ($user->role === 'guardian' && !empty($user->guardian_id)) {
+            return redirect()->route('guardian.dashboard');
+        }
 
         if ($user->role === 'admin') {
             return redirect()->route('home');

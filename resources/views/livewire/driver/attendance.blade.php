@@ -60,6 +60,12 @@
                 <i class="fas fa-check-double me-1"></i> الكل حاضر
             </button>
         </div>
+        
+        @if ($hasUnsavedChanges)
+            <div class="alert alert-warning mx-2 rounded-4 p-2 text-center shadow-sm" style="font-size: 0.9rem;">
+                <i class="fas fa-exclamation-triangle me-1"></i> التحديد الحالي مؤقت ولن يتم حفظ التحضير إلا بعد الضغط على اعتماد التحضير.
+            </div>
+        @endif
 
         <!-- Students List -->
         <div class="d-grid gap-3 mb-5 pb-5 px-2">
@@ -108,5 +114,28 @@
                 </div>
             @endforelse
         </div>
+
+        <!-- Submit Section -->
+        <div class="px-2 mb-5 pb-5">
+            @if ($counters['pending'] > 0)
+                <div class="alert alert-warning text-center rounded-4 shadow-sm fw-bold">
+                    <i class="fas fa-exclamation-circle me-1"></i> يوجد {{ $counters['pending'] }} طالب لم يتم تحديد حالته.
+                </div>
+            @endif
+
+            <button wire:click="submitAttendance"
+                class="btn btn-primary w-100 rounded-4 shadow-sm py-3 fw-bold fs-5"
+                {{ $counters['pending'] > 0 || $isLocked ? 'disabled' : '' }}
+                wire:loading.attr="disabled"
+                wire:target="submitAttendance">
+                <span wire:loading.remove wire:target="submitAttendance">
+                    <i class="fas fa-save me-1"></i> اعتماد التحضير وإرسال تنبيهات الغياب
+                </span>
+                <span wire:loading wire:target="submitAttendance">
+                    <i class="fas fa-spinner fa-spin me-1"></i> جاري الحفظ...
+                </span>
+            </button>
+        </div>
     @endif
+    
 </div>

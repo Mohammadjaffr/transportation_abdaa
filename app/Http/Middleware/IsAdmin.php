@@ -18,6 +18,9 @@ class IsAdmin
             if (Auth::user()->role === 'driver') {
                 return redirect()->route('driver.dashboard');
             }
+            if (Auth::user()->role === 'guardian') {
+                return redirect()->route('guardian.dashboard');
+            }
         }
 
         return redirect('/')->with('error', 'ليس لديك صلاحية الدخول كمسؤول.');

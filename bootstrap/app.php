@@ -15,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'is_driver' => \App\Http\Middleware\IsDriver::class,
             'is_admin'  => \App\Http\Middleware\IsAdmin::class,
             'force.password.change' => \App\Http\Middleware\ForcePasswordChange::class,
+            'is_guardian' => \App\Http\Middleware\IsGuardian::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

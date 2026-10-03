@@ -256,7 +256,237 @@
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
+                            {{-- أولياء الأمور --}}
+                            <div class="col-12 mt-4">
 
+                                <div class="card border">
+
+                                    <div
+                                        class="card-header bg-light
+                    d-flex justify-content-between
+                    align-items-center">
+
+                                        <div>
+                                            <i
+                                                class="fas fa-user-friends
+                          text-primary me-1"></i>
+
+                                            <strong>
+                                                أولياء أمور الطالب
+                                            </strong>
+                                        </div>
+
+                                        <button type="button" wire:click="addGuardianRow"
+                                            class="btn btn-primary btn-sm">
+                                            <i class="fas fa-plus"></i>
+                                            إضافة ولي أمر
+                                        </button>
+
+                                    </div>
+
+
+                                    <div class="card-body">
+
+                                        @error('guardianLinks')
+                                            <div class="alert alert-danger">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
+
+
+                                        @foreach ($guardianLinks as $index => $link)
+                                            <div class="border rounded p-3 mb-3"
+                                                wire:key="guardian-link-{{ $index }}">
+
+                                                <div class="row">
+
+
+                                                    {{-- اختيار ولي الأمر --}}
+                                                    <div class="col-md-4 mb-3">
+
+                                                        <label>
+                                                            ولي الأمر
+                                                        </label>
+
+                                                        <select
+                                                            wire:model=
+                                "guardianLinks.{{ $index }}.guardian_id"
+                                                            class="form-control">
+
+                                                            <option value="">
+                                                                -- اختر ولي الأمر --
+                                                            </option>
+
+                                                            @foreach ($guardians as $guardian)
+                                                                <option value="{{ $guardian->id }}">
+                                                                    {{ $guardian->name }}
+                                                                    -
+                                                                    {{ $guardian->phone }}
+
+                                                                    @if (!$guardian->is_active)
+                                                                        (موقوف)
+                                                                    @endif
+
+                                                                </option>
+                                                            @endforeach
+
+                                                        </select>
+
+                                                        @error("guardianLinks.$index.guardian_id")
+                                                            <span class="text-danger small">
+                                                                {{ $message }}
+                                                            </span>
+                                                        @enderror
+
+                                                    </div>
+
+
+                                                    {{-- صلة القرابة --}}
+                                                    <div class="col-md-3 mb-3">
+
+                                                        <label>
+                                                            صلة القرابة
+                                                        </label>
+
+                                                        <select
+                                                            wire:model=
+                                "guardianLinks.{{ $index }}.relationship"
+                                                            class="form-control">
+
+                                                            <option value="">
+                                                                اختر
+                                                            </option>
+
+                                                            <option value="أب">
+                                                                أب
+                                                            </option>
+
+                                                            <option value="أم">
+                                                                أم
+                                                            </option>
+
+                                                            <option value="أخ">
+                                                                أخ
+                                                            </option>
+
+                                                            <option value="أخت">
+                                                                أخت
+                                                            </option>
+
+                                                            <option value="جد">
+                                                                جد
+                                                            </option>
+
+                                                            <option value="جدة">
+                                                                جدة
+                                                            </option>
+
+                                                            <option value="عم">
+                                                                عم
+                                                            </option>
+
+                                                            <option value="عمة">
+                                                                عمة
+                                                            </option>
+
+                                                            <option value="خال">
+                                                                خال
+                                                            </option>
+
+                                                            <option value="خالة">
+                                                                خالة
+                                                            </option>
+
+                                                            <option value="وصي">
+                                                                وصي
+                                                            </option>
+
+                                                            <option value="أخرى">
+                                                                أخرى
+                                                            </option>
+
+                                                        </select>
+
+                                                        @error("guardianLinks.$index.relationship")
+                                                            <span class="text-danger small">
+                                                                {{ $message }}
+                                                            </span>
+                                                        @enderror
+
+                                                    </div>
+
+
+                                                    {{-- الأساسي --}}
+                                                    <div class="col-md-2 mb-3">
+
+                                                        <label class="d-block">
+                                                            الأساسي
+                                                        </label>
+
+                                                        <div class="form-check mt-2">
+
+                                                            <input type="radio" name="primary_guardian"
+                                                                class="form-check-input"
+                                                                wire:click=
+                                    "setPrimaryGuardian({{ $index }})"
+                                                                @checked(!empty($link['is_primary']))>
+
+                                                            <label class="form-check-label">
+                                                                ولي أساسي
+                                                            </label>
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    {{-- استقبال الإشعارات --}}
+                                                    <div class="col-md-2 mb-3">
+
+                                                        <label class="d-block">
+                                                            الإشعارات
+                                                        </label>
+
+                                                        <div class="form-check mt-2">
+
+                                                            <input type="checkbox" class="form-check-input"
+                                                                wire:model=
+                                    "guardianLinks.{{ $index }}.receive_notifications">
+
+                                                            <label class="form-check-label">
+                                                                يستقبل
+                                                            </label>
+
+                                                        </div>
+
+                                                    </div>
+
+
+                                                    {{-- حذف الرابط --}}
+                                                    <div
+                                                        class="col-md-1 mb-3
+                                    d-flex align-items-end">
+
+                                                        <button type="button"
+                                                            wire:click=
+                                "removeGuardianRow({{ $index }})"
+                                                            class="btn btn-outline-danger" title="إزالة">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+
+                                                    </div>
+
+
+                                                </div>
+
+                                            </div>
+                                        @endforeach
+
+                                    </div>
+
+                                </div>
+
+                            </div>
 
 
 
@@ -342,6 +572,7 @@
                             <th>الموقف</th>
                             <th>المعلم\ة</th>
                             <th>السائق</th>
+                            <th>أولياء الأمور</th>
                             <th>سنة الدراسة</th>
                             <th>إجراءات</th>
                         </tr>
@@ -363,6 +594,38 @@
                                 <td>{{ $student->Stu_position }}</td>
                                 <td>{{ $student->teacher?->Name ?? 'غير موجود' }}</td>
                                 <td>{{ $student->driver?->Name ?? 'غير موجود' }}</td>
+                                <td>
+
+                                    @forelse ($student->guardians as $guardian)
+                                        <div class="mb-1">
+
+                                            <span
+                                                class="badge
+                {{ $guardian->pivot->is_primary ? 'bg-primary' : 'bg-secondary' }}">
+
+                                                {{ $guardian->name }}
+
+                                                @if ($guardian->pivot->relationship)
+                                                    -
+                                                    {{ $guardian->pivot->relationship }}
+                                                @endif
+
+                                                @if ($guardian->pivot->is_primary)
+                                                    ⭐
+                                                @endif
+
+                                            </span>
+
+                                        </div>
+
+                                    @empty
+
+                                        <span class="text-muted">
+                                            غير مرتبط
+                                        </span>
+                                    @endforelse
+
+                                </td>
                                 <td>{{ $student->schoolYear->year ?? 'غير محددة' }}</td>
 
                                 <td class="d-flex gap-2 justify-content-center">
@@ -379,20 +642,20 @@
 
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-4">
+                                <td colspan="14" class="text-center text-muted py-4">
                                     <i class="fas fa-user-graduate fa-2x mb-2 text-secondary"></i>
                                     <p class="mb-0">لا يوجد طلاب مسجلين</p>
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
-                
+
                 </table>
-        
+
             </div>
-                    <div class="card-footer d-flex justify-content-center">
-                    {{ $students->links() }}
-                </div>
+            <div class="card-footer d-flex justify-content-center">
+                {{ $students->links() }}
+            </div>
         </div>
 
     </div>

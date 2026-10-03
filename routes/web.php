@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\DistributedStudentsController;
 
+
 Route::get('/', function () {
     return redirect()->route('login');
 });
@@ -22,6 +23,7 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::get('/drivers', [Dashboard::class, 'drivers'])->name('drivers');
     Route::get('/drivers/{id}/details', [Dashboard::class, 'driverDetails'])->name('driver.details');
     Route::get('/students', [Dashboard::class, 'students'])->name('students');
+    Route::get('/guardians', [Dashboard::class, 'guardians'])->name('guardians');
     Route::get('/regions', [Dashboard::class, 'region'])->name('region');
     Route::get('/preparation-stus', [Dashboard::class, 'preparationStus'])->name('preparation-stus');
     Route::get('/preparation-drivers', [Dashboard::class, 'preparationDrivers'])->name('preparation-drivers');
@@ -75,3 +77,24 @@ Route::middleware(['auth', 'is_driver'])->prefix('driver')->name('driver.')->gro
         Route::get('/profile', \App\Livewire\Driver\Profile::class)->name('profile');
     });
 });
+
+/*
+|--------------------------------------------------------------------------
+| مسارات ولي الأمر
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth','is_guardian',])->prefix('guardian')->name('guardian.')->group(function () {
+
+        /*
+     * /guardian
+     */
+        Route::get('/', function () {
+
+            return redirect()->route('guardian.dashboard');});
+        /*
+     * Guardian Dashboard
+     */
+        Route::get('/dashboard',\App\Livewire\Guardian\Dashboard::class)->name('dashboard');
+        Route::get('/history',\App\Livewire\Guardian\History::class)->name('history');
+    });

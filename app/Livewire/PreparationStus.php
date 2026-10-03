@@ -12,6 +12,7 @@ use App\Exports\DriverReportExport;
 use App\Exports\DriverCustomReportExport;
 use App\Exports\AllDriversCustomReportExport;
 use Illuminate\Support\Facades\DB;
+use App\Services\AttendanceSmsService;
 
 class PreparationStus extends Component
 {
@@ -23,14 +24,14 @@ class PreparationStus extends Component
     // فلاتر التقرير المخصص
     public $from_date;
     public $to_date;
-    public $showNames = false; 
+    public $showNames = false;
     public $customReport = [];
 
     // تحضير مفقود
-    public $missingDate;            
-    public $missingDrivers = [];        
-    public $selectedMissingDriverId = null; 
-    public $manualStudents = [];         
+    public $missingDate;
+    public $missingDrivers = [];
+    public $selectedMissingDriverId = null;
+    public $manualStudents = [];
 
     /* ==================== تبويب التحكم ==================== */
 
@@ -132,37 +133,123 @@ class PreparationStus extends Component
         $this->manualStudents = $rows;
     }
 
-    public function setAttendance($studentId, $period, $checked)
-    {
-        if (!in_array($period, ['morning', 'leave'])) return;
+    public function setAttendance(
+        $studentId,
+        $period,
+        $checked
+    ) {
+        if (
+            !in_array(
+                $period,
+                [
+                    'morning',
+                    'leave',
+                ]
+            )
+        ) {
 
-        $checked = filter_var($checked, FILTER_VALIDATE_BOOLEAN);
-        $date = Carbon::parse($this->missingDate ?: Carbon::today())->toDateString();
+            return;
+        }
 
-        $student = Student::findOrFail($studentId);
-        $driverId = $student->driver_id;
 
-        PreparationStu::updateOrCreate(
-            [
-                'student_id' => $studentId,
-                'driver_id'  => $driverId,
-                'Date'       => $date,
-                'type'       => $period,
-            ],
-            [
-                'Atend'     => $checked,
-                'region_id' => $student->region_id,
-            ]
-        );
+        $checked =
+            filter_var(
+                $checked,
+                FILTER_VALIDATE_BOOLEAN
+            );
 
-        foreach ($this->manualStudents as &$row) {
-            if ($row['student_id'] == $studentId) {
-                $row[$period] = $checked;
+
+        $date =
+            Carbon::parse(
+                $this->missingDate
+                    ?: Carbon::today()
+            )
+            ->toDateString();
+
+
+        $student =
+            Student::findOrFail(
+                $studentId
+            );
+
+
+        $driverId =
+            $student->driver_id;
+
+
+        /*
+     * حفظ السجل.
+     */
+        $record =
+            PreparationStu::updateOrCreate(
+                [
+                    'student_id' =>
+                    $studentId,
+
+                    'driver_id' =>
+                    $driverId,
+
+                    'Date' =>
+                    $date,
+
+                    'type' =>
+                    $period,
+                ],
+                [
+                    'Atend' =>
+                    $checked,
+
+                    'region_id' =>
+                    $student->region_id,
+                ]
+            );
+
+
+        /*
+     * إشعار عند الإنشاء أو تغير الحالة فقط (للغياب فقط).
+     */
+        if (
+            !$checked &&
+            ($record->wasRecentlyCreated || $record->wasChanged('Atend'))
+        ) {
+
+            app(
+                AttendanceSmsService::class
+            )
+                ->sendAbsence(
+                    $student,
+                    $period,
+                    $date
+                );
+        }
+
+
+        /*
+     * تحديث بيانات الواجهة.
+     */
+        foreach (
+            $this->manualStudents
+            as &$row
+        ) {
+
+            if (
+                $row['student_id']
+                == $studentId
+            ) {
+
+                $row[$period] =
+                    $checked;
+
                 break;
             }
         }
 
-        $this->dispatch('show-toast', type: 'success', message: 'تم تحديث الحالة مباشرة');
+
+        $this->dispatch(
+            'show-toast',
+            type: 'success',
+            message: 'تم تحديث الحالة مباشرة'
+        );
     }
 
     public function autoPrepareAllMissing()
@@ -248,12 +335,47 @@ class PreparationStus extends Component
 
     public function toggleAtend($prepId)
     {
-        $prep = PreparationStu::find($prepId);
-        if ($prep) {
-            $prep->Atend = !$prep->Atend;
-            $prep->save();
-            $this->loadDriverStudents();
+        $prep =
+            PreparationStu::with('student')
+            ->find($prepId);
+
+
+        if (!$prep) {
+            return;
         }
+
+
+        /*
+     * قلب الحالة.
+     */
+        $prep->Atend =
+            !$prep->Atend;
+
+
+        $prep->save();
+
+
+        /*
+     * إرسال SMS لأن الحالة تغيرت (للغياب فقط).
+     */
+        if (
+            $prep->wasChanged('Atend')
+            && $prep->student
+            && !$prep->Atend
+        ) {
+
+            app(
+                AttendanceSmsService::class
+            )
+                ->sendAbsence(
+                    $prep->student,
+                    $prep->type,
+                    $prep->Date
+                );
+        }
+
+
+        $this->loadDriverStudents();
     }
 
     /* ==================== التقارير ==================== */

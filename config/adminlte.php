@@ -357,17 +357,22 @@ return [
             'url' => 'drivers',
             'icon' => 'fas fa-fw fa-user',
         ],
-          [
+        [
             'text' => 'ادارة الطلاب',
             'url' => 'students',
             'icon' => 'fas fa-fw fa-user-graduate',
         ],
-          [
+        [
+            'text' => 'ادارة أولياء الأمور',
+            'url' => 'guardians',
+            'icon' => 'fas fa-fw fa-user-friends',
+        ],
+        [
             'text' => 'ادارة المناطق',
             'url' => 'regions',
             'icon' => 'fas fa-fw fa-map-marker-alt',
         ],
-      
+
         [
             'text' => 'ادارة المنسحبين',
             'url' => 'retreats',
@@ -393,13 +398,13 @@ return [
                     'url' => 'preparation-stus',
                     'icon' => 'fas fa-fw fa-user-graduate',
                 ],
-                 [
+                [
                     'text' => 'تحضير السائقين',
                     'url' => 'preparation-drivers',
                     'icon' => 'fas fa-fw fa-user',
                 ],
-          
-           
+
+
             ],
         ],
         [

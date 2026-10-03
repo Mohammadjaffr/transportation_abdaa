@@ -31,6 +31,10 @@ class Dashboard extends Controller
     {
         return view('Students.index');
     }
+    public function guardians()
+    {
+        return view('guardians.index');
+    }
     public function region()
     {
         return view('regions.index');
@@ -77,7 +81,7 @@ class Dashboard extends Controller
     {
         return view('settings.index');
     }
-    
+
     public function indexteacher()
     {
         $teachers = Teacher::all();
