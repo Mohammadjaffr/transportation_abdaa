@@ -15,7 +15,7 @@
             <span class="input-group-text bg-white border-0 rounded-0">
                 <i class="fas fa-search text-primary"></i>
             </span>
-            <input type="text" class="form-control border-0  py-2 " placeholder="ابحث باسم الطالب ..."
+            <input type="text" class="form-control border-0  py-2 " placeholder="ابحث باسم الطالب أو ولي الأمر..."
                 wire:model.debounce.300ms.live="search">
         </div>
     </div>
@@ -88,6 +88,7 @@
                         <tr>
                             <th>#</th>
                             <th>الاسم</th>
+                            <th>ولي الأمر</th>
                             <th>الموقف</th>
                             <th>المنطقة</th>
                             <th>السائق</th>
@@ -97,9 +98,17 @@
                     <tbody>
                         @forelse($students as $student)
                             <tr>
-                                </td>
                                 <td>{{ $student->id }}</td>
                                 <td class="fw-bold">{{ $student->Name }}</td>
+                                <td>
+                                    @if($student->guardians->count() > 0)
+                                        @foreach($student->guardians as $guardian)
+                                            <div class="badge bg-light text-dark border mb-1">{{ $guardian->name }}</div>
+                                        @endforeach
+                                    @else
+                                        <span class="text-muted small">غير محدد</span>
+                                    @endif
+                                </td>
                                 <td><span class="badge bg-secondary">{{ $student->Stu_position ?? 'غير محدد' }}</span>
                                 </td>
                                 <td><span
@@ -109,6 +118,9 @@
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-around">
+                                        <div class="m-1">
+                                            ولي الأمر
+                                        </div>
                                         <div class="m-1">
                                             السائق
                                         </div>
@@ -123,6 +135,18 @@
 
 
                                     <div class="d-flex gap-2">
+                                        {{-- تعيين ولي الأمر --}}
+                                        <select class="custom-select"
+                                                style="width: 140px;"
+                                                wire:change="assignGuardian({{ $student->id }}, $event.target.value)">
+                                            <option value="">اختر ولي الأمر</option>
+                                            @foreach($guardiansList as $guardian)
+                                                <option value="{{ $guardian->id }}" @selected($student->guardians->contains('id', $guardian->id))>
+                                                    {{ $guardian->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+
                                         @php
                                             $driversForStudent = $drivers->where('region_id', $student->region_id);
                                         @endphp
@@ -193,7 +217,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center text-muted py-5">
+                                <td colspan="8" class="text-center text-muted py-5">
                                     <i class="fas fa-user-slash fa-3x mb-3 text-secondary"></i>
                                     <p class="mb-0 fs-5">لا يوجد طلاب</p>
                                 </td>

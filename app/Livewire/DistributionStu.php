@@ -108,6 +108,26 @@ public function updateDistribution($studentId, $driverId = null, $regionId = nul
             ]);
         }
     }
+
+    public function assignGuardian($studentId, $guardianId)
+    {
+        $student = Student::find($studentId);
+        if (!$student) return;
+
+        if (empty($guardianId)) {
+            $student->guardians()->detach();
+            $message = 'تمت إزالة ولي الأمر بنجاح';
+        } else {
+            $student->guardians()->sync([$guardianId]);
+            $message = 'تم تعيين ولي الأمر بنجاح';
+        }
+
+        $this->dispatch('show-toast', [
+            'type' => 'success',
+            'message' => $message
+        ]);
+    }
+
     public function updatedRegionFilter($value)
     {
         // عند اختيار منطقة معينة
@@ -124,7 +144,7 @@ public function updateDistribution($studentId, $driverId = null, $regionId = nul
 
    public function render()
 {
-    $query = Student::with(['region', 'driver']);
+    $query = Student::with(['region', 'driver', 'guardians']);
 
     // ✅ فلتر عرض غير الموزعين فقط
     if ($this->showUnassignedOnly) {
@@ -146,6 +166,9 @@ public function updateDistribution($studentId, $driverId = null, $regionId = nul
                 })
                 ->orWhereHas('driver', function ($qd) use ($searchTerm) {
                     $qd->where('Name', 'like', $searchTerm);
+                })
+                ->orWhereHas('guardians', function ($qg) use ($searchTerm) {
+                    $qg->where('name', 'like', $searchTerm);
                 });
         });
     }
@@ -181,10 +204,13 @@ public function updateDistribution($studentId, $driverId = null, $regionId = nul
           ->orWhereNull('Stu_position');
     })->count();
 
+    $guardiansList = \App\Models\Guardian::all();
+
     return view('livewire.distribution-stu', [
         'students' => $students,
         'drivers' => $this->drivers,
         'unassignedCount' => $unassignedCount,
+        'guardiansList' => $guardiansList,
     ]);
 }
 

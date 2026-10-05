@@ -6,10 +6,14 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use App\Models\Guardian;
 use App\Services\AdminLoggerService;
+use Livewire\WithFileUploads;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\GuardiansImport;
 
 class Guardians extends Component
 {
     use WithPagination;
+    use WithFileUploads;
 
     protected $paginationTheme = 'bootstrap';
 
@@ -26,6 +30,10 @@ class Guardians extends Component
 
     public $deleteId = null;
     public $deleteName = null;
+
+    public $showImportForm = false;
+    public $excelFile;
+    public $showImportModal = false;
 
     protected function rules()
     {
@@ -230,6 +238,75 @@ class Guardians extends Component
         $this->is_active = true;
 
         $this->resetValidation();
+    }
+
+    public function closeImportModal()
+    {
+        $this->showImportModal = false;
+    }
+
+    public function importExcel()
+    {
+        $this->validate(
+            [
+                'excelFile' => 'required|mimes:xlsx,csv',
+            ],
+            [
+                'excelFile.required' => 'يرجى اختيار ملف Excel',
+                'excelFile.mimes' => 'يجب أن يكون الملف بصيغة Excel (xlsx) أو CSV فقط',
+            ]
+        );
+
+        $import = new GuardiansImport();
+
+        Excel::import(
+            $import,
+            $this->excelFile->getRealPath()
+        );
+
+        if ($import->failures()->isNotEmpty()) {
+            $labels = [
+                'alasm' => 'عمود الاسم',
+                'rkm_alhatf' => 'عمود الهاتف',
+                'rkm_alhoaa' => 'عمود الهوية',
+                'alaanoan' => 'عمود العنوان',
+            ];
+
+            foreach ($import->failures() as $failure) {
+                $row = $failure->row();
+                $attr = $failure->attribute();
+                $value = $failure->values()[$attr] ?? '';
+                $label = $labels[$attr] ?? $attr;
+
+                foreach ($failure->errors() as $msg) {
+                    $pretty = "الصف {$row} – {$label}: {$msg}" . ($value !== '' ? " (القيمة: {$value})" : '');
+                    $this->addError('excelFile', $pretty);
+                }
+            }
+
+            return;
+        }
+
+        $fileName = $this->excelFile->getClientOriginalName();
+
+        AdminLoggerService::log(
+            'استيراد ملف Excel لأولياء الأمور',
+            'Guardian',
+            "تم استيراد أولياء الأمور من الملف: {$fileName}"
+        );
+
+        $this->reset('excelFile', 'showImportForm');
+
+        $this->dispatch(
+            'show-toast',
+            type: 'success',
+            message: 'تم استيراد أولياء الأمور بنجاح'
+        );
+    }
+
+    public function resetImportForm()
+    {
+        $this->reset('excelFile', 'showImportForm');
     }
 
     public function render()
