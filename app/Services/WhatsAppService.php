@@ -42,6 +42,18 @@ class WhatsAppService
      * 1. دوال التحكم بالإنستانس (Instance Management)
      * ========================================================================= */
 
+    protected function handleResponse(Response $response): array
+    {
+        if ($response->failed()) {
+            return [
+                'error' => true,
+                'message' => data_get($response->json(), 'message', data_get($response->json(), 'error', 'HTTP Error ' . $response->status())),
+                'status' => $response->status()
+            ];
+        }
+        return $response->json() ?? [];
+    }
+
     /**
      * فحص حالة الاتصال الحالية للإنستانس
      * GET /instance/status
@@ -50,7 +62,7 @@ class WhatsAppService
     {
         try {
             $response = $this->client()->get('/instance/status');
-            return $response->json() ?? [];
+            return $this->handleResponse($response);
         } catch (Exception $e) {
             Log::error('WhatsAppService getStatus Error: ' . $e->getMessage());
             return ['error' => true, 'message' => $e->getMessage()];
@@ -71,7 +83,7 @@ class WhatsAppService
             ];
 
             $response = $this->client()->post('/instance/connect', $payload);
-            return $response->json() ?? [];
+            return $this->handleResponse($response);
         } catch (Exception $e) {
             Log::error('WhatsAppService connect Error: ' . $e->getMessage());
             return ['error' => true, 'message' => $e->getMessage()];
@@ -86,7 +98,7 @@ class WhatsAppService
     {
         try {
             $response = $this->client()->get('/instance/qr');
-            return $response->json() ?? [];
+            return $this->handleResponse($response);
         } catch (Exception $e) {
             Log::error('WhatsAppService getQrCode Error: ' . $e->getMessage());
             return ['error' => true, 'message' => $e->getMessage()];
@@ -103,7 +115,7 @@ class WhatsAppService
             $response = $this->client()->post('/instance/pair', [
                 'phone' => $this->formatNumber($phone),
             ]);
-            return $response->json() ?? [];
+            return $this->handleResponse($response);
         } catch (Exception $e) {
             Log::error('WhatsAppService getPairingCode Error: ' . $e->getMessage());
             return ['error' => true, 'message' => $e->getMessage()];
@@ -118,7 +130,7 @@ class WhatsAppService
     {
         try {
             $response = $this->client()->post('/instance/disconnect');
-            return $response->json() ?? [];
+            return $this->handleResponse($response);
         } catch (Exception $e) {
             Log::error('WhatsAppService disconnect Error: ' . $e->getMessage());
             return ['error' => true, 'message' => $e->getMessage()];
@@ -133,7 +145,7 @@ class WhatsAppService
     {
         try {
             $response = $this->client()->post('/instance/reconnect');
-            return $response->json() ?? [];
+            return $this->handleResponse($response);
         } catch (Exception $e) {
             Log::error('WhatsAppService reconnect Error: ' . $e->getMessage());
             return ['error' => true, 'message' => $e->getMessage()];
@@ -148,7 +160,7 @@ class WhatsAppService
     {
         try {
             $response = $this->client()->delete('/instance/logout');
-            return $response->json() ?? [];
+            return $this->handleResponse($response);
         } catch (Exception $e) {
             Log::error('WhatsAppService logout Error: ' . $e->getMessage());
             return ['error' => true, 'message' => $e->getMessage()];
@@ -163,7 +175,7 @@ class WhatsAppService
     {
         try {
             $response = $this->client()->get("/instance/info/{$this->instanceId}");
-            return $response->json() ?? [];
+            return $this->handleResponse($response);
         } catch (Exception $e) {
             Log::error('WhatsAppService getInstanceInfo Error: ' . $e->getMessage());
             return ['error' => true, 'message' => $e->getMessage()];
@@ -178,7 +190,7 @@ class WhatsAppService
     {
         try {
             $response = $this->client()->put("/instance/{$this->instanceId}/advanced-settings", $settings);
-            return $response->json() ?? [];
+            return $this->handleResponse($response);
         } catch (Exception $e) {
             Log::error('WhatsAppService updateAdvancedSettings Error: ' . $e->getMessage());
             return ['error' => true, 'message' => $e->getMessage()];
@@ -206,7 +218,7 @@ class WhatsAppService
             }
 
             $response = $this->client()->post('/send/text', $payload);
-            return $response->json() ?? [];
+            return $this->handleResponse($response);
         } catch (Exception $e) {
             Log::error("WhatsAppService sendText to {$phone} Error: " . $e->getMessage());
             return ['error' => true, 'message' => $e->getMessage()];
@@ -237,7 +249,7 @@ class WhatsAppService
             }
 
             $response = $this->client()->post('/send/media', $payload);
-            return $response->json() ?? [];
+            return $this->handleResponse($response);
         } catch (Exception $e) {
             Log::error("WhatsAppService sendMedia to {$phone} Error: " . $e->getMessage());
             return ['error' => true, 'message' => $e->getMessage()];
@@ -262,7 +274,7 @@ class WhatsAppService
             ];
 
             $response = $this->client()->post('/send/button', $payload);
-            return $response->json() ?? [];
+            return $this->handleResponse($response);
         } catch (Exception $e) {
             Log::error("WhatsAppService sendButton to {$phone} Error: " . $e->getMessage());
             return ['error' => true, 'message' => $e->getMessage()];
@@ -279,7 +291,7 @@ class WhatsAppService
             $response = $this->client()->post('/user/check', [
                 'number' => [$this->formatNumber($phone)],
             ]);
-            return $response->json() ?? [];
+            return $this->handleResponse($response);
         } catch (Exception $e) {
             Log::error("WhatsAppService checkNumber {$phone} Error: " . $e->getMessage());
             return ['error' => true, 'message' => $e->getMessage()];

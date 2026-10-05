@@ -26,7 +26,10 @@ class Dashboard extends Controller
     {
         return view('drivers.details', compact('id'));
     }
-
+    public function whatsapp()
+    {
+        return view('whatsapp.index');
+    }
     public function students()
     {
         return view('Students.index');

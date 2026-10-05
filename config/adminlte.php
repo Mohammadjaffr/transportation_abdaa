@@ -412,6 +412,11 @@ return [
             'url'  => 'settings',
             'icon' => 'fas fa-fw fa-cogs',
         ],
+        [
+            'text' => 'إدارة الواتساب',
+            'url'  => 'whatsapp',
+            'icon' => 'fab fa-whatsapp',
+        ],
         // ['header' => 'labels'],
         // [
         //     'text' => 'important',

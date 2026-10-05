@@ -42,7 +42,8 @@ Route::middleware(['auth', 'is_admin'])->group(function () {
     Route::get('/teacher/{id}/edit', [TeacherController::class, 'edit'])->name('teacher.edit');
     Route::put('/teacher/{id}', [TeacherController::class, 'update'])->name('teacher.update');
     Route::delete('/teacher/{id}', [TeacherController::class, 'destroy'])->name('teacher.destroy');
-
+    Route::get('/whatsapp', [Dashboard::class, 'whatsapp'])
+        ->name('whatsapp.index');
 
     Route::get('/distributed-students', [DistributedStudentsController::class, 'index'])->name('distributed.index');
     Route::get('/distributed-students/export', [DistributedStudentsController::class, 'export'])->name('distributed.export');
@@ -84,17 +85,18 @@ Route::middleware(['auth', 'is_driver'])->prefix('driver')->name('driver.')->gro
 |--------------------------------------------------------------------------
 */
 
-Route::middleware(['auth','is_guardian',])->prefix('guardian')->name('guardian.')->group(function () {
+Route::middleware(['auth', 'is_guardian',])->prefix('guardian')->name('guardian.')->group(function () {
 
-        /*
+    /*
      * /guardian
      */
-        Route::get('/', function () {
+    Route::get('/', function () {
 
-            return redirect()->route('guardian.dashboard');});
-        /*
+        return redirect()->route('guardian.dashboard');
+    });
+    /*
      * Guardian Dashboard
      */
-        Route::get('/dashboard',\App\Livewire\Guardian\Dashboard::class)->name('dashboard');
-        Route::get('/history',\App\Livewire\Guardian\History::class)->name('history');
-    });
+    Route::get('/dashboard', \App\Livewire\Guardian\Dashboard::class)->name('dashboard');
+    Route::get('/history', \App\Livewire\Guardian\History::class)->name('history');
+});
