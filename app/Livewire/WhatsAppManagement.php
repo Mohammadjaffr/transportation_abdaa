@@ -37,48 +37,68 @@ class WhatsAppManagement extends Component
     |--------------------------------------------------------------------------
     */
     private function extractState(array $response): string
-    {
-        $rawState = $response['instance']['state'] 
-            ?? $response['instance']['status'] 
-            ?? $response['instance']['connectionStatus']
-            ?? $response['data']['instance']['state']
-            ?? $response['data']['instance']['status']
-            ?? $response['data']['state']
-            ?? $response['data']['status']
-            ?? $response['data']['connectionStatus']
-            ?? $response['state'] 
-            ?? $response['status'] 
-            ?? $response['connectionStatus'] 
-            ?? $response['response']['state']
-            ?? $response['response']['status']
-            ?? 'unknown';
-
-        $state = strtolower((string)$rawState);
-
-        switch ($state) {
-            case 'open':
-            case 'connected':
-            case 'online':
-            case 'ready':
-                return 'connected';
-            case 'connecting':
-            case 'starting':
-            case 'opening':
-                return 'connecting';
-            case 'close':
-            case 'closed':
-            case 'disconnected':
-            case 'offline':
-                return 'disconnected';
-            case 'logout':
-            case 'logged_out':
-            case 'loggedout':
-                return 'logged_out';
-            default:
-                \Illuminate\Support\Facades\Log::warning('Unknown WhatsApp state', ['response' => $response]);
-                return 'unknown_' . ($rawState === 'unknown' ? 'NO_KEY' : $rawState);
-        }
+{
+    if (!empty($response['error'])) {
+        return 'error';
     }
+
+    // استخراج القيم الأساسية من الاستجابة الرسمية
+    $isLoggedIn  = data_get($response, 'data.LoggedIn')
+        ?? data_get($response, 'data.loggedIn')
+        ?? data_get($response, 'LoggedIn')
+        ?? data_get($response, 'loggedIn');
+
+    $isConnected = data_get($response, 'data.Connected')
+        ?? data_get($response, 'data.connected')
+        ?? data_get($response, 'Connected')
+        ?? data_get($response, 'connected');
+
+    // 1. الشرط الأساسي: لا يعتبر متصلاً إلا إذا كان مسجل الدخول بالفعل
+    if ($isLoggedIn === true) {
+        return 'connected';
+    }
+
+    // 2. إذا كان غير مسجل الدخول (false)، فهو مفصول وغير متصل
+    if ($isLoggedIn === false) {
+        return 'disconnected';
+    }
+
+    // 3. فحص الحالات النصية كإجراء احتياطي (في حال أعاد السيرفر نصوصاً)
+    $rawState = data_get($response, 'data.state')
+        ?? data_get($response, 'data.status')
+        ?? data_get($response, 'instance.state')
+        ?? data_get($response, 'instance.status')
+        ?? data_get($response, 'status')
+        ?? data_get($response, 'state')
+        ?? 'unknown';
+
+    $state = strtolower(trim((string)$rawState));
+
+    switch ($state) {
+        case 'open':
+        case 'connected':
+        case 'conectado':
+        case 'online':
+        case 'ready':
+            return 'connected';
+
+        case 'connecting':
+        case 'conectando':
+        case 'starting':
+        case 'opening':
+            return 'connecting';
+
+        case 'close':
+        case 'closed':
+        case 'disconnected':
+        case 'desconectado':
+        case 'offline':
+            return 'disconnected';
+
+        default:
+            return 'disconnected';
+    }
+}
 
     private function waitForConnectionState(
         WhatsAppService $whatsAppService,
