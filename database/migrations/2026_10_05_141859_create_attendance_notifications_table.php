@@ -13,25 +13,38 @@ return new class extends Migration
     {
         Schema::create('attendance_notifications', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('student_id');
-            $table->unsignedBigInteger('guardian_id')->nullable();
+
+            // العلاقات (Foreign Keys)
+            $table->foreignId('student_id')->constrained('students')->cascadeOnDelete();
+            $table->foreignId('guardian_id')->constrained('guardians')->cascadeOnDelete();
+
+            // تفاصيل الإشعار
             $table->date('date');
-            $table->string('type'); // morning, leave
-            $table->string('channel'); // sms, whatsapp
-            $table->string('event'); // absence
-            $table->string('phone')->nullable();
-            $table->string('status')->default('pending'); // pending, sending, sent, failed
-            $table->integer('attempts')->default(0);
-            $table->string('provider_message_id')->nullable();
-            $table->text('last_error')->nullable();
+            $table->string('type', 20); // morning | leave
+            $table->string('channel', 20); // sms | whatsapp
+            $table->string('event', 20)->default('absence'); // نوع الحدث (غياب)
+            $table->string('phone', 25);
+
+            // حالة الإرسال والتتبع
+            $table->string('status', 20)->default('pending'); // pending | sending | sent | failed
+            $table->unsignedInteger('attempts')->default(0);
+            $table->string('provider_message_id', 191)->nullable();
+            $table->string('last_error', 500)->nullable();
             $table->timestamp('sent_at')->nullable();
             $table->timestamps();
 
-            // Idempotency unique constraint
+            /*
+             * منع إرسال نفس الإشعار مرتين:
+             * (نفس الطالب + نفس ولي الأمر + نفس التاريخ والرحلة + نفس القناة والحدث)
+             */
             $table->unique(
                 ['student_id', 'guardian_id', 'date', 'type', 'channel', 'event'],
                 'attn_notif_unique_idx'
             );
+
+            // فهارس (Indexes) لتحسين سرعة الاستعلامات (Search & Filter)
+            $table->index(['student_id', 'date', 'type'], 'attn_student_date_type_idx');
+            $table->index(['guardian_id', 'status'], 'attn_guardian_status_idx');
         });
     }
 
