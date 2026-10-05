@@ -130,27 +130,46 @@
                                 <span wire:loading wire:target="connect"><i class="fas fa-spinner fa-spin me-1"></i> جاري الاتصال...</span>
                             </button>
 
-                            <button wire:click="reconnect" wire:loading.attr="disabled" wire:target="reconnect" class="btn btn-outline-primary wa-action-btn">
+                           
+
+                            @if(!$isDisconn)
+                             <button wire:click="reconnect" wire:loading.attr="disabled" wire:target="reconnect" class="btn btn-outline-primary wa-action-btn">
                                 <span wire:loading.remove wire:target="reconnect"><i class="fas fa-sync me-1"></i> إعادة الاتصال</span>
                                 <span wire:loading wire:target="reconnect"><i class="fas fa-spinner fa-spin me-1"></i> جاري إعادة الاتصال...</span>
                             </button>
-
-                            <button wire:click="disconnect" 
-                                wire:confirm="هل أنت متأكد من فصل اتصال الواتساب؟ سيتم إيقاف الجلسة مؤقتًا ويمكن إعادة تشغيلها لاحقًا." 
+                            <button type="button" 
+                                x-data
+                                x-on:click="
+                                    Swal.fire({
+                                        title: 'هل أنت متأكد؟',
+                                        text: 'سيتم إيقاف الجلسة مؤقتًا ويمكن إعادة تشغيلها لاحقًا.',
+                                        icon: 'warning',
+                                        showCancelButton: true,
+                                        confirmButtonColor: '#ffc107',
+                                        cancelButtonColor: '#d33',
+                                        confirmButtonText: 'نعم، افصل الاتصال!',
+                                        cancelButtonText: 'إلغاء'
+                                    }).then((result) => {
+                                        if (result.isConfirmed) {
+                                            $wire.disconnect();
+                                        }
+                                    });
+                                "
                                 wire:loading.attr="disabled" wire:target="disconnect" 
-                                class="btn btn-outline-warning wa-action-btn"
-                                @if($isDisconn) disabled @endif>
+                                class="btn btn-outline-warning wa-action-btn">
                                 <span wire:loading.remove wire:target="disconnect"><i class="fas fa-unlink me-1"></i> فصل الاتصال</span>
                                 <span wire:loading wire:target="disconnect"><i class="fas fa-spinner fa-spin me-1"></i> جاري الفصل...</span>
                             </button>
-
-                            <button wire:click="logoutWhatsApp" 
+                             <button wire:click="logoutWhatsApp" 
                                 wire:confirm="سيتم تسجيل خروج جلسة الواتساب الحالية وستحتاج إلى إعادة ربط الحساب باستخدام QR Code أو كود الاقتران. هل تريد المتابعة؟" 
                                 wire:loading.attr="disabled" wire:target="logoutWhatsApp" 
                                 class="btn btn-outline-danger wa-action-btn">
                                 <span wire:loading.remove wire:target="logoutWhatsApp"><i class="fas fa-sign-out-alt me-1"></i> تسجيل خروج الواتساب</span>
                                 <span wire:loading wire:target="logoutWhatsApp"><i class="fas fa-spinner fa-spin me-1"></i> جاري تسجيل الخروج...</span>
                             </button>
+                            @endif
+
+                           
                         </div>
 
                     </div>
@@ -161,6 +180,7 @@
                 <div class="row g-4">
                     
                     {{-- 2. ربط حساب واتساب --}}
+                    @if(!$isConn)
                     <div class="col-12">
                         <div class="card wa-card">
                             <div class="card-body p-4">
@@ -226,58 +246,11 @@
                             </div>
                         </div>
                     </div>
+                    @endif
 
-                    {{-- 3. معلومات الحساب --}}
-                    <div class="col-12">
-                        <div class="card wa-card">
-                            <div class="card-body p-4">
-                                <div class="d-flex justify-content-between align-items-center mb-3">
-                                    <h5 class="fw-bold mb-0"><i class="fas fa-info-circle text-info me-2"></i> معلومات الحساب</h5>
-                                    <button wire:click="loadInstanceInfo" wire:loading.attr="disabled" wire:target="loadInstanceInfo" class="btn btn-sm btn-light border rounded-pill">
-                                        <i class="fas fa-sync-alt" wire:loading.class="fa-spin" wire:target="loadInstanceInfo"></i>
-                                    </button>
-                                </div>
-
-                                @if(empty($instanceInfo))
-                                    <p class="text-muted small mb-0">انقر على زر التحديث لجلب معلومات الحساب.</p>
-                                @else
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <div class="info-box p-3 h-100">
-                                                <span class="text-muted d-block small mb-1"><i class="fas fa-fingerprint me-1"></i> اسم الحساب (Instance ID)</span>
-                                                <strong class="text-dark fs-6">{{ $instanceInfo['instanceName'] ?? 'غير متوفر' }}</strong>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="info-box p-3 h-100">
-                                                <span class="text-muted d-block small mb-1"><i class="fas fa-phone-alt me-1"></i> رقم الهاتف</span>
-                                                <strong class="text-dark fs-6" dir="ltr">{{ $instanceInfo['ownerJid'] ?? 'غير متوفر' }}</strong>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="info-box p-3 h-100">
-                                                <span class="text-muted d-block small mb-1"><i class="fas fa-user-circle me-1"></i> الاسم الشخصي</span>
-                                                <strong class="text-dark fs-6">{{ $instanceInfo['profileName'] ?? 'غير متوفر' }}</strong>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="info-box p-3 h-100">
-                                                <span class="text-muted d-block small mb-1"><i class="fas fa-wifi me-1"></i> حالة الربط</span>
-                                                @if(in_array(strtolower($instanceInfo['state'] ?? ''), ['open', 'connected']))
-                                                    <strong class="text-success fs-6"><i class="fas fa-check-circle me-1"></i> متصل</strong>
-                                                @else
-                                                    <strong class="text-secondary fs-6"><i class="fas fa-times-circle me-1"></i> {{ $instanceInfo['state'] ?? 'غير متوفر' }}</strong>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                    </div>
-
+                 
                     {{-- 4. إرسال رسالة تجريبية --}}
-                    <div class="col-12">
+                    {{-- <div class="col-12">
                         <div class="card wa-card border-top border-3 border-success">
                             <div class="card-body p-4">
                                 <h5 class="fw-bold mb-3"><i class="fas fa-paper-plane text-success me-2"></i> إرسال رسالة تجريبية</h5>
@@ -302,7 +275,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                 </div>
             </div>
