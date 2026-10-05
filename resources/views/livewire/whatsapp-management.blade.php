@@ -125,14 +125,14 @@
                         </div>
 
                         <div class="d-grid gap-2 mt-4">
-                            <button wire:click="connect" wire:loading.attr="disabled" wire:target="connect" class="btn btn-success wa-action-btn" @if($isConn) disabled @endif>
+                            @if(!$isConn)
+                            <button wire:click="connect" wire:loading.attr="disabled" wire:target="connect" class="btn btn-success wa-action-btn">
                                 <span wire:loading.remove wire:target="connect"><i class="fas fa-link me-1"></i> بدء الاتصال</span>
                                 <span wire:loading wire:target="connect"><i class="fas fa-spinner fa-spin me-1"></i> جاري الاتصال...</span>
                             </button>
+                            @endif
 
-                           
-
-                            @if(!$isDisconn)
+                            @if(!$isDisconn && !$isConn)
                              <button wire:click="reconnect" wire:loading.attr="disabled" wire:target="reconnect" class="btn btn-outline-primary wa-action-btn">
                                 <span wire:loading.remove wire:target="reconnect"><i class="fas fa-sync me-1"></i> إعادة الاتصال</span>
                                 <span wire:loading wire:target="reconnect"><i class="fas fa-spinner fa-spin me-1"></i> جاري إعادة الاتصال...</span>
@@ -160,6 +160,9 @@
                                 <span wire:loading.remove wire:target="disconnect"><i class="fas fa-unlink me-1"></i> فصل الاتصال</span>
                                 <span wire:loading wire:target="disconnect"><i class="fas fa-spinner fa-spin me-1"></i> جاري الفصل...</span>
                             </button>
+                            @endif
+
+                            @if(!$isDisconn)
                              <button wire:click="logoutWhatsApp" 
                                 wire:confirm="سيتم تسجيل خروج جلسة الواتساب الحالية وستحتاج إلى إعادة ربط الحساب باستخدام QR Code أو كود الاقتران. هل تريد المتابعة؟" 
                                 wire:loading.attr="disabled" wire:target="logoutWhatsApp" 
@@ -168,8 +171,6 @@
                                 <span wire:loading wire:target="logoutWhatsApp"><i class="fas fa-spinner fa-spin me-1"></i> جاري تسجيل الخروج...</span>
                             </button>
                             @endif
-
-                           
                         </div>
 
                     </div>
