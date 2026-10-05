@@ -7,5 +7,5 @@
 @stop
 
 @section('content')
-    @livewire('whatsapp-management')
+    @livewire('whats-app-management')
 @stop
