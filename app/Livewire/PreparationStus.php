@@ -12,7 +12,7 @@ use App\Exports\DriverReportExport;
 use App\Exports\DriverCustomReportExport;
 use App\Exports\AllDriversCustomReportExport;
 use Illuminate\Support\Facades\DB;
-use App\Services\AttendanceSmsService;
+use App\Services\AttendanceNotificationService;
 
 class PreparationStus extends Component
 {
@@ -214,9 +214,9 @@ class PreparationStus extends Component
         ) {
 
             app(
-                AttendanceSmsService::class
+                AttendanceNotificationService::class
             )
-                ->sendAbsence(
+                ->notifyAbsence(
                     $student,
                     $period,
                     $date
@@ -365,9 +365,9 @@ class PreparationStus extends Component
         ) {
 
             app(
-                AttendanceSmsService::class
+                AttendanceNotificationService::class
             )
-                ->sendAbsence(
+                ->notifyAbsence(
                     $prep->student,
                     $prep->type,
                     $prep->Date

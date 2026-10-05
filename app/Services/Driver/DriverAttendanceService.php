@@ -7,14 +7,14 @@ use App\Models\PreparationStu;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
-use App\Services\AttendanceSmsService;
+use App\Services\AttendanceNotificationService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class DriverAttendanceService
 {
     public function __construct(
-        protected AttendanceSmsService $attendanceSmsService
+        protected AttendanceNotificationService $attendanceNotificationService
     ) {}
     public function getStudents($driverId, $search = '')
     {
@@ -82,8 +82,8 @@ class DriverAttendanceService
             // إرسال رسائل الغياب (خارج الـ Transaction لكي لا نؤخر قاعدة البيانات)
             // =================================================================
             foreach ($absentStudentsToNotify as $studentToNotify) {
-                // استدعاء خدمة الـ SMS
-                $this->attendanceSmsService->sendAbsence($studentToNotify, $type, $date);
+                // استدعاء خدمة الإشعارات (SMS + WhatsApp)
+                $this->attendanceNotificationService->notifyAbsence($studentToNotify, $type, $date);
             }
 
             return true;
@@ -196,8 +196,8 @@ class DriverAttendanceService
         if ($shouldNotify) {
 
             $this
-                ->attendanceSmsService
-                ->sendAbsence(
+                ->attendanceNotificationService
+                ->notifyAbsence(
                     $student,
                     $type,
                     $date

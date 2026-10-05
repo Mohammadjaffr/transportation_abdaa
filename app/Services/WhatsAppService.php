@@ -308,6 +308,16 @@ class WhatsAppService
      */
     protected function formatNumber(string $phone): string
     {
-        return preg_replace('/[^0-9]/', '', $phone);
+        $cleaned = preg_replace('/[^0-9]/', '', $phone);
+
+        if (str_starts_with($cleaned, '0')) {
+            $cleaned = substr($cleaned, 1);
+        }
+
+        if (!str_starts_with($cleaned, '967')) {
+            $cleaned = '967' . $cleaned;
+        }
+
+        return $cleaned;
     }
 }

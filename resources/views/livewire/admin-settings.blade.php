@@ -155,6 +155,23 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- إعدادات إشعارات الغياب -->
+                        <div class="mb-4 p-3 border rounded bg-light">
+                            <label class="form-label fw-bold text-secondary mb-3 d-block border-bottom pb-2">
+                                <i class="fas fa-bell text-info me-1"></i> طريقة إرسال إشعارات الغياب
+                            </label>
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <select wire:model="attendance_notification_channel" class="form-select form-select-lg shadow-sm bg-white" style="border: 2px solid #f0f2f5; border-radius: 15px; color: #495057; font-weight: 600; padding: 12px 20px;">
+                                        <option value="sms">SMS فقط</option>
+                                        <option value="whatsapp">WhatsApp فقط</option>
+                                        <option value="both">SMS + WhatsApp</option>
+                                        <option value="disabled">إيقاف الإشعارات</option>
+                                    </select>
+                                    @error('attendance_notification_channel') <div class="text-danger small mt-1 ps-2">{{ $message }}</div> @enderror
+                                </div>
+                            </div>
+                        </div>
 
                         <button type="submit" class="btn btn-save btn-lg w-100 text-white fw-bold shadow-sm mt-2">
                             <i class="fas fa-save me-2"></i> حفظ الإعدادات الحالية

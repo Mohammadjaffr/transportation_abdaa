@@ -16,6 +16,8 @@ class AdminSettings extends Component
     // متغيرات الفترة المسائية
     public $leave_start;
     public $leave_end;
+    // طريقة إرسال الإشعارات
+    public $attendance_notification_channel;
 
     public function mount()
     {
@@ -25,6 +27,8 @@ class AdminSettings extends Component
         
         $l_start = Setting::where('key', 'leave_start')->value('value') ?? '13:00';
         $l_end   = Setting::where('key', 'leave_end')->value('value') ?? '16:00';
+
+        $this->attendance_notification_channel = Setting::where('key', 'attendance_notification_channel')->value('value') ?? 'sms';
 
         // استخدام Carbon لضمان أن صيغة الوقت هي H:i ليتمكن حقل time من قراءتها
         $this->morning_start = $this->formatTime($m_start, '07:00');
@@ -51,8 +55,10 @@ class AdminSettings extends Component
             'morning_end'   => 'required',
             'leave_start'   => 'required',
             'leave_end'     => 'required',
+            'attendance_notification_channel' => 'required|in:sms,whatsapp,both,disabled',
         ], [
-            'required' => 'هذا الوقت مطلوب',
+            'required' => 'هذا الحقل مطلوب',
+            'in'       => 'قيمة غير صالحة',
         ]);
 
         // حفظ الإعدادات
@@ -60,18 +66,18 @@ class AdminSettings extends Component
         Setting::updateOrCreate(['key' => 'morning_end'],   ['value' => $this->morning_end]);
         Setting::updateOrCreate(['key' => 'leave_start'],   ['value' => $this->leave_start]);
         Setting::updateOrCreate(['key' => 'leave_end'],     ['value' => $this->leave_end]);
+        Setting::updateOrCreate(['key' => 'attendance_notification_channel'], ['value' => $this->attendance_notification_channel]);
 
         // مسح الكاش
         Cache::forget('morning_start');
         Cache::forget('morning_end');
         Cache::forget('leave_start');
         Cache::forget('leave_end');
+        Cache::forget('attendance_notification_channel');
 
         // إرسال الإشعار للواجهة (Livewire 3 syntax)
-        $this->dispatch('show-toast', [
-            'type' => 'success', 
-            'message' => 'تم حفظ فترات التحضير بنجاح'
-        ]);
+        $this->dispatch('show-toast', type: 'success', message: 'تم حفظ الإعدادات بنجاح');
+
     }
 
     public function render()
