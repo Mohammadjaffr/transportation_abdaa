@@ -53,6 +53,13 @@
         .card { border: none !important; border-radius: 16px !important; box-shadow: 0 4px 12px rgba(0,0,0,0.03) !important; }
     </style>
     @livewireStyles
+    <!-- PWA Settings -->
+    <link rel="manifest" href="/driver-manifest.json">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <link rel="apple-touch-icon" href="/icons/driver-192.png">
 </head>
 <body>
 
@@ -97,6 +104,15 @@
                 });
             });
         });
+    </script>
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/driver-sw.js', { scope: '/driver/' })
+                    .then((reg) => console.log('Driver PWA Ready', reg))
+                    .catch((err) => console.error('PWA Reg Error', err));
+            });
+        }
     </script>
 </body>
 </html>
